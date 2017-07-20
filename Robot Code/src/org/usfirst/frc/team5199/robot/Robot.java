@@ -44,6 +44,8 @@ public class Robot extends SampleRobot {
 	@Override
 	public void robotInit() {
 		nBroadcaster = new RemoteOutput("10.51.99.206", 1180);
+		//set first parameter in RemoteOutput constructor to your computer's local address. (ex: "10.51.99.206")
+		//currently working on getting this to work without it
 
 		vision = new Vision();
 		vision.start();
