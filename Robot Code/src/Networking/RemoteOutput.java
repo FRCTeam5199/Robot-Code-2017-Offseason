@@ -15,6 +15,7 @@ public class RemoteOutput {
 	private DatagramPacket packet;
 
 	public RemoteOutput(String addr, int port) {
+		//set addr to your computer's local address. (ex: "10.51.99.206")
 		InetAddress address = null;
 		try {
 			address = InetAddress.getByName(addr);
