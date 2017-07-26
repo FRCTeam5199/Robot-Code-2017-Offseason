@@ -1,4 +1,4 @@
-package Drive;
+package drive;
 
 import edu.wpi.first.wpilibj.Joystick;
 

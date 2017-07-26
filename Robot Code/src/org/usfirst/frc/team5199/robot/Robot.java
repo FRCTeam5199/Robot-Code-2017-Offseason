@@ -1,14 +1,14 @@
 package org.usfirst.frc.team5199.robot;
 
-import Drive.DriveControl;
-import Drive.JoystickController;
-import Drive.XBoxController;
-import Maths.Vector2;
-import Networking.RemoteOutput;
-import Networking.Vision;
-import Systems.Turret;
-import Systems.TurretControl;
+import drive.DriveControl;
+import drive.JoystickController;
+import drive.XBoxController;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.SampleRobot;
+import maths.Vector2;
+import networking.RemoteOutput;
+import networking.Vision;
+import turret.TurretControl;
 
 /**
  * This is a demo program showing the use of the RobotDrive class. The
@@ -33,6 +33,7 @@ public class Robot extends SampleRobot {
 	private Vision vision;
 	private XBoxController controller;
 	private JoystickController joystick;
+	private ADXRS450_Gyro gyro;
 	private Vector2 target;
 	private DriveControl driveControl;
 	private TurretControl turretControl;
@@ -44,33 +45,37 @@ public class Robot extends SampleRobot {
 	@Override
 	public void robotInit() {
 		nBroadcaster = new RemoteOutput("10.51.99.206", 1180);
-		//set first parameter in RemoteOutput constructor to your computer's local address. (ex: "10.51.99.206")
-		//currently working on getting this to work without it
+		// set first parameter in RemoteOutput constructor to your computer's
+		// local address. (ex: "10.51.99.206")
+		// currently working on getting this to work without it
+
+		gyro = new ADXRS450_Gyro();
+		Robot.nBroadcaster.println("Calibrating Gyro...");
+		gyro.calibrate();
+		Robot.nBroadcaster.println("Done!");
 
 		vision = new Vision();
 		vision.start();
-		Robot.nBroadcaster.println(5);
 		controller = new XBoxController(0);
-		Robot.nBroadcaster.println(4);
 		joystick = new JoystickController(1);
-		Robot.nBroadcaster.println(3);
 		target = Vector2.ZERO.clone();
-		Robot.nBroadcaster.println(2);
-		driveControl = new DriveControl(controller);
-		Robot.nBroadcaster.println(1);
+		driveControl = new DriveControl(controller, gyro);
 		turretControl = new TurretControl(joystick, .001, 0, .002, target);
-		Robot.nBroadcaster.println(0);
 	}
 
 	@Override
 	public void autonomous() {
+		gyro.reset();
+
 	}
 
 	@Override
 	public void operatorControl() {
 		Robot.nBroadcaster.println("\n\n\n\n\nStarting TeleOp");
 
-		while (isOperatorControl() & isEnabled()) {
+		gyro.reset();
+
+		while (isOperatorControl() && isEnabled()) {
 			Vector2 newTarget = vision.getPos();
 			target.setX(newTarget.getX() - 320);
 			// Robot.nBroadcaster.println(target);
@@ -94,5 +99,7 @@ public class Robot extends SampleRobot {
 
 	@Override
 	public void test() {
+
+		gyro.reset();
 	}
 }

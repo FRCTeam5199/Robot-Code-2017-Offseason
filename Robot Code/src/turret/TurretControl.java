@@ -1,13 +1,9 @@
-package Systems;
+package turret;
 
 import org.usfirst.frc.team5199.robot.Robot;
-import org.usfirst.frc.team5199.robot.RobotMap;
 
-import com.ctre.CANTalon;
-
-import Drive.JoystickController;
-import Drive.XBoxController;
-import Maths.Vector2;
+import drive.JoystickController;
+import maths.Vector2;
 
 public class TurretControl {
 
@@ -43,7 +39,8 @@ public class TurretControl {
 		} else {
 			turret.setFlyWheel(0);
 		}
-		Robot.nBroadcaster.println(turret.getFlyWheelRPM());
+		// Robot.nBroadcaster.println(turret.getFlyWheelRPM());
+		// Robot.nBroadcaster.println(turret.getEncoder().getDistance());
 	}
 
 	public void autoaim() {
@@ -65,5 +62,9 @@ public class TurretControl {
 		turret.setTurret(motorSpeed);
 		lastTarget = target.clone();
 		return motorSpeed;
+	}
+
+	public Turret getTurret() {
+		return turret;
 	}
 }

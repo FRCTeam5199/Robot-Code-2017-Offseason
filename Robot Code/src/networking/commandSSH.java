@@ -3,17 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Networking;
+package networking;
 
 import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-import com.jcraft.jsch.UserInfo;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
@@ -31,14 +28,14 @@ public class commandSSH {
 
     public commandSSH(String user, String host, int port, String password) {
 
-        this.user = user;
-        this.host = host;
-        this.port = port;
+        commandSSH.user = user;
+        commandSSH.host = host;
+        commandSSH.port = port;
 
         try {
 
             JSch jsch = new JSch();
-            session = jsch.getSession(this.user, this.host, this.port);
+            session = jsch.getSession(commandSSH.user, commandSSH.host, commandSSH.port);
             session.setPassword(password);
             Properties config = new Properties();
             config.put("StrictHostKeyChecking", "no");

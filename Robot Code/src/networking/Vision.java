@@ -1,16 +1,14 @@
-package Networking;
+package networking;
 
 import com.jcraft.jsch.JSchException;
 
-import Maths.Vector2;
+import maths.Vector2;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.usfirst.frc.team5199.robot.Robot;
 

@@ -1,4 +1,4 @@
-package Systems;
+package turret;
 
 import org.usfirst.frc.team5199.robot.RobotMap;
 import com.ctre.CANTalon;
@@ -17,7 +17,7 @@ public class Turret {
 				Encoder.EncodingType.k4X);
 		encoder.reset();
 		// encoder.setDistancePerPulse(RobotMap.inchesPerRotationShooter);
-		encoder.setDistancePerPulse(-6);
+		encoder.setDistancePerPulse(-1/9d);
 	}
 
 	public void setTurret(double n) {
@@ -27,8 +27,12 @@ public class Turret {
 	public void setFlyWheel(double n) {
 		flyWheelMotor.set(n);
 	}
-	
-	public double getFlyWheelRPM(){
+
+	public double getFlyWheelRPM() {
 		return encoder.getRate();
+	}
+
+	public Encoder getEncoder() {
+		return encoder;
 	}
 }

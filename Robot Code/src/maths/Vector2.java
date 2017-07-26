@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Maths;
+package maths;
 
 /**
  *
  * @author 18wakayamats
  */
-public class Vector2 implements Comparable {
+public class Vector2 implements Comparable<Vector2> {
 
 	public static final Vector2 ZERO = new Vector2(0, 0);
 	public static final Vector2 FORWARDS = new Vector2(0, 1);
@@ -60,8 +60,7 @@ public class Vector2 implements Comparable {
 	}
 
 	@Override
-	public int compareTo(Object t) {
-		Vector2 v = (Vector2) t;
+	public int compareTo(Vector2 v) {
 		if (x == v.x) {
 			if (y < v.y) {
 				return -1;
