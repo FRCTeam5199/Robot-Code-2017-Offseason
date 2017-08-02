@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="edu.wpi.first.wpilibj.Victor"/>
+<fullyQualifiedTypeName name="edu.wpi.first.wpilibj.Joystick"/>
+<fullyQualifiedTypeName name="org.usfirst.frc.team5199.robot.EncoderDriveFunctions"/>
+<fullyQualifiedTypeName name="edu.wpi.first.wpilibj.smartdashboard.SmartDashboard"/>
+<fullyQualifiedTypeName name="edu.wpi.first.wpilibj.Jaguar"/>
+<fullyQualifiedTypeName name="java.lang.Math"/>
+<fullyQualifiedTypeName name="edu.wpi.first.wpilibj.Spark"/>
+<fullyQualifiedTypeName name="edu.wpi.first.wpilibj.Relay.Value"/>
+<fullyQualifiedTypeName name="edu.wpi.first.wpilibj.smartdashboard.SendableChooser"/>
+<fullyQualifiedTypeName name="edu.wpi.first.wpilibj.command.Command"/>
+<fullyQualifiedTypeName name="edu.wpi.first.wpilibj.Compressor"/>
+<fullyQualifiedTypeName name="edu.wpi.first.wpilibj.DoubleSolenoid.Value"/>
+</qualifiedTypeNameHistroy>

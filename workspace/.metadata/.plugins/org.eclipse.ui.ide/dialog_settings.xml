@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
+		<item value="C:\Users\Robot Dolphins\Desktop\RobotCode-master\BlueBotTesting"/>
+	</list>
+	<section name="ExternalProjectImportWizard">
+	</section>
+	<section name="ResourceNavigator">
+		<item value="Aggregate for window 1488753924168" key="ResourceWorkingSetFilter.STORE_WORKING_SET"/>
+		<item value="1" key="ResourceViewer.STORE_SORT_TYPE"/>
+	</section>
+	<section name="NewWizardAction">
+		<item value="edu.wpi.first.wpilib.plugins.java.wizards.newproject.NewJavaWizard" key="NewWizardSelectionPage.STORE_SELECTED_ID"/>
+		<list key="NewWizardSelectionPage.STORE_EXPANDED_CATEGORIES_ID">
+			<item value="edu.wpi.first.wpilib.plugins.java"/>
+		</list>
+	</section>
+</section>

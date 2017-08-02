@@ -1,0 +1,135 @@
+package org.usfirst.frc.team5199.robot;
+
+import edu.wpi.first.wpilibj.Timer;
+
+public class AutoModes {
+	
+	public static int autoStep = 0;
+	DataBank bank = new DataBank();
+	pixyShooterFunc = bank.pixyShooterFunc;
+	
+	public static void centerAuto(){
+		if (autoStep >= 1) {
+			pixyShooterFunc.alignShooterXCenter();
+		}
+		//
+		shooterFunc.centerPegShoot();
+
+		if (autoStep == 0) {
+			Driver.drive(.3, 0, 1);
+			Timer.delay(.75);
+			Driver.stop();
+			Timer.delay(.25);
+			autoStep = 1;
+		}
+
+		if (autoStep == 1) {
+			if (bank.ultraDistanceLeft() > 6) {
+				if (pixyGearFunc.turnAndGoStraightAuton()) {
+					Driver.drive(0.4, 0, 1);
+				}
+			} else {
+				if (ultraFunctions.driveFowardAuton(3)) {
+					autoStep = 2;
+				}
+			}
+		}
+		if (autoStep == 2) {
+			Driver.stop();
+		}
+	}
+	
+	public static void rightAuto(){
+		
+		if (autoStep >= 1) {
+			pixyShooterFunc.alignShooterX();
+		}
+
+		shooterFunc.boilerPegShoot();
+
+		if (autoStep == 0) {
+			Driver.drive(.42, 0, 1);
+			Timer.delay(2.25);
+			Driver.stop();
+			Timer.delay(.5);
+			autoStep = 1;
+		}
+		if (autoStep == 1) {
+			if (!(Math.abs(bank.pixyGearXPos() - 160) < 7)) {
+				Driver.drive(0, -.35, 1);
+			} else {
+				Driver.stop();
+				autoStep = 2;
+			}
+		}
+		if (autoStep == 2) {
+			if (bank.ultraDistanceLeft() > 6) {
+				if (pixyGearFunc.turnAndGoStraightAuton()) {
+					Driver.drive(0.5, 0, 1);
+				}
+			} else {
+				if (ultraFunctions.driveFowardAuton(3)) {
+					autoStep = 3;
+				}
+			}
+		}
+		if (autoStep == 3) {
+			Driver.stop();
+		}
+
+	}
+	public static void leftAuto(){
+		// if (autoStep >= 1) {
+		// pixyShooterFunc.alignShooterX();
+		// }
+		//
+		// AVG = bank.shooterRPM();
+		// // For the close gear peg position
+		// if (AVG < 1500) {
+		// shooter.set(1);
+		// } else if (AVG < 2000) {
+		// shooter.set(.75);
+		// } else if (AVG < 2500) {
+		// shooter.set(.65);
+		// } else if (AVG < 2900) {
+		// shooter.set(.52);
+		// } else if (AVG < 3300 // + (100 * stick.getThrottle())) {
+		// ) {
+		// JagPow += 0.0005;
+		// shooter.set(JagPow + .52);
+		// } else {
+		// shooter.set(.52);
+		// JagPow -= 0.0001;
+		// }
+
+		if (autoStep == 0) {
+			Driver.drive(.42, 0, 1);
+			Timer.delay(2.25);
+			Driver.stop();
+			Timer.delay(.5);
+			autoStep = 1;
+		}
+		if (autoStep == 1) {
+			if (!(Math.abs(bank.pixyGearXPos() - 160) < 7)) {
+				Driver.drive(0, .25, 1);
+			} else {
+				Driver.stop();
+				autoStep = 2;
+			}
+		}
+		if (autoStep == 2) {
+			if (bank.ultraDistanceLeft() > 6) {
+				if (pixyGearFunc.turnAndGoStraightAuton()) {
+					Driver.drive(0.5, 0, 1);
+				}
+			} else {
+				if (ultraFunctions.driveFowardAuton(3)) {
+					autoStep = 3;
+				}
+			}
+		}
+		if (autoStep == 3) {
+			Driver.stop();
+		}
+	}
+}

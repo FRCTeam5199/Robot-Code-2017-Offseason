@@ -1,0 +1,28 @@
+package org.usfirst.frc.team5199.robot;
+
+import edu.wpi.first.wpilibj.Encoder;
+
+public class DataBank {
+	public Pixy pixyGear, pixyShooter;
+	public PixyProcess pixyGearProc, pixyShooterProc;
+	public EncoderDriveFunctions driveEncoders;
+	public UltrasonicData ultraData;
+	public 	Encoder flywheel;
+	
+	long time = System.currentTimeMillis();
+
+	public DataBank(){
+		pixyGear = new Pixy(0x51);
+		pixyGearProc = new PixyProcess(pixyGear);
+		pixyShooter = new Pixy(0x53);
+		pixyShooterProc = new PixyProcess(pixyShooter);
+		time = System.currentTimeMillis();
+		ultraData = new UltrasonicData(1,2,3,4);
+		flywheel =  new Encoder(4, 3, false, Encoder.EncodingType.k4X);
+		flywheel.reset();
+		flywheel.setDistancePerPulse(RobotMap.inchesPerRotation / 2);
+//		driveEncoders = new EncoderDriveFunctions(, null, null);
+
+	}
+	
+}

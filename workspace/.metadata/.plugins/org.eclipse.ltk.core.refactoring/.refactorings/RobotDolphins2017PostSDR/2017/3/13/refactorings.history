@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;ServoDude.java&apos; to &apos;BlueBotNewTesting/src/org.usfirst.frc.team5199.robot&apos;&#x0D;&#x0A;- Original project: &apos;RobotDolphins2017PostSDR&apos;&#x0D;&#x0A;- Destination element: &apos;BlueBotNewTesting/src/org.usfirst.frc.team5199.robot&apos;&#x0D;&#x0A;- Original element: &apos;org.usfirst.frc.team5199.robot.ServoDude.java&apos;" description="Copy compilation unit" destination="=BlueBotNewTesting/src&lt;org.usfirst.frc.team5199.robot" element1="/src&lt;org.usfirst.frc.team5199.robot{ServoDude.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1490760233981" units="1" version="1.0"/>
+</session>
