@@ -72,7 +72,7 @@ public class Vector2 implements Comparable<Vector2> {
 
 	@Override
 	public int compareTo(Vector2 other) {
-		if (x == v.x) {
+		if (this.x == other.x) {
 			return this.y - other.y;
 		} else {
 			return this.x - other.x;
