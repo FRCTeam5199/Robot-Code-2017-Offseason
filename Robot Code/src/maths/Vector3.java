@@ -83,11 +83,11 @@ public class Vector3 implements Comparable<Vector3> {
     @Override
     public int compareTo(Vector3 other) {
         if (this.x != other.x) {
-            return this.x - other.x;
+            return (int) (this.x - other.x);
         } else if (this.y != other.y) {
-            return this.y - other.y;
+            return (int) (this.y - other.y);
         } else {
-            return this.z - other.z;
+            return (int) (this.z - other.z);
         }
     }
 
