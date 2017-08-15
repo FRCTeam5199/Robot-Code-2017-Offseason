@@ -60,24 +60,12 @@ public class Vector2 implements Comparable<Vector2> {
 	}
 
 	@Override
-	public int compareTo(Vector2 v) {
+	public int compareTo(Vector2 other) {
 		if (x == v.x) {
-			if (y < v.y) {
-				return -1;
-			} else if (y > v.y) {
-				return 1;
-			} else {
-				return 0;
-			}
-		}
-		if (x < v.x) {
-			return -1;
-		} else if (x > v.x) {
-			return 1;
+			return this.y - other.y;
 		} else {
-			return 0;
+			return this.x - other.x;
 		}
-
 	}
 
 	public static Vector2 add(Vector2 v1, Vector2 v2) {
