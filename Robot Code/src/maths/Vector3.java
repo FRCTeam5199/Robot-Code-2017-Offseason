@@ -9,7 +9,7 @@ package maths;
  *
  * @author 18wakayamats
  */
-public class Vector3 {
+public class Vector3 implements Comparable<Vector3> {
 
     public static final Vector3 ZERO = new Vector3(0, 0, 0);
     public static final Vector3 UP = new Vector3(0, 1, 0);
@@ -18,9 +18,16 @@ public class Vector3 {
     public static final Vector3 LEFT = new Vector3(-1, 0, 0);
     public static final Vector3 FORWARDS = new Vector3(0, 0, 1);
     public static final Vector3 BACKWARDS = new Vector3(0, 0, -1);
+    
     private double x;
     private double y;
     private double z;
+    
+    public Vector3() {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
 
     public Vector3(double x, double y, double z) {
         this.x = x;
@@ -32,6 +39,12 @@ public class Vector3 {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+    
+    public Vector3(Vector3 other) {
+        this.x = other.x;
+        this.y = other.y;
+        this.z = other.z;
     }
 
     public double getX() {
@@ -64,7 +77,18 @@ public class Vector3 {
 
     @Override
     public String toString() {
-        return x + " " + y + " " + z;
+        return x + "," + y + "," + z;
+    }
+    
+    @Override
+    public int compareTo(Vector3 other) {
+        if (this.x != other.x) {
+            return this.x - other.x;
+        } else if (this.y != other.y) {
+            return this.y - other.y;
+        } else {
+            return this.z - other.z;
+        }
     }
 
     public static Vector3 add(Vector3 v1, Vector3 v2) {
@@ -120,6 +144,7 @@ public class Vector3 {
         return divide(add(v1, v2), 2);
     }
 
+    // Deprecated now that we have the copy constructor?
     public static Vector3 clone(Vector3 v) {
         return new Vector3(v.getX(), v.getY(), v.getZ());
     }
