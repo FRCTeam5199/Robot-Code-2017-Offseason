@@ -73,9 +73,9 @@ public class Vector2 implements Comparable<Vector2> {
 	@Override
 	public int compareTo(Vector2 other) {
 		if (this.x == other.x) {
-			return this.y - other.y;
+			return (int) (this.y - other.y);
 		} else {
-			return this.x - other.x;
+			return (int) (this.x - other.x);
 		}
 	}
 
