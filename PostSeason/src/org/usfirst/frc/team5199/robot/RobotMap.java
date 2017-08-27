@@ -90,7 +90,7 @@ public static int ultrasonicArraySize = 10;
 													// Pixycam
 
 	public static double inchesPerRotation = 4 * Math.PI; // for 4 inch wheels
-	public static double inchesPerRotationShooter = 1; //for the rpms
+	public static double inchesPerRotationShooter = -1/9d; //for the rpms
 	public static double stoppedDetectionTime = .1; // sets time for max period
 													// in seconds
 	public static double minimumRateStopped = .5; // speed until stopped

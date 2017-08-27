@@ -45,6 +45,7 @@ public class Robot extends SampleRobot {
 	private static Vector2 vector;
 	private static XBoxController xBox;
 	private static JoystickController joystick;
+	public static RemoteOutput nBroadcaster;
 	// ***********************************************************************************
 
 	// Ultra functions
@@ -111,7 +112,7 @@ public class Robot extends SampleRobot {
 		// Commented because the modeSelector takes up USB port 0 in the
 		// DriverStation
 		modeSelector = new Joystick(2);
-
+		nBroadcaster = new RemoteOutput("10.51.99.197",1180);
 		// Gyro is crash
 		gyroFunctions = new GyroFunctions(right, left);
 		gyro = new ADXRS450_Gyro();
@@ -127,9 +128,9 @@ public class Robot extends SampleRobot {
 		xBox = new XBoxController(0);
 		joystick = new JoystickController(1);
 		driveControl  = new DriveControl(xBox, gyro, Driver);
-				
+		speed = new ShooterSpeed();
 		// Encoders
-		shooterFunc = new EncoderShooterFunctions(shooter, turret, bank);
+		shooterFunc = new EncoderShooterFunctions(shooter, turret, bank, speed);
 		driveFunc = new EncoderDriveFunctions(right, left, gyroFunctions);
 
 		// Mudamudamudamudamudamuda servos
@@ -143,7 +144,7 @@ public class Robot extends SampleRobot {
 		
 		// I CAN SEE, I CAN FIGHT!
 		vector = new Vector2(0,0);
-		turretControl = new TurretControl(joystick, .3,.1, .1, vector);
+		turretControl = new TurretControl(joystick, .003,.0001, .05, vector);
 		pixyGearFunc = new PixyFunctions(bank.pixyGear, ultraFunctions, bank.driveEncoders, Driver);
 		pixyShooterFunc = new PixyFunctions(bank.pixyShooter, turret, bank, turretControl, vector);
 
@@ -480,7 +481,7 @@ public class Robot extends SampleRobot {
 				// }
 				// } else {
 				// ultraFunctions.driveFowardAuton(8);
-				// }
+				// }	
 				// THIS CODE FUCKIN WORKS FOR THE PIXY CENTERING
 				// HOLY SHIT WE DID IT BOYS WE REALLY FUCKIN DID IT
 				// Testing Button
@@ -512,11 +513,17 @@ public class Robot extends SampleRobot {
 			if (joystick.getButton(1) || joystick.getButton(2)) {
 //				autoTrack = true;
 				if (shootMode == 1) {
-					shooterFunc.centerPegShoot();
+					speed.shoot(3425);
+					shooterFunc.displayRpmShooterInfor();
+					//shooterFunc.centerPegShoot();
 				} else if (shootMode == 2) {
-					shooterFunc.boilerHopperShoot();
+					speed.shoot(3425);
+					shooterFunc.displayRpmShooterInfor();
+					//shooterFunc.boilerHopperShoot();
 				} else if (shootMode == 3) {
-					shooterFunc.boilerPegShoot();
+					speed.shoot(3425);
+					shooterFunc.displayRpmShooterInfor();
+					//shooterFunc.boilerPegShoot();
 				}
 			} else {
 
@@ -526,6 +533,7 @@ public class Robot extends SampleRobot {
 			}
 
 			// MULTI TRACK SHOOTING
+			
 			if (autoTrack || joystick.getButton(10)) {
 				if (shootMode == 1) {
 					pixyShooterFunc.alignShooterXCenter();
@@ -545,6 +553,7 @@ public class Robot extends SampleRobot {
 			// - Bot-chan
 			if (joystick.getButton(1) || joystick.getButton(3) || joystick.getButton(4)) {
 				sweeper.set(-1);
+				speed.shoot(3425);
 				SmartDashboard.putString("Sweeper", "On");
 			} else {
 				sweeper.set(0);

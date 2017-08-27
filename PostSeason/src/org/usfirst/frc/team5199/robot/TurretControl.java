@@ -12,7 +12,7 @@ public class TurretControl {
 	private double d;
 	private Vector2 target;
 	private Vector2 lastTarget;
-
+	double integral;
 	public TurretControl(JoystickController joystick, double p, double i, double d, Vector2 target) {
 		this.joystick = joystick;
 		this.p = p;
@@ -26,6 +26,7 @@ public class TurretControl {
 		if (joystick.getButton(2)) {
 			autoaim();
 		} else {
+			
 			manualControl();
 		}
 	}
@@ -44,9 +45,18 @@ public class TurretControl {
 	public void autoaim() {
 		// turret will try to move so that Target.x becomes 0
 		double motorSpeed;
-		// No "I" so just a PD controller for now lol
+		integral  += target.getX();
+		if(Math.abs(integral)>1/i) {
+			if(integral>0) {
+				integral = 1/i;
+			}else {
+				integral = -1/i;
+			}
+		}
 		motorSpeed = p * target.getX();
+		Robot.nBroadcaster.println(d * (target.getX() - lastTarget.getX()));
 		motorSpeed += d * (target.getX() - lastTarget.getX());
+		motorSpeed += i*integral;
 		turret.setTurret(motorSpeed);
 		lastTarget = target.clone();
 	}

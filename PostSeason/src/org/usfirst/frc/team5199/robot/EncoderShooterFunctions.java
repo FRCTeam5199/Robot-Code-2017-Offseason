@@ -23,13 +23,14 @@ public class EncoderShooterFunctions {
 	
 	double AVG = 0;
 	double shootPow = 0;
-	
-	public EncoderShooterFunctions(CANTalon shooter, CANTalon turret, DataBank data) {
+	ShooterSpeed speed;
+	public EncoderShooterFunctions(CANTalon shooter, CANTalon turret, DataBank data, ShooterSpeed speed) {
 		shooterMotor = shooter;
 		turretMotor = turret;
 		bank = data;
-		shooterPID = new PIDController(.1,.001,0,bank.flywheel,shooterMotor);
-		shooterPID.enable();
+	    this.speed = speed;
+	//	shooterPID = new PIDController(.1,.001,0,bank.flywheel,shooterMotor);
+	//	shooterPID.enable();
 	}
 
 	// MUST be called on robot startup
@@ -47,8 +48,7 @@ public class EncoderShooterFunctions {
 	}
 
 	public void displayRpmShooterInfor() {
-		SmartDashboard.putNumber("Shooter Data", shooterEncoder.getDistance());
-		SmartDashboard.putNumber("Shooter Data", bank.flywheel.getRate());
+		SmartDashboard.putNumber("Shooter Data", Turret.getFlyWheelRPM());
 	}
 
 	public void closePIDshoot(){
@@ -73,10 +73,10 @@ public class EncoderShooterFunctions {
 		}
 	}
 	public void centerPegShootSubClass() {
-		Robot.speed.setSetpoint(3425);
+		speed.shoot(3425);
 	}
 	public void centerPegShootPID() {
-		shooterPID.setSetpoint(3425);
+		
 	}
 	public void centerPegShoot() {
 		// For the close gear peg position
