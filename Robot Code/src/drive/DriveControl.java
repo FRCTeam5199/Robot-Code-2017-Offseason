@@ -2,6 +2,7 @@ package drive;
 
 import org.usfirst.frc.team5199.robot.Robot;
 
+import Controllers.XBoxController;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 
 public class DriveControl {
@@ -29,24 +30,32 @@ public class DriveControl {
 	}
 
 	public void update() {
+		selectDriveMode();
 		switch (driveMode) {
 		case POINT:
 			pointControl();
+			// Robot.nBroadcaster.println("Point Control");
 			break;
 		case TANK_ASSISTED:
 			tankControlAssisted();
+			// Robot.nBroadcaster.println("Tank Assisted Control");
 			break;
 		case ARCADE_ASSISTED:
 			arcadeControlAssisted();
+			// Robot.nBroadcaster.println("Arcade Control Assisted Control");
 			break;
 		case TANK:
 			tankControl();
+			// Robot.nBroadcaster.println("Tank Control");
 			break;
 		}
 	}
 
 	public void selectDriveMode() {
 		if (controller.getButton(1)) {
+			integral = 0;
+			gyro.reset();
+			pointControlTargetAngle = 0;
 			driveMode = DriveMode.POINT;
 		} else if (controller.getButton(2)) {
 			driveMode = DriveMode.TANK_ASSISTED;

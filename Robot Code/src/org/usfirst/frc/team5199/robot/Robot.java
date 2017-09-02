@@ -1,14 +1,16 @@
 package org.usfirst.frc.team5199.robot;
 
+import Controllers.JoystickController;
+import Controllers.XBoxController;
 import drive.DriveControl;
-import drive.JoystickController;
-import drive.XBoxController;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.SampleRobot;
+import intake.IntakeControl;
 import maths.Vector2;
 import networking.RemoteOutput;
 import networking.Vision;
 import turret.TurretControl;
+import util.ClockRegulator;
 
 /**
  * This is a demo program showing the use of the RobotDrive class. The
@@ -30,13 +32,18 @@ import turret.TurretControl;
 public class Robot extends SampleRobot {
 
 	public static RemoteOutput nBroadcaster;
-	private Vision vision;
+	private ClockRegulator clockRegulator;
+
 	private XBoxController controller;
 	private JoystickController joystick;
+
+	private Vision vision;
 	private ADXRS450_Gyro gyro;
 	private Vector2 target;
+
 	private DriveControl driveControl;
 	private TurretControl turretControl;
+	private IntakeControl intakeControl;
 
 	public Robot() {
 
@@ -59,8 +66,12 @@ public class Robot extends SampleRobot {
 		controller = new XBoxController(0);
 		joystick = new JoystickController(1);
 		target = Vector2.ZERO.clone();
+
 		driveControl = new DriveControl(controller, gyro);
 		turretControl = new TurretControl(joystick, target);
+		intakeControl = new IntakeControl(joystick, controller);
+
+		clockRegulator = new ClockRegulator(100);
 	}
 
 	@Override
@@ -74,6 +85,7 @@ public class Robot extends SampleRobot {
 		Robot.nBroadcaster.println("\n\n\n\n\nStarting TeleOp");
 
 		gyro.reset();
+		clockRegulator.reset();
 
 		while (isOperatorControl() && isEnabled()) {
 			Vector2 newTarget = vision.getPos();
@@ -85,13 +97,9 @@ public class Robot extends SampleRobot {
 
 			driveControl.update();
 			turretControl.update();
+			intakeControl.update();
 
-			try {
-				Thread.sleep(1000 / 100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			clockRegulator.sync();
 		}
 
 		vision.stop();
@@ -101,5 +109,11 @@ public class Robot extends SampleRobot {
 	public void test() {
 
 		gyro.reset();
+		clockRegulator.reset();
+
+		while (this.isTest() && this.isEnabled()) {
+			Robot.nBroadcaster.println(gyro.getAngle());
+			clockRegulator.sync();
+		}
 	}
 }

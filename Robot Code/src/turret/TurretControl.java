@@ -2,7 +2,7 @@ package turret;
 
 import org.usfirst.frc.team5199.robot.Robot;
 
-import drive.JoystickController;
+import Controllers.JoystickController;
 import maths.Vector2;
 
 public class TurretControl {
@@ -16,7 +16,7 @@ public class TurretControl {
 	private double integralTurret = 0;
 
 	private double pFlywheel = .02;
-	private double iFlywheel = .0012;
+	private double iFlywheel = .00025;
 	private double integralFlywheel = 0;
 
 	private Vector2 target;
