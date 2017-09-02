@@ -25,6 +25,10 @@ public class JoystickController {
 		return stick.getRawAxis(3);
 	}
 
+	public double getScaledSlider() {
+		return (1 - getSlider()) / 2;
+	}
+
 	public boolean getTrigger() {
 		return stick.getRawButton(1);
 	}

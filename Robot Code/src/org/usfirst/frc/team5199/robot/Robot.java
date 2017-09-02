@@ -44,9 +44,9 @@ public class Robot extends SampleRobot {
 
 	@Override
 	public void robotInit() {
-		nBroadcaster = new RemoteOutput("10.51.99.206", 1180);
+		nBroadcaster = new RemoteOutput("10.51.99.197", 1180);
 		// set first parameter in RemoteOutput constructor to your computer's
-		// local address. (ex: "10.51.99.206")
+		// local address. (ex: "10.51.99.197")
 		// currently working on getting this to work without it
 
 		gyro = new ADXRS450_Gyro();
@@ -60,7 +60,7 @@ public class Robot extends SampleRobot {
 		joystick = new JoystickController(1);
 		target = Vector2.ZERO.clone();
 		driveControl = new DriveControl(controller, gyro);
-		turretControl = new TurretControl(joystick, .001, 0, .002, target);
+		turretControl = new TurretControl(joystick, target);
 	}
 
 	@Override

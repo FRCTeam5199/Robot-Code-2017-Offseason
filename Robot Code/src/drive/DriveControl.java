@@ -17,21 +17,44 @@ public class DriveControl {
 
 	private double pointControlTargetAngle = 0;
 
+	private DriveMode driveMode;
+
 	public DriveControl(XBoxController controller, ADXRS450_Gyro gyro) {
 		base = new DriveBase();
 		this.gyro = gyro;
 		this.controller = controller;
 
+		driveMode = DriveMode.POINT;
 		// joystick = new JoystickController(0);
 	}
 
 	public void update() {
-		// tankControl();
-		tankControlAssisted();
+		switch (driveMode) {
+		case POINT:
+			pointControl();
+			break;
+		case TANK_ASSISTED:
+			tankControlAssisted();
+			break;
+		case ARCADE_ASSISTED:
+			arcadeControlAssisted();
+			break;
+		case TANK:
+			tankControl();
+			break;
+		}
+	}
 
-		// arcadeControlAssisted();
-
-		// pointControl();
+	public void selectDriveMode() {
+		if (controller.getButton(1)) {
+			driveMode = DriveMode.POINT;
+		} else if (controller.getButton(2)) {
+			driveMode = DriveMode.TANK_ASSISTED;
+		} else if (controller.getButton(3)) {
+			driveMode = DriveMode.ARCADE_ASSISTED;
+		} else if (controller.getButton(4)) {
+			driveMode = DriveMode.TANK;
+		}
 	}
 
 	public void tankControl() {
@@ -130,8 +153,12 @@ public class DriveControl {
 		base.move(controller.getStickLY() - turnSpeed, controller.getStickLY() + turnSpeed);
 
 	}
-	
-	public DriveBase getBase(){
+
+	public DriveBase getBase() {
 		return base;
+	}
+
+	public enum DriveMode {
+		TANK, TANK_ASSISTED, ARCADE, ARCADE_ASSISTED, POINT;
 	}
 }
