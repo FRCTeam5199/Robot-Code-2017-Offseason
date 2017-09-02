@@ -4,11 +4,12 @@ import org.usfirst.frc.team5199.robot.RobotMap;
 import com.ctre.CANTalon;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PIDSourceType;
 
 public class Turret {
 	private final CANTalon turnMotor;
-	private final CANTalon flyWheelMotor;
-	private final Encoder encoder;
+	private static CANTalon flyWheelMotor;
+	private static Encoder encoder;
 
 	public Turret() {
 		turnMotor = new CANTalon(RobotMap.turret);
@@ -17,22 +18,25 @@ public class Turret {
 				Encoder.EncodingType.k4X);
 		encoder.reset();
 		// encoder.setDistancePerPulse(RobotMap.inchesPerRotationShooter);
-		encoder.setDistancePerPulse(-1/9d);
+		encoder.setPIDSourceType(PIDSourceType.kRate);
+		encoder.setDistancePerPulse(RobotMap.inchesPerRotationShooter);
 	}
 
 	public void setTurret(double n) {
 		turnMotor.set(n);
 	}
 
-	public void setFlyWheel(double n) {
+	public static void setFlyWheel(double n) {
 		flyWheelMotor.set(n);
 	}
-
-	public double getFlyWheelRPM() {
+	public static CANTalon getShooterMotor() {
+		return flyWheelMotor;
+	}
+	public static double getFlyWheelRPM() {
 		return encoder.getRate();
 	}
 
-	public Encoder getEncoder() {
+	public static Encoder getEncoder() {
 		return encoder;
 	}
 }

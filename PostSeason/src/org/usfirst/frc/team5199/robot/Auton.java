@@ -4,7 +4,5 @@ public class Auton {
 	public Auton() {
 		
 	}
-	public boolean () {
-		
-	}
+
 }

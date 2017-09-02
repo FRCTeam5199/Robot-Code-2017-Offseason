@@ -39,9 +39,7 @@ public class DataBank {
 		
 		ultraData = new UltrasonicData(RobotMap.ultraRightEcho,RobotMap.ultraRightPing,RobotMap.ultraLeftEcho,RobotMap.ultraLeftPing);
 		
-		flywheel =  new Encoder(10, 9, false, Encoder.EncodingType.k4X);
-		flywheel.reset();
-		flywheel.setDistancePerPulse(RobotMap.inchesPerRotation / 2);
+		flywheel =  Turret.getEncoder();
 		flywheelAVG = new CircularAverageBuffer(75);
 		shooterXAVG = new CircularAverageBuffer(10);
 	}
@@ -63,7 +61,7 @@ public class DataBank {
 		return pixyShooterProc.shooterData()[0];
 	}
 	public static double shooterRPM(){
-		return flywheelAVG.DataAverage(flywheel.getRate());
+		return flywheelAVG.DataAverage(Turret.getFlyWheelRPM());
 	}
 	public static double turretPosition(){
 		return turret.getPosition();

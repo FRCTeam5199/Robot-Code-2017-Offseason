@@ -3,33 +3,31 @@ package org.usfirst.frc.team5199.robot;
 import com.ctre.CANTalon;
 
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class ShooterSpeed extends PIDSubsystem{
-	DataBank bank;
+public class ShooterSpeed{
 	CANTalon shooterMotor;
-	public ShooterSpeed(CANTalon shooterMotor, DataBank bank) {
-		super("ShooterSpeed", .001, .001, .001);
-		setAbsoluteTolerance(RobotMap.tolerance);
-		getPIDController().setContinuous(false);
-		this.bank = bank;
-		this.shooterMotor = shooterMotor;
+	double p, i, d, previousSpeed, integral;
+	public ShooterSpeed() {
+		p = .05;
+		i = .0001;
+		d = .001;
 	}
 
-	@Override
-	protected double returnPIDInput() {
-		// TODO Auto-generated method stub
-		return bank.shooterRPM();
-	}
-
-	@Override
-	protected void usePIDOutput(double output) {
-		// TODO Auto-generated method stub
-		shooterMotor.pidWrite(output);
-	}
-
-	@Override
-	protected void initDefaultCommand() {
-		// TODO Auto-generated method stub
-		
+	public void shoot(double speed) {
+		double motorSpeed = 0;
+		integral +=(speed - DataBank.shooterRPM());
+		if(Math.abs(integral)> 1/i) {
+			if(integral>0) {
+				integral = 1/i;
+			}else {
+				integral = -1/i;			}
+		}
+		motorSpeed = p * (speed - DataBank.shooterRPM());
+		motorSpeed += d * (DataBank.shooterRPM()- previousSpeed);
+		motorSpeed += i * integral;
+		SmartDashboard.putString("WORK MOFO", String.valueOf(motorSpeed));
+		Turret.setFlyWheel(motorSpeed);
+		previousSpeed = DataBank.shooterRPM();
 	}
 }
