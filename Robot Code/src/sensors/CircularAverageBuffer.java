@@ -1,4 +1,4 @@
-package org.usfirst.frc.team5199.robot;
+package sensors;
 
 public class CircularAverageBuffer {
 	private  double sumBuffer;
