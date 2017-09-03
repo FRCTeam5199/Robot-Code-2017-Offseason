@@ -1,6 +1,5 @@
 package org.usfirst.frc.team5199.robot;
 
-import autonomous.AutonomousFunctions;
 import autonomous.AutonomousManager;
 import autonomous.Stop;
 import autonomous.Turn;
@@ -13,6 +12,8 @@ import intake.Intake;
 import intake.IntakeControl;
 import maths.Vector2;
 import networking.RemoteOutput;
+import transport.Transport;
+import transport.TransportControl;
 import turret.Turret;
 import turret.TurretControl;
 import util.ClockRegulator;
@@ -44,6 +45,7 @@ public class Robot extends SampleRobot {
 	private DriveBase base;
 	private Turret turret;
 	private Intake intake;
+	private Transport transport;
 
 	private XBoxController controller;
 	private JoystickController joystick;
@@ -51,6 +53,7 @@ public class Robot extends SampleRobot {
 	private DriveControl driveControl;
 	private TurretControl turretControl;
 	private IntakeControl intakeControl;
+	private TransportControl transportControl;
 
 	public Robot() {
 
@@ -73,10 +76,7 @@ public class Robot extends SampleRobot {
 		base = new DriveBase();
 		turret = new Turret();
 		intake = new Intake();
-
-		driveControl = new DriveControl(base, controller);
-		turretControl = new TurretControl(turret, joystick, Vector2.ZERO.clone());
-		intakeControl = new IntakeControl(intake, joystick, controller);
+		transport = new Transport();
 
 	}
 
@@ -105,11 +105,17 @@ public class Robot extends SampleRobot {
 
 		sensors.getGyro().reset();
 
+		driveControl = new DriveControl(base, controller);
+		turretControl = new TurretControl(turret, joystick, Vector2.ZERO.clone());
+		intakeControl = new IntakeControl(intake, joystick, controller);
+		transportControl = new TransportControl(transport, joystick);
+		
 		MainLoop mainLoop = new MainLoop(clockRegulator);
 
 		mainLoop.add(driveControl);
 		mainLoop.add(turretControl);
 		mainLoop.add(intakeControl);
+		mainLoop.add(transportControl);
 
 		mainLoop.init();
 
