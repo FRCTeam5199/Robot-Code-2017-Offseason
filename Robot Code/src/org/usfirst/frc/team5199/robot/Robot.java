@@ -1,6 +1,5 @@
 package org.usfirst.frc.team5199.robot;
 
-import autonomous.AutonomousFunctions;
 import autonomous.AutonomousManager;
 import autonomous.Stop;
 import autonomous.Turn;
