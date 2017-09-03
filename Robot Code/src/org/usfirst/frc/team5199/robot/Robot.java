@@ -1,8 +1,6 @@
 package org.usfirst.frc.team5199.robot;
 
-import autonomous.AutonomousManager;
-import autonomous.Stop;
-import autonomous.Turn;
+import autonomous.*;
 import controllers.JoystickController;
 import controllers.XBoxController;
 import drive.DriveBase;
@@ -85,12 +83,8 @@ public class Robot extends SampleRobot {
 		sensors.getGyro().reset();
 		AutonomousManager autManager = new AutonomousManager(clockRegulator);
 
-		autManager.add(new Turn(base, 180));
-		autManager.add(new Turn(base, 0));
-		autManager.add(new Turn(base, 90));
-		autManager.add(new Turn(base, 180));
-		autManager.add(new Turn(base, 270));
-		autManager.add(new Turn(base, 0));
+		autManager.add(new MoveForwardInInches(base, 36));
+
 		autManager.add(new Stop(base, turret, intake));
 
 		while (isAutonomous() && isEnabled()) {
@@ -109,7 +103,7 @@ public class Robot extends SampleRobot {
 		turretControl = new TurretControl(turret, joystick, Vector2.ZERO.clone());
 		intakeControl = new IntakeControl(intake, joystick, controller);
 		transportControl = new TransportControl(transport, joystick);
-		
+
 		MainLoop mainLoop = new MainLoop(clockRegulator);
 
 		mainLoop.add(driveControl);
