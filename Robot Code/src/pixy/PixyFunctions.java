@@ -1,5 +1,6 @@
 package pixy;
 
+import org.usfirst.frc.team5199.robot.Robot;
 import org.usfirst.frc.team5199.robot.RobotMap;
 
 import com.ctre.CANTalon;
@@ -37,7 +38,7 @@ public class PixyFunctions {
 			double distance = Sensors.pixyShooterXPos();
 			double distanceOff = distance - 135;
 			targetShooter.setX(distanceOff);
-			
+			Robot.nBroadcaster.println(targetShooter.getX());
 			// Subtract less pixels to go to the left
 			// Alter subtraction value to change left or right alignment
 

@@ -7,10 +7,10 @@ import interfaces.LoopModule;
 import maths.Vector2;
 
 public class TurretControl implements LoopModule{
-
+ 
 	private final JoystickController joystick;
 	private Turret turret;
-
+ 
 	private double pTurret = .003;
 	private double iTurret = .0001;
 	private double dTurret = .05;
@@ -62,6 +62,7 @@ public class TurretControl implements LoopModule{
 	public void autoaim() {
 		// turret will try to move so that Target.x becomes 0
 		double motorSpeed; 
+		
 		integralTurret  += target.getX();
 		if(Math.abs(integralTurret)>1/iTurret) {
 			if(integralTurret>0) {
