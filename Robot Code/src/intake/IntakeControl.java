@@ -2,9 +2,9 @@ package intake;
 
 import controllers.JoystickController;
 import controllers.XBoxController;
-import interfaces.MainLoopObject;
+import interfaces.LoopModule;
 
-public class IntakeControl implements MainLoopObject {
+public class IntakeControl implements LoopModule {
 	private final double intakeSpeed = -1;
 	private final JoystickController joystick;
 	private final XBoxController controller;
@@ -22,7 +22,7 @@ public class IntakeControl implements MainLoopObject {
 	}
 
 	@Override
-	public void update() {
+	public void update(long delta) {
 		if (joystick.getButton(3) || joystick.getButton(4) || controller.getButton(5)) {
 			intake.setSpeed(intakeSpeed);
 		} else {
