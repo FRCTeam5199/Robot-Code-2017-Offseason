@@ -3,17 +3,17 @@ package autonomous;
 import interfaces.AutFunction;
 
 public class MoveForwardInInches implements AutFunction {
+	
+	public boolean isDone;
 
 	@Override
-	public void update(long delta) {
+	public void update(long deltaTime) {
 		
 	}
 
 	@Override
 	public boolean isDone() {
-		// TODO Auto-generated method stub
-		return false;
+		return isDone;
 	}
-
-
+	
 }

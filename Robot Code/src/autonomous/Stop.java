@@ -20,7 +20,7 @@ public class Stop implements AutFunction {
 	}
 
 	@Override
-	public void update(long delta) {
+	public void update(long deltaTime) {
 		base.move(0, 0);
 		turret.setFlyWheel(0);
 		turret.setTurret(0);

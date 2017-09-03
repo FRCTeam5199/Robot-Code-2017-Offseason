@@ -6,9 +6,9 @@ public interface AutFunction {
 	 * Typically one would declare a class variable called isDone and have isDone() return the boolean isDone.
 	 * Will be called forever ever 100 milliseconds (the time per update is defined in ClockRegulator) until isDone() returns true.
 	 * 
-	 * @param delta the number of milliseconds that have passed since the last time update(long) was called.
+	 * @param deltaTime the number of milliseconds that have passed since the last time update(long) was called.
 	 */
-	public void update(long delta);
+	public void update(long deltaTime);
 
 	/**
 	 * Signifies to AutonomousManager whether this AutFunction is finished doing its job and no longer needs to be called.

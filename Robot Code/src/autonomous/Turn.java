@@ -36,7 +36,7 @@ public class Turn implements AutFunction {
 
 	}
 
-	public void update(long delta) {
+	public void update(long deltaTime) {
 
 		double curretAngle = gyro.getAngle();
 
