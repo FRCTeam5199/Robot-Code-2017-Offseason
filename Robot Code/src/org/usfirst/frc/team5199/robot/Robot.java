@@ -1,5 +1,6 @@
 package org.usfirst.frc.team5199.robot;
 
+import autonomous.AutonomousFunctions;
 import controllers.JoystickController;
 import controllers.XBoxController;
 import drive.DriveBase;
@@ -73,6 +74,8 @@ public class Robot extends SampleRobot {
 	@Override
 	public void autonomous() {
 		sensors.getGyro().reset();
+		AutonomousFunctions autFunctions = new AutonomousFunctions(base,turret,intake);
+		autFunctions.turnTo(180);
 	}
 
 	@Override
