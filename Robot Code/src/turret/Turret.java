@@ -1,5 +1,6 @@
 package turret;
 
+import org.usfirst.frc.team5199.robot.Robot;
 import org.usfirst.frc.team5199.robot.RobotMap;
 import com.ctre.CANTalon;
 
@@ -13,11 +14,7 @@ public class Turret {
 	public Turret() {
 		turnMotor = new CANTalon(RobotMap.turret);
 		flyWheelMotor = new CANTalon(RobotMap.shooter);
-		encoder = new Encoder(RobotMap.encoderShooterDIOA, RobotMap.encoderShooterDIOB, false,
-				Encoder.EncodingType.k4X);
-		encoder.reset();
-		// encoder.setDistancePerPulse(RobotMap.inchesPerRotationShooter);
-		encoder.setDistancePerPulse(-1/9d);
+		encoder = Robot.sensors.getFlywheelEncoder();
 	}
 
 	public void setTurret(double n) {
