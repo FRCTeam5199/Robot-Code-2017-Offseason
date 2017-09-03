@@ -11,9 +11,9 @@ public class TurretControl implements LoopModule{
 	private final JoystickController joystick;
 	private Turret turret;
 
-	private double pTurret = .001;
-	private double iTurret = 0;
-	private double dTurret = .002;
+	private double pTurret = .003;
+	private double iTurret = .0001;
+	private double dTurret = .05;
 	private double integralTurret = 0;
 
 	private double pFlywheel = .02;
@@ -62,9 +62,18 @@ public class TurretControl implements LoopModule{
 	public void autoaim() {
 		// turret will try to move so that Target.x becomes 0
 		double motorSpeed;
-		// No "I" so just a PD controller for now lol
+		integralTurret  += target.getX();
+		if(Math.abs(integralTurret)>1/iTurret) {
+			if(integralTurret>0) {
+				integralTurret = 1/iTurret;
+			}else {
+				integralTurret = -1/iTurret;
+			}
+		}
 		motorSpeed = pTurret * target.getX();
+		Robot.nBroadcaster.println(dTurret * (target.getX() - lastTarget.getX()));
 		motorSpeed += dTurret * (target.getX() - lastTarget.getX());
+		motorSpeed += iTurret*integralTurret;
 		turret.setTurret(motorSpeed);
 		lastTarget = target.clone();
 	}
