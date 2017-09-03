@@ -62,10 +62,10 @@ public class Robot extends SampleRobot {
 		// set first parameter in RemoteOutput constructor to your computer's
 		// local address. (ex: "10.51.99.197")
 		// currently working on getting this to work without it
-		
+
 		sensors = new Sensors();
 
-		clockRegulator = new ClockRegulator(150);
+		clockRegulator = new ClockRegulator(100);
 
 		controller = new XBoxController(0);
 		joystick = new JoystickController(1);
@@ -88,6 +88,7 @@ public class Robot extends SampleRobot {
 		autManager.add(new Turn(base, 180));
 		autManager.add(new Turn(base, 0));
 		autManager.add(new Turn(base, 90));
+		autManager.add(new Turn(base, 180));
 		autManager.add(new Turn(base, 270));
 		autManager.add(new Turn(base, 0));
 		autManager.add(new Stop(base, turret, intake));

@@ -11,11 +11,11 @@ public class Turn implements AutFunction {
 	private final ADXRS450_Gyro gyro;
 	private final DriveBase base;
 
-	private final double p = 0.05;
-	private final double i = 0.0;
-	private final double d = 0.04;
+	private final double p = 0.07;
+	private final double i = 0.00002;
+	private final double d = 0.02;
 	private final double acceptRange = 3;
-	private final double acceptRangeRate = 3;
+	private final double acceptRangeRate = 2;
 
 	private double turnIntegral;
 	private boolean isDone;

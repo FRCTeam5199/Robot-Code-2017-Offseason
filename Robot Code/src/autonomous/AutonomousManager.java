@@ -11,6 +11,7 @@ public class AutonomousManager {
 	private final ArrayList<AutFunction> functions;
 	private final ClockRegulator clockRegulator;
 	private int step;
+	private boolean done;
 
 	public AutonomousManager(ClockRegulator clockRegulator) {
 		functions = new ArrayList<AutFunction>();
@@ -25,7 +26,10 @@ public class AutonomousManager {
 				step++;
 			}
 		} else {
-			Robot.nBroadcaster.println("Auton end");
+			if (!done) {
+				Robot.nBroadcaster.println("Auton end");
+				done = true;
+			}
 		}
 		clockRegulator.sync();
 	}
