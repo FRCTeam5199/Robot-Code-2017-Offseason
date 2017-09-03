@@ -1,7 +1,7 @@
 package pixy;
 
 public class SyncedLongBlock {
-
+ 
 	// The size of two Blocks with an extra two bytes.
 	static final short sizeOfSyncedLongBlock = 26;
 	byte[] rawData = new byte[sizeOfSyncedLongBlock];

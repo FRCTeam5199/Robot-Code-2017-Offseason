@@ -9,6 +9,8 @@ import intake.Intake;
 import intake.IntakeControl;
 import maths.Vector2;
 import networking.RemoteOutput;
+import pixy.PixyFunctions;
+import pixy.PixyGearPID;
 import sensors.Sensors;
 import turret.Turret;
 import turret.TurretControl;
@@ -45,6 +47,10 @@ public class Robot extends SampleRobot {
 	private DriveControl driveControl;
 	private TurretControl turretControl;
 	private IntakeControl intakeControl;
+	
+	private PixyGearPID pixyGear;
+	private PixyFunctions pixyFunc;
+	private Vector2 gear, shooter;
 
 	public Robot() {
 
@@ -64,11 +70,17 @@ public class Robot extends SampleRobot {
 		base = new DriveBase();
 		turret = new Turret();
 		intake = new Intake();
-
+		
+		gear = new Vector2(0,0);
+		shooter = new Vector2(0,0);
+		
 		driveControl = new DriveControl(base, controller);
-		turretControl = new TurretControl(turret, joystick, Vector2.ZERO.clone());
+		turretControl = new TurretControl(turret, joystick, shooter);
 		intakeControl = new IntakeControl(intake, joystick, controller);
-
+		
+		
+		pixyFunc = new PixyFunctions(gear, shooter);
+		pixyGear = new PixyGearPID(gear, base);
 	}
 
 	@Override
@@ -80,7 +92,7 @@ public class Robot extends SampleRobot {
 	public void operatorControl() {
 		Robot.nBroadcaster.println("\nStarting TeleOp");
 
-		sensors.getGyro().reset();
+		sensors.getGyro().reset(); 
 
 		MainLoop mainLoop = new MainLoop();
 
@@ -92,6 +104,14 @@ public class Robot extends SampleRobot {
 
 		while (isOperatorControl() && isEnabled()) {
 			mainLoop.update();
+			if(joystick.getButton(2)) {
+				pixyFunc.turnAndGoStraightAuton();
+				pixyGear.pixyGear();
+			}
+			if(joystick.getButton(1)) {
+				pixyFunc.alignShooterX();
+				turretControl.autoaim();
+			}
 		}
 
 	}

@@ -61,7 +61,7 @@ public class TurretControl implements LoopModule{
 
 	public void autoaim() {
 		// turret will try to move so that Target.x becomes 0
-		double motorSpeed;
+		double motorSpeed; 
 		integralTurret  += target.getX();
 		if(Math.abs(integralTurret)>1/iTurret) {
 			if(integralTurret>0) {
