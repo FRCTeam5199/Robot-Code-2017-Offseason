@@ -15,8 +15,9 @@ public class MoveForwardInInches implements AutFunction {
 	final double P = 0.001d, I = 0.0d, D = 0.0d;
 	double currentTravelDist, lastTravelDist, integral;
 	double maxAcceptableDistError = 2.0d; // The robot can be x inches off from target and it will be okay.
-	double inchesToMove, distError; // The difference between the inchesToMove and the average of
-									// rightWheelTravelDist and leftWheelTravelDist
+	double inchesToMove;
+	double distError; // The difference between the inchesToMove and the average of
+						// rightWheelTravelDist and leftWheelTravelDist
 
 	/**
 	 * Will move the robot forward by inches specified in inchesToMove.
@@ -55,16 +56,15 @@ public class MoveForwardInInches implements AutFunction {
 		// Save how far the robot is from the start last time the function was called.
 		lastTravelDist = currentTravelDist;
 
-		// Get the new travel distance from the avg. travel dist of the left and right
-		// motors.
+		// Get the new travel distance from the average travel distance of the left and
+		// right motors.
 		currentTravelDist = ((-Robot.sensors.getRightWheelEncoder().getDistance() / 120)
 				+ (Robot.sensors.getLeftWheelEncoder().getDistance() / 120)) / 2;
 
 		// Positive distError is not reached target, Negative is overshot target.
 		distError = inchesToMove - currentTravelDist;
 
-		// ????????????????????????
-
+		// Motor speed is recalculated every time this function is called.
 		double motorSpeed = 0;
 		motorSpeed += P * distError;
 		motorSpeed += D * (currentTravelDist - lastTravelDist);
