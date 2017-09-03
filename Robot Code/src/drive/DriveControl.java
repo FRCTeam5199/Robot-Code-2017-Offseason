@@ -4,9 +4,9 @@ import org.usfirst.frc.team5199.robot.Robot;
 
 import controllers.XBoxController;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import interfaces.MainLoopObject;
+import interfaces.LoopModule;
 
-public class DriveControl implements MainLoopObject{
+public class DriveControl implements LoopModule{
 	private final DriveBase base;
 	private final ADXRS450_Gyro gyro;
 	// private final JoystickController joystick;
@@ -35,7 +35,7 @@ public class DriveControl implements MainLoopObject{
 	}
 	
 	@Override
-	public void update() {
+	public void update(long delta) {
 		selectDriveMode();
 		switch (driveMode) {
 		case POINT:

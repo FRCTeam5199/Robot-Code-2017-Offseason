@@ -31,4 +31,8 @@ public class ClockRegulator {
 		}
 		lastTime = System.currentTimeMillis();
 	}
+	
+	public long getMsPerUpdate() {
+		return msPerUpdate;
+	}
 }

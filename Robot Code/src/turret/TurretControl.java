@@ -3,10 +3,10 @@ package turret;
 import org.usfirst.frc.team5199.robot.Robot;
 
 import controllers.JoystickController;
-import interfaces.MainLoopObject;
+import interfaces.LoopModule;
 import maths.Vector2;
 
-public class TurretControl implements MainLoopObject{
+public class TurretControl implements LoopModule{
 
 	private final JoystickController joystick;
 	private Turret turret;
@@ -35,7 +35,7 @@ public class TurretControl implements MainLoopObject{
 	}
 
 	@Override
-	public void update() {
+	public void update(long delta) {
 		if (joystick.getButton(2)) {
 			// autoaim() function needs to be updated to use Pixycam
 			//autoaim();

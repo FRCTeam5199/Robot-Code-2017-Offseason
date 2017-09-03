@@ -1,10 +1,9 @@
-/Controllers/
-/drive/
-/intake/
-/maths/
 /networking/
 /org/
 /turret/
 /util/
-/interfaces/
+/Controllers/
 /controllers/
+/drive/
+/intake/
+/interfaces/

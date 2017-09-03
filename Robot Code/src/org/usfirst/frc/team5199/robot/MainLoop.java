@@ -2,31 +2,36 @@ package org.usfirst.frc.team5199.robot;
 
 import java.util.ArrayList;
 
-import interfaces.MainLoopObject;;
+import interfaces.LoopModule;
+import util.ClockRegulator;;
 
 public class MainLoop {
-	private ArrayList<MainLoopObject> objects;
+	private final ArrayList<LoopModule> objects;
+	private final ClockRegulator clockRegulator;
 	
 	public MainLoop(){
+		objects = new ArrayList<LoopModule>();
+		clockRegulator = new ClockRegulator(100);
 	}
 	
 	public void update(){
-		for(MainLoopObject o: objects){
-			o.update();
+		for(LoopModule o: objects){
+			o.update(clockRegulator.getMsPerUpdate());
 		}
+		clockRegulator.sync();
 	}
 	
 	public void init(){
-		for(MainLoopObject o: objects){
+		for(LoopModule o: objects){
 			o.init();
 		}
 	}
 	
-	public void add(MainLoopObject o){
+	public void add(LoopModule o){
 		objects.add(o);
 	}
 	
-	public void remove(MainLoopObject o){
+	public void remove(LoopModule o){
 		objects.remove(o);
 	}
 }

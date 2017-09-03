@@ -4,16 +4,12 @@ import controllers.JoystickController;
 import controllers.XBoxController;
 import drive.DriveBase;
 import drive.DriveControl;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.SampleRobot;
 import intake.Intake;
 import intake.IntakeControl;
-import maths.Vector2;
 import networking.RemoteOutput;
-import networking.Vision;
 import turret.Turret;
 import turret.TurretControl;
-import util.ClockRegulator;
 
 /**
  * This is a demo program showing the use of the RobotDrive class. The
@@ -41,8 +37,6 @@ public class Robot extends SampleRobot {
 	private Turret turret;
 	private Intake intake;
 
-	private ClockRegulator clockRegulator;
-
 	private XBoxController controller;
 	private JoystickController joystick;
 
@@ -68,7 +62,6 @@ public class Robot extends SampleRobot {
 		turretControl = new TurretControl(turret, joystick, null);
 		intakeControl = new IntakeControl(intake, joystick, controller);
 
-		clockRegulator = new ClockRegulator(100);
 	}
 
 	@Override
@@ -81,21 +74,17 @@ public class Robot extends SampleRobot {
 		Robot.nBroadcaster.println("\nStarting TeleOp");
 
 		sensors.getGyro().reset();
-		clockRegulator.reset();
 
 		MainLoop mainLoop = new MainLoop();
 
 		mainLoop.add(driveControl);
 		mainLoop.add(turretControl);
 		mainLoop.add(intakeControl);
-		
+
 		mainLoop.init();
 
 		while (isOperatorControl() && isEnabled()) {
-
 			mainLoop.update();
-
-			clockRegulator.sync();
 		}
 
 	}
@@ -104,11 +93,9 @@ public class Robot extends SampleRobot {
 	public void test() {
 
 		sensors.getGyro().reset();
-		clockRegulator.reset();
 
 		while (this.isTest() && this.isEnabled()) {
 			Robot.nBroadcaster.println(sensors.getGyro().getRate());
-			clockRegulator.sync();
 		}
 	}
 }
