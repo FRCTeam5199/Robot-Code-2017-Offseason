@@ -25,7 +25,7 @@ public class Sensors {
 		wheelsRight.reset();
 		wheelsRight.setDistancePerPulse(RobotMap.inchesPerRotation);
 
-		wheelsLeft = new Encoder(RobotMap.encoderRightDIOA, RobotMap.encoderRightDIOB, false, Encoder.EncodingType.k4X);
+		wheelsLeft = new Encoder(RobotMap.encoderLeftDIOA, RobotMap.encoderLeftDIOB, false, Encoder.EncodingType.k4X);
 		wheelsLeft.reset();
 		wheelsLeft.setDistancePerPulse(RobotMap.inchesPerRotation);
 

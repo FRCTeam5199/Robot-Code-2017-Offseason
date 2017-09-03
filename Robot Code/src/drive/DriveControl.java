@@ -27,7 +27,6 @@ public class DriveControl implements LoopModule{
 		this.controller = controller;
 
 		driveMode = DriveMode.POINT;
-		// joystick = new JoystickController(0);
 	}
 
 	@Override

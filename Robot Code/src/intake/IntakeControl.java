@@ -14,7 +14,6 @@ public class IntakeControl implements LoopModule {
 		this.intake = intake;
 		this.joystick = joystick;
 		this.controller = controller;
-		intake = new Intake();
 	}
 
 	@Override

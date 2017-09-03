@@ -7,6 +7,7 @@ import drive.DriveControl;
 import edu.wpi.first.wpilibj.SampleRobot;
 import intake.Intake;
 import intake.IntakeControl;
+import maths.Vector2;
 import networking.RemoteOutput;
 import turret.Turret;
 import turret.TurretControl;
@@ -31,8 +32,8 @@ import turret.TurretControl;
 public class Robot extends SampleRobot {
 
 	public static RemoteOutput nBroadcaster;
-
 	public static Sensors sensors;
+
 	private DriveBase base;
 	private Turret turret;
 	private Intake intake;
@@ -51,6 +52,7 @@ public class Robot extends SampleRobot {
 	@Override
 	public void robotInit() {
 		nBroadcaster = new RemoteOutput("10.51.99.197", 1180);
+		sensors = new Sensors();
 		// set first parameter in RemoteOutput constructor to your computer's
 		// local address. (ex: "10.51.99.197")
 		// currently working on getting this to work without it
@@ -58,8 +60,12 @@ public class Robot extends SampleRobot {
 		controller = new XBoxController(0);
 		joystick = new JoystickController(1);
 
+		base = new DriveBase();
+		turret = new Turret();
+		intake = new Intake();
+
 		driveControl = new DriveControl(base, controller);
-		turretControl = new TurretControl(turret, joystick, null);
+		turretControl = new TurretControl(turret, joystick, Vector2.ZERO.clone());
 		intakeControl = new IntakeControl(intake, joystick, controller);
 
 	}
