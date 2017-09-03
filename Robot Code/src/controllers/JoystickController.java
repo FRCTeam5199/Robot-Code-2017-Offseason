@@ -1,4 +1,4 @@
-package Controllers;
+package controllers;
 
 import edu.wpi.first.wpilibj.Joystick;
 

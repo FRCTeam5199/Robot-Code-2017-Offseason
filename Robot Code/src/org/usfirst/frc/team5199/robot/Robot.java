@@ -1,14 +1,17 @@
 package org.usfirst.frc.team5199.robot;
 
-import Controllers.JoystickController;
-import Controllers.XBoxController;
+import controllers.JoystickController;
+import controllers.XBoxController;
+import drive.DriveBase;
 import drive.DriveControl;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.SampleRobot;
+import intake.Intake;
 import intake.IntakeControl;
 import maths.Vector2;
 import networking.RemoteOutput;
 import networking.Vision;
+import turret.Turret;
 import turret.TurretControl;
 import util.ClockRegulator;
 
@@ -32,14 +35,16 @@ import util.ClockRegulator;
 public class Robot extends SampleRobot {
 
 	public static RemoteOutput nBroadcaster;
+
+	public static Sensors sensors;
+	private DriveBase base;
+	private Turret turret;
+	private Intake intake;
+
 	private ClockRegulator clockRegulator;
 
 	private XBoxController controller;
 	private JoystickController joystick;
-
-	private Vision vision;
-	private ADXRS450_Gyro gyro;
-	private Vector2 target;
 
 	private DriveControl driveControl;
 	private TurretControl turretControl;
@@ -56,63 +61,53 @@ public class Robot extends SampleRobot {
 		// local address. (ex: "10.51.99.197")
 		// currently working on getting this to work without it
 
-		gyro = new ADXRS450_Gyro();
-		Robot.nBroadcaster.println("Calibrating Gyro...");
-		gyro.calibrate();
-		Robot.nBroadcaster.println("Done!");
-
-		vision = new Vision();
-		vision.start();
 		controller = new XBoxController(0);
 		joystick = new JoystickController(1);
-		target = Vector2.ZERO.clone();
 
-		driveControl = new DriveControl(controller, gyro);
-		turretControl = new TurretControl(joystick, target);
-		intakeControl = new IntakeControl(joystick, controller);
+		driveControl = new DriveControl(base, controller);
+		turretControl = new TurretControl(turret, joystick, null);
+		intakeControl = new IntakeControl(intake, joystick, controller);
 
 		clockRegulator = new ClockRegulator(100);
 	}
 
 	@Override
 	public void autonomous() {
-		gyro.reset();
-
+		sensors.getGyro().reset();
 	}
 
 	@Override
 	public void operatorControl() {
-		Robot.nBroadcaster.println("\n\n\n\n\nStarting TeleOp");
+		Robot.nBroadcaster.println("\nStarting TeleOp");
 
-		gyro.reset();
+		sensors.getGyro().reset();
 		clockRegulator.reset();
 
-		while (isOperatorControl() && isEnabled()) {
-			Vector2 newTarget = vision.getPos();
-			target.setX(newTarget.getX() - 320);
-			// Robot.nBroadcaster.println(target);
-			if (newTarget.getX() == 0) {
-				target.setX(0);
-			}
+		MainLoop mainLoop = new MainLoop();
 
-			driveControl.update();
-			turretControl.update();
-			intakeControl.update();
+		mainLoop.add(driveControl);
+		mainLoop.add(turretControl);
+		mainLoop.add(intakeControl);
+		
+		mainLoop.init();
+
+		while (isOperatorControl() && isEnabled()) {
+
+			mainLoop.update();
 
 			clockRegulator.sync();
 		}
 
-		vision.stop();
 	}
 
 	@Override
 	public void test() {
 
-		gyro.reset();
+		sensors.getGyro().reset();
 		clockRegulator.reset();
 
 		while (this.isTest() && this.isEnabled()) {
-			Robot.nBroadcaster.println(gyro.getAngle());
+			Robot.nBroadcaster.println(sensors.getGyro().getRate());
 			clockRegulator.sync();
 		}
 	}

@@ -2,13 +2,14 @@ package turret;
 
 import org.usfirst.frc.team5199.robot.Robot;
 
-import Controllers.JoystickController;
+import controllers.JoystickController;
+import interfaces.MainLoopObject;
 import maths.Vector2;
 
-public class TurretControl {
+public class TurretControl implements MainLoopObject{
 
 	private final JoystickController joystick;
-	private Turret turret = new Turret();
+	private Turret turret;
 
 	private double pTurret = .001;
 	private double iTurret = 0;
@@ -22,15 +23,22 @@ public class TurretControl {
 	private Vector2 target;
 	private Vector2 lastTarget;
 
-	public TurretControl(JoystickController joystick, Vector2 target) {
+	public TurretControl(Turret turret,JoystickController joystick, Vector2 target) {
+		this.turret = turret;
 		this.joystick = joystick;
 		this.target = target;
 		lastTarget = target.clone();
 	}
+	
+	@Override
+	public void init() {		
+	}
 
+	@Override
 	public void update() {
 		if (joystick.getButton(2)) {
-			autoaim();
+			// autoaim() function needs to be updated to use Pixycam
+			//autoaim();
 			setRPM(joystick.getScaledSlider() * 100);
 			Robot.nBroadcaster.print(turret.getFlyWheelRPM());
 		} else {
@@ -83,4 +91,5 @@ public class TurretControl {
 	public Turret getTurret() {
 		return turret;
 	}
+
 }

@@ -2,10 +2,11 @@ package drive;
 
 import org.usfirst.frc.team5199.robot.Robot;
 
-import Controllers.XBoxController;
+import controllers.XBoxController;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import interfaces.MainLoopObject;
 
-public class DriveControl {
+public class DriveControl implements MainLoopObject{
 	private final DriveBase base;
 	private final ADXRS450_Gyro gyro;
 	// private final JoystickController joystick;
@@ -20,15 +21,20 @@ public class DriveControl {
 
 	private DriveMode driveMode;
 
-	public DriveControl(XBoxController controller, ADXRS450_Gyro gyro) {
-		base = new DriveBase();
-		this.gyro = gyro;
+	public DriveControl(DriveBase base, XBoxController controller) {
+		this.base = base;
+		this.gyro = Robot.sensors.getGyro();
 		this.controller = controller;
 
 		driveMode = DriveMode.POINT;
 		// joystick = new JoystickController(0);
 	}
 
+	@Override
+	public void init() {		
+	}
+	
+	@Override
 	public void update() {
 		selectDriveMode();
 		switch (driveMode) {
