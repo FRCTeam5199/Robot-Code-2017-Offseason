@@ -1,4 +1,6 @@
-package org.usfirst.frc.team5199.robot;
+package sensors;
+
+import org.usfirst.frc.team5199.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;

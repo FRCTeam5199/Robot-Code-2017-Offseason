@@ -9,6 +9,7 @@ import intake.Intake;
 import intake.IntakeControl;
 import maths.Vector2;
 import networking.RemoteOutput;
+import sensors.Sensors;
 import turret.Turret;
 import turret.TurretControl;
 
