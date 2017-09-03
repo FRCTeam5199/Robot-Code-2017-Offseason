@@ -39,7 +39,6 @@ public class DriveControl implements LoopModule {
 //		Robot.nBroadcaster.println(Robot.sensors.getAccelerometer().getX() + " \t"
 //				+ Robot.sensors.getAccelerometer().getY() + " \t" + Robot.sensors.getAccelerometer().getZ());
 		
-		Robot.nBroadcaster.println(Robot.sensors.getLeftWheelEncoder().getDistance() + "\t" + Robot.sensors.getRightWheelEncoder().getDistance());
 		switch (driveMode) {
 		case POINT:
 			pointControl();

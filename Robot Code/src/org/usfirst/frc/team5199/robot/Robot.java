@@ -1,6 +1,9 @@
 package org.usfirst.frc.team5199.robot;
 
 import autonomous.AutonomousFunctions;
+import autonomous.AutonomousManager;
+import autonomous.Stop;
+import autonomous.Turn;
 import controllers.JoystickController;
 import controllers.XBoxController;
 import drive.DriveBase;
@@ -12,6 +15,7 @@ import maths.Vector2;
 import networking.RemoteOutput;
 import turret.Turret;
 import turret.TurretControl;
+import util.ClockRegulator;
 
 /**
  * This is a demo program showing the use of the RobotDrive class. The
@@ -35,6 +39,8 @@ public class Robot extends SampleRobot {
 	public static RemoteOutput nBroadcaster;
 	public static Sensors sensors;
 
+	private ClockRegulator clockRegulator;
+
 	private DriveBase base;
 	private Turret turret;
 	private Intake intake;
@@ -53,10 +59,13 @@ public class Robot extends SampleRobot {
 	@Override
 	public void robotInit() {
 		nBroadcaster = new RemoteOutput("10.51.99.197", 1180);
-		sensors = new Sensors();
 		// set first parameter in RemoteOutput constructor to your computer's
 		// local address. (ex: "10.51.99.197")
 		// currently working on getting this to work without it
+		
+		sensors = new Sensors();
+
+		clockRegulator = new ClockRegulator(150);
 
 		controller = new XBoxController(0);
 		joystick = new JoystickController(1);
@@ -74,8 +83,19 @@ public class Robot extends SampleRobot {
 	@Override
 	public void autonomous() {
 		sensors.getGyro().reset();
-		AutonomousFunctions autFunctions = new AutonomousFunctions(base,turret,intake);
-		autFunctions.turnTo(180);
+		AutonomousManager autManager = new AutonomousManager(clockRegulator);
+
+		autManager.add(new Turn(base, 180));
+		autManager.add(new Turn(base, 0));
+		autManager.add(new Turn(base, 90));
+		autManager.add(new Turn(base, 270));
+		autManager.add(new Turn(base, 0));
+		autManager.add(new Stop(base, turret, intake));
+
+		while (isAutonomous() && isEnabled()) {
+			autManager.update();
+		}
+
 	}
 
 	@Override
@@ -84,7 +104,7 @@ public class Robot extends SampleRobot {
 
 		sensors.getGyro().reset();
 
-		MainLoop mainLoop = new MainLoop();
+		MainLoop mainLoop = new MainLoop(clockRegulator);
 
 		mainLoop.add(driveControl);
 		mainLoop.add(turretControl);
