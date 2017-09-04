@@ -19,4 +19,10 @@ public class DriveBase {
 		right.set(-r);
 		//Robot.nBroadcaster.println("left: " + l + "\tright: " + -r);
 	}
+	public void moveArcade(double y, double x) {
+		move(y-x, y+x);
+	}
+	public void stop() {
+		move(0,0);
+	}
 }

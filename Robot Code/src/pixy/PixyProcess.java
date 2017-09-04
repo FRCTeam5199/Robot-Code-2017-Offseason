@@ -1,4 +1,6 @@
-package org.usfirst.frc.team5199.robot;
+package pixy;
+
+
 
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Joystick;
@@ -76,30 +78,7 @@ public class PixyProcess {
 
 	}
 
-	public void pixyTest() {
-		loops++;
-		if (timeStart == 0) {
-			timeStart = System.currentTimeMillis();
-		}
-		elapsedTime = (System.currentTimeMillis() - timeStart) / 1000;
-		SmartDashboard.putNumber("Elapsed Time", elapsedTime);
-		SmartDashboard.putNumber("Loops", loops);
-		if (pixyCam.getStartOfData() == 1) {
-			// Look at blocks per second function to see purpose of temp block
-			// count
-			// blockCount++;
-			tempBlockCount++;
-			SmartDashboard.putString("Pixy Data", "Reading");
-		} else {
-			SmartDashboard.putString("Pixy Data", "Failed");
-		}
-		SmartDashboard.putNumber("PixyBlocks", blockCount);
-		SmartDashboard.putNumber("Loops per second", loops / elapsedTime);
-		SmartDashboard.putNumber("PixyBlocks per second", blockCount / elapsedTime);
-		SmartDashboard.putNumber("Avg X", averageData(0, false, pixyCam)[0]);
-		SmartDashboard.putNumber("Distance off", averageData(0, false, pixyCam)[0] - 160);
 
-	}
 
 	public void pixyGearTest() {
 		loops++;
@@ -220,20 +199,17 @@ public class PixyProcess {
 		// The difference between is multiplied by the distance they are apart
 		// in inches
 		// and the value is divided by the number of inches away the pixy cam is
-		// from the center
-		// This is to convert the inches offset into pixels to compensate.
+		// from the center		// This is to convert the inches offset into pixels to compensate.
 		// On our robot, we have the line as: normal
 
 		// for blue blur
 		// return pixyValues[0]+((8*(pixyValues[2]/15)));
-		double[] pixyValues = averageData(2, false, gearPixy);
+		double[] pixyValues = averageData(2, false);
 
 		return pixyValues[0] + ((8.5 * (pixyValues[2] / 9.5)));
 	}
 
-	public double[] ShooterPixyData() {
-		return averageData(1, false, pixyCam);
-	}
+	
 
 	public static double xPosShooter() {
 		if (pixyCam.getStartOfData() == 1) {
@@ -253,7 +229,7 @@ public class PixyProcess {
 		return oldAverageShooter;
 	}
 
-	public double[] averageData(int mode, boolean displayResults, Pixy pixyCam) {
+	public double[] averageData(int mode, boolean displayResults) {
 		// mode = 0: return average x value
 		// mode = 1: return average x and average y
 		// mode = 2; return average x value, and average distance between x
