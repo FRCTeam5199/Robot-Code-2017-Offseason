@@ -1,5 +1,6 @@
 package org.usfirst.frc.team5199.robot;
 
+import autonomous.*;
 import controllers.JoystickController;
 import controllers.XBoxController;
 import drive.DriveBase;
@@ -9,9 +10,15 @@ import intake.Intake;
 import intake.IntakeControl;
 import maths.Vector2;
 import networking.RemoteOutput;
+<<<<<<< HEAD
+import transport.Transport;
+import transport.TransportControl;
+=======
 import sensors.Sensors;
+>>>>>>> master
 import turret.Turret;
 import turret.TurretControl;
+import util.ClockRegulator;
 
 /**
  * This is a demo program showing the use of the RobotDrive class. The
@@ -35,9 +42,12 @@ public class Robot extends SampleRobot {
 	public static RemoteOutput nBroadcaster;
 	public static Sensors sensors;
 
+	private ClockRegulator clockRegulator;
+
 	private DriveBase base;
 	private Turret turret;
 	private Intake intake;
+	private Transport transport;
 
 	private XBoxController controller;
 	private JoystickController joystick;
@@ -45,6 +55,7 @@ public class Robot extends SampleRobot {
 	private DriveControl driveControl;
 	private TurretControl turretControl;
 	private IntakeControl intakeControl;
+	private TransportControl transportControl;
 
 	public Robot() {
 
@@ -53,10 +64,13 @@ public class Robot extends SampleRobot {
 	@Override
 	public void robotInit() {
 		nBroadcaster = new RemoteOutput("10.51.99.197", 1180);
-		sensors = new Sensors();
 		// set first parameter in RemoteOutput constructor to your computer's
 		// local address. (ex: "10.51.99.197")
 		// currently working on getting this to work without it
+
+		sensors = new Sensors();
+
+		clockRegulator = new ClockRegulator(100);
 
 		controller = new XBoxController(0);
 		joystick = new JoystickController(1);
@@ -64,16 +78,37 @@ public class Robot extends SampleRobot {
 		base = new DriveBase();
 		turret = new Turret();
 		intake = new Intake();
-
-		driveControl = new DriveControl(base, controller);
-		turretControl = new TurretControl(turret, joystick, Vector2.ZERO.clone());
-		intakeControl = new IntakeControl(intake, joystick, controller);
+		transport = new Transport();
 
 	}
 
 	@Override
 	public void autonomous() {
 		sensors.getGyro().reset();
+		AutonomousManager autManager = new AutonomousManager(clockRegulator);
+
+		// autManager.add(new Turn(base, 180));
+		// autManager.add(new Turn(base, 0));
+
+		autManager.add(new Turn(base, 0));
+		autManager.add(new MoveForwardInInches(base, 36));
+		autManager.add(new Turn(base, 270));
+		autManager.add(new MoveForwardInInches(base, 36));
+		autManager.add(new Turn(base, 180));
+		autManager.add(new MoveForwardInInches(base, 36));
+		autManager.add(new Turn(base, 90));
+		autManager.add(new MoveForwardInInches(base, 36));
+		autManager.add(new Turn(base, 0));
+		
+		
+		autManager.add(new Stop(base, turret, intake));
+
+		autManager.init();
+
+		while (isAutonomous() && isEnabled()) {
+			autManager.update();
+		}
+
 	}
 
 	@Override
@@ -82,11 +117,17 @@ public class Robot extends SampleRobot {
 
 		sensors.getGyro().reset();
 
-		MainLoop mainLoop = new MainLoop();
+		driveControl = new DriveControl(base, controller);
+		turretControl = new TurretControl(turret, joystick, Vector2.ZERO.clone());
+		intakeControl = new IntakeControl(intake, joystick, controller);
+		transportControl = new TransportControl(transport, joystick);
+
+		MainLoop mainLoop = new MainLoop(clockRegulator);
 
 		mainLoop.add(driveControl);
 		mainLoop.add(turretControl);
 		mainLoop.add(intakeControl);
+		mainLoop.add(transportControl);
 
 		mainLoop.init();
 
@@ -102,7 +143,11 @@ public class Robot extends SampleRobot {
 		sensors.getGyro().reset();
 
 		while (this.isTest() && this.isEnabled()) {
-			Robot.nBroadcaster.println(sensors.getGyro().getRate());
+			// Robot.nBroadcaster.println(sensors.getGyro().getRate());
+			Robot.nBroadcaster.println(Robot.sensors.getLeftWheelEncoder().getDistance() + "\t"
+					+ Robot.sensors.getRightWheelEncoder().getDistance());
+			clockRegulator.sync();
+
 		}
 	}
 }
