@@ -68,4 +68,10 @@ public class Turn implements AutFunction {
 		return isDone;
 	}
 
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

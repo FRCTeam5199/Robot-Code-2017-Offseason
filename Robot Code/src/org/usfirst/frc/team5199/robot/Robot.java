@@ -83,9 +83,23 @@ public class Robot extends SampleRobot {
 		sensors.getGyro().reset();
 		AutonomousManager autManager = new AutonomousManager(clockRegulator);
 
-		autManager.add(new MoveForwardInInches(base, 36));
+		// autManager.add(new Turn(base, 180));
+		// autManager.add(new Turn(base, 0));
 
+		autManager.add(new Turn(base, 0));
+		autManager.add(new MoveForwardInInches(base, 36));
+		autManager.add(new Turn(base, 270));
+		autManager.add(new MoveForwardInInches(base, 36));
+		autManager.add(new Turn(base, 180));
+		autManager.add(new MoveForwardInInches(base, 36));
+		autManager.add(new Turn(base, 90));
+		autManager.add(new MoveForwardInInches(base, 36));
+		autManager.add(new Turn(base, 0));
+		
+		
 		autManager.add(new Stop(base, turret, intake));
+
+		autManager.init();
 
 		while (isAutonomous() && isEnabled()) {
 			autManager.update();
@@ -125,7 +139,11 @@ public class Robot extends SampleRobot {
 		sensors.getGyro().reset();
 
 		while (this.isTest() && this.isEnabled()) {
-			Robot.nBroadcaster.println(sensors.getGyro().getRate());
+			// Robot.nBroadcaster.println(sensors.getGyro().getRate());
+			Robot.nBroadcaster.println(Robot.sensors.getLeftWheelEncoder().getDistance() + "\t"
+					+ Robot.sensors.getRightWheelEncoder().getDistance());
+			clockRegulator.sync();
+
 		}
 	}
 }

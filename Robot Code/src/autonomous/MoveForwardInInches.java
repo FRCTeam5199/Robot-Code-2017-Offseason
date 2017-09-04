@@ -4,17 +4,21 @@ import org.usfirst.frc.team5199.robot.Robot;
 import org.usfirst.frc.team5199.robot.RobotMap;
 
 import drive.DriveBase;
+import edu.wpi.first.wpilibj.Encoder;
 import interfaces.AutFunction;
 
 public class MoveForwardInInches implements AutFunction {
 
 	private final DriveBase driveBase;
+	private final Encoder rightEncoder;
+	private final Encoder leftEncoder;
 
 	public boolean isDone = false;
 
-	final double P = 0.001d, I = 0.0d, D = 0.0d;
-	double currentTravelDist, lastTravelDist, integral;
-	double maxAcceptableDistError = 2.0d; // The robot can be x inches off from target and it will be okay.
+	final double P = 0.025d, I = 0.0002d, D = 0.002d;
+	double currentTravelDist, errorRate, integral;
+	double maxAcceptableDistError = 1d; // The robot can be x inches off from target and it will be okay.
+	double maxAcceptableRateError = 0.01d; // The robot can be moving at x inches/sec and it will be okay.
 	double inchesToMove;
 	double distError; // The difference between the inchesToMove and the average of
 						// rightWheelTravelDist and leftWheelTravelDist
@@ -29,19 +33,24 @@ public class MoveForwardInInches implements AutFunction {
 	 */
 	public MoveForwardInInches(DriveBase driveBase, int inchesToMove) {
 		this.driveBase = driveBase;
+		this.rightEncoder = Robot.sensors.getRightWheelEncoder();
+		this.leftEncoder = Robot.sensors.getLeftWheelEncoder();
 		this.inchesToMove = inchesToMove;
 
-		// Reset the distance to zero.
-		Robot.sensors.getRightWheelEncoder().reset();
-		Robot.sensors.getLeftWheelEncoder().reset();
-
-		// Assuming 4 inch wheels.
-		Robot.sensors.getRightWheelEncoder().setDistancePerPulse(RobotMap.inchesPerRotation);
-		Robot.sensors.getLeftWheelEncoder().setDistancePerPulse(RobotMap.inchesPerRotation);
 	}
 
 	@Override
 	public void update(long deltaTime) {
+		// Get the new travel distance from the average travel distance of the left and
+		// right motors.
+
+		// -------------Left encoder is not working atm
+		// currentTravelDist = (Robot.sensors.getRightWheelEncoder().getDistance()
+		// + Robot.sensors.getLeftWheelEncoder().getDistance()) / 2;
+		currentTravelDist = Robot.sensors.getRightWheelEncoder().getDistance();
+
+		// Positive distError is not reached target, Negative is overshot target.
+		distError = inchesToMove - currentTravelDist;
 
 		// ????????????????????????
 		integral += distError;
@@ -53,29 +62,31 @@ public class MoveForwardInInches implements AutFunction {
 			}
 		}
 
-		// Save how far the robot is from the start last time the function was called.
-		lastTravelDist = currentTravelDist;
-
-		// Get the new travel distance from the average travel distance of the left and
-		// right motors.
-		currentTravelDist = ((-Robot.sensors.getRightWheelEncoder().getDistance() / 120)
-				+ (Robot.sensors.getLeftWheelEncoder().getDistance() / 120)) / 2;
-
-		// Positive distError is not reached target, Negative is overshot target.
-		distError = inchesToMove - currentTravelDist;
+		// errorRate = (rightEncoder.getRate() + leftEncoder.getRate())/2;
+		errorRate = rightEncoder.getRate();
 
 		// Motor speed is recalculated every time this function is called.
 		double motorSpeed = 0;
 		motorSpeed += P * distError;
-		motorSpeed += D * (currentTravelDist - lastTravelDist);
+		motorSpeed -= D * errorRate;
 		motorSpeed += I * integral;
 
+		// Robot.nBroadcaster.println(distError + "\t" + (distError - lastError));
+		// Robot.nBroadcaster.println(errorRate);
+
+		Robot.nBroadcaster.println(P * distError + "\t" + D * errorRate + "\t" + I * integral);
 		driveBase.move(motorSpeed, motorSpeed);
 
 		// If the robot is within an acceptable range of the currentTravelDist.
-		if (Math.abs(distError) <= maxAcceptableDistError) {
+		if (Math.abs(distError) <= maxAcceptableDistError && Math.abs(errorRate) <= maxAcceptableRateError) {
 			isDone = true;
 		}
+	}
+
+	public void init() {
+		// Reset the distance to zero.
+		Robot.sensors.getRightWheelEncoder().reset();
+		Robot.sensors.getLeftWheelEncoder().reset();
 	}
 
 	@Override

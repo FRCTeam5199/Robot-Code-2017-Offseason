@@ -32,4 +32,10 @@ public class Stop implements AutFunction {
 	public boolean isDone() {
 		return done;
 	}
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
+	}
 }

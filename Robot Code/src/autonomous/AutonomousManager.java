@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.usfirst.frc.team5199.robot.Robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import interfaces.AutFunction;
 import util.ClockRegulator;;
 
@@ -14,16 +15,24 @@ public class AutonomousManager {
 	private boolean done;
 
 	public AutonomousManager(ClockRegulator clockRegulator) {
-		functions = new ArrayList<AutFunction>();
 		this.clockRegulator = clockRegulator;
+		functions = new ArrayList<AutFunction>();
 		step = 0;
+	}
+
+	public void init() {
+		functions.get(0).init();
 	}
 
 	public void update() {
 		if (step < functions.size()) {
 			functions.get(step).update(clockRegulator.getMsPerUpdate());
 			if (functions.get(step).isDone()) {
+				Robot.nBroadcaster.println(functions.get(step).getClass().getName() + " end\t");
 				step++;
+				if (step < functions.size()) {
+					functions.get(step).init();
+				}
 			}
 		} else {
 			if (!done) {
