@@ -16,11 +16,15 @@ public class Sensors {
 	private static Encoder flywheelEncoder;
 	private final Encoder wheelsLeft;
 	private final Encoder wheelsRight;
+	
 	private static UltrasonicData ultraData;
 	private static Pixy pixyGear, pixyShooter;
 	private static PixyProcess pixyGearProc, pixyShooterProc;
+	
 	public static CircularAverageBuffer flywheelAVG;
 	public static CircularAverageBuffer shooterXAVG;
+	
+	private static Location location;
 	
 	public Sensors() {
 		// init flywheel encoder
@@ -48,15 +52,20 @@ public class Sensors {
 		gyro.calibrate();
 		Robot.nBroadcaster.println("Done!");
 		
+		//init ultrasonic
 		ultraData = new UltrasonicData(RobotMap.ultraRightEcho,RobotMap.ultraRightPing,RobotMap.ultraLeftEcho,RobotMap.ultraLeftPing);
 		
+		//init pixy
 		pixyGear = new Pixy(0x51);
 		pixyGearProc = new PixyProcess(pixyGear);
 		pixyShooter = new Pixy(0x53);
 		pixyShooterProc = new PixyProcess(pixyShooter);
 		
+		//?????????????
 		flywheelAVG = new CircularAverageBuffer(75);
 		shooterXAVG = new CircularAverageBuffer(10);
+		
+		location = new Location();
 	}
 
 	public ADXRS450_Gyro getGyro() {

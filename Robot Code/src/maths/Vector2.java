@@ -86,5 +86,17 @@ public class Vector2 implements Comparable<Vector2> {
 	public static Vector2 subtract(Vector2 v1, Vector2 v2) {
 		return new Vector2(v1.x - v2.x, v1.y - v2.y);
 	}
+	
+	public static Vector2 multiply(Vector2 v1, Vector2 v2) {
+		return new Vector2(v1.x * v2.x, v1.y * v2.y);
+	}
+	
+	public static Vector2 multiply(Vector2 v1, double n) {
+		return new Vector2(v1.x * n, v1.y * n);
+	}
+
+	public static Vector2 divide(Vector2 v1, Vector2 v2) {
+		return new Vector2(v1.x / v2.x, v1.y / v2.y);
+	}
 
 }
