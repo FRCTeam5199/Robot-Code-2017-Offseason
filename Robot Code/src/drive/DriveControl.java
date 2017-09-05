@@ -6,7 +6,7 @@ import controllers.XBoxController;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import interfaces.LoopModule;
 
-public class DriveControl implements LoopModule{
+public class DriveControl implements LoopModule {
 	private final DriveBase base;
 	private final ADXRS450_Gyro gyro;
 	// private final JoystickController joystick;
@@ -30,12 +30,15 @@ public class DriveControl implements LoopModule{
 	}
 
 	@Override
-	public void init() {		
+	public void init() {
 	}
-	
+
 	@Override
 	public void update(long delta) {
 		selectDriveMode();
+//		Robot.nBroadcaster.println(Robot.sensors.getAccelerometer().getX() + " \t"
+//				+ Robot.sensors.getAccelerometer().getY() + " \t" + Robot.sensors.getAccelerometer().getZ());
+		
 		switch (driveMode) {
 		case POINT:
 			pointControl();

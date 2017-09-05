@@ -14,15 +14,17 @@ public class DriveBase {
 	}
 
 	public void move(double r, double l) {
-		//right is reversed
+		// right is reversed
 		left.set(l);
 		right.set(-r);
-		//Robot.nBroadcaster.println("left: " + l + "\tright: " + -r);
+		// Robot.nBroadcaster.println("left: " + l + "\tright: " + -r);
 	}
+
 	public void moveArcade(double y, double x) {
-		move(y-x, y+x);
+		move(y - x, y + x);
 	}
+
 	public void stop() {
-		move(0,0);
+		move(0, 0);
 	}
 }
