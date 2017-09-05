@@ -2,8 +2,6 @@ package pixy;
 
 import java.nio.ByteBuffer;
 
-import org.usfirst.frc.team5199.robot.SyncedLongBlock;
-
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
