@@ -1,24 +1,25 @@
 package org.usfirst.frc.team5199.robot;
 
+import edu.wpi.first.wpilibj.SampleRobot;
+
 import autonomous.*;
+
 import controllers.JoystickController;
 import controllers.XBoxController;
+
+import sensors.Sensors;
 import drive.DriveBase;
 import drive.DriveControl;
-import edu.wpi.first.wpilibj.SampleRobot;
 import intake.Intake;
 import intake.IntakeControl;
-import maths.Vector2;
-import networking.RemoteOutput;
-<<<<<<< HEAD
 import transport.Transport;
 import transport.TransportControl;
-=======
-import sensors.Sensors;
->>>>>>> master
 import turret.Turret;
 import turret.TurretControl;
+
+import maths.Vector2;
 import util.ClockRegulator;
+import networking.RemoteOutput;
 
 /**
  * This is a demo program showing the use of the RobotDrive class. The
