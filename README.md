@@ -1,4 +1,4 @@
 # Robot-Code-2017-Offseason
 
 whew lad
-![Whew Lad](http://i0.kym-cdn.com/entries/icons/facebook/000/013/306/2dd.jpg)
+![fugg](https://media.giphy.com/media/6DApxi9QmSEgg/giphy.gif)

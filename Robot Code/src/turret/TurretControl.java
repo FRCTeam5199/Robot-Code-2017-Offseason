@@ -6,8 +6,8 @@ import controllers.JoystickController;
 import interfaces.LoopModule;
 import maths.Vector2;
 
-public class TurretControl implements LoopModule{
- 
+public class TurretControl implements LoopModule {
+
 	private final JoystickController joystick;
 	private Turret turret;
  
@@ -23,28 +23,27 @@ public class TurretControl implements LoopModule{
 	private Vector2 target;
 	private Vector2 lastTarget;
 
-	public TurretControl(Turret turret,JoystickController joystick, Vector2 target) {
+	public TurretControl(Turret turret, JoystickController joystick, Vector2 target) {
 		this.turret = turret;
 		this.joystick = joystick;
 		this.target = target;
 		lastTarget = target.clone();
 	}
-	
+
 	@Override
-	public void init() {		
+	public void init() {
 	}
 
 	@Override
 	public void update(long delta) {
-		if (joystick.getButton(2)) {
+
+		if (joystick.getButton(1) || joystick.getButton(2)) {
 			// autoaim() function needs to be updated to use Pixycam
-			//autoaim();
+			// autoaim();
 			setRPM(joystick.getScaledSlider() * 100);
-			Robot.nBroadcaster.print(turret.getFlyWheelRPM());
 		} else {
 			manualControl();
 			integralTurret = 0;
-			integralFlywheel = 0;
 		}
 	}
 
@@ -86,7 +85,6 @@ public class TurretControl implements LoopModule{
 		integralFlywheel = clamp(integralFlywheel, 1 / iFlywheel);
 
 		turret.setFlyWheel(pFlywheel * error + iFlywheel * integralFlywheel);
-		Robot.nBroadcaster.println(pFlywheel * error + iFlywheel * integralFlywheel);
 	}
 
 	private double clamp(double n, double clamp) {

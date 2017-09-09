@@ -33,12 +33,12 @@ public class Sensors {
 		wheelsRight = new Encoder(RobotMap.encoderRightDIOA, RobotMap.encoderRightDIOB, false,
 				Encoder.EncodingType.k4X);
 		wheelsRight.reset();
-		wheelsRight.setDistancePerPulse(RobotMap.inchesPerRotation);
-
+		wheelsRight.setDistancePerPulse(-RobotMap.inchesPerPulse);
+		
 		wheelsLeft = new Encoder(RobotMap.encoderLeftDIOA, RobotMap.encoderLeftDIOB, false, Encoder.EncodingType.k4X);
 		wheelsLeft.reset();
-		wheelsLeft.setDistancePerPulse(RobotMap.inchesPerRotation);
-
+		wheelsLeft.setDistancePerPulse(RobotMap.inchesPerPulse);
+		
 		// init accelerometer
 		accelerometer = new BuiltInAccelerometer(Range.k8G);
 
