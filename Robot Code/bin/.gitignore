@@ -1,7 +1,3 @@
-/drive/
+/sensors/
 /org/
-/turret/
-/util/
-/intake/
-/interfaces/
-/controllers/
+/maths/
