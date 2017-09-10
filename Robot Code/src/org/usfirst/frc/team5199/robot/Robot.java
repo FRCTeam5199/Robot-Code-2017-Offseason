@@ -25,7 +25,6 @@ import networking.RemoteOutput;
 import pixy.PixyFunctions;
 import pixy.PixyGearPID;
 
-
 /**
  * This is a demo program showing the use of the RobotDrive class. The
  * SampleRobot class is the base of a robot application that will automatically
@@ -62,7 +61,7 @@ public class Robot extends SampleRobot {
 	private TurretControl turretControl;
 	private IntakeControl intakeControl;
 	private TransportControl transportControl;
-	
+
 	private PixyGearPID pixyGear;
 	private PixyFunctions pixyFunc;
 	private Vector2 gear, shooter;
@@ -89,10 +88,10 @@ public class Robot extends SampleRobot {
 		turret = new Turret();
 		intake = new Intake();
 		transport = new Transport();
-		
-		gear = new Vector2(0,0);
-		shooter = new Vector2(0,0);
-		
+
+		gear = new Vector2(0, 0);
+		shooter = new Vector2(0, 0);
+
 		pixyFunc = new PixyFunctions(gear, shooter);
 		pixyGear = new PixyGearPID(gear, base);
 	}
@@ -105,32 +104,33 @@ public class Robot extends SampleRobot {
 		// autManager.add(new Turn(base, 180));
 		// autManager.add(new Turn(base, 0));
 
-		autManager.add(new Turn(base, 0));
-		autManager.add(new MoveForwardInInches(base, 36));
-		autManager.add(new Turn(base, 270));
-		autManager.add(new MoveForwardInInches(base, 36));
-		autManager.add(new Turn(base, 180));
-		autManager.add(new MoveForwardInInches(base, 36));
-		autManager.add(new Turn(base, 90));
-		autManager.add(new MoveForwardInInches(base, 36));
-		autManager.add(new Turn(base, 0));
-		
-		
-		autManager.add(new Stop(base, turret, intake));
+		// //Move the robot in a 36 inch square
+		// autManager.add(new Turn(base, 0));
+		// autManager.add(new MoveForwardInInches(base, 36));
+		// autManager.add(new Turn(base, 270));
+		// autManager.add(new MoveForwardInInches(base, 36));
+		// autManager.add(new Turn(base, 180));
+		// autManager.add(new MoveForwardInInches(base, 36));
+		// autManager.add(new Turn(base, 90));
+		// autManager.add(new MoveForwardInInches(base, 36));
+		// autManager.add(new Turn(base, 0));
 
 		autManager.init();
 
-		while (isAutonomous() && isEnabled()) {
+		while (isAutonomous() && isEnabled() && !autManager.isDone()) {
 			autManager.update();
 		}
 
+		new Stop(base, turret, intake).update(1);
+
+		Robot.nBroadcaster.println("End of autonomous");
 	}
 
 	@Override
 	public void operatorControl() {
 		Robot.nBroadcaster.println("\nStarting TeleOp");
 
-		sensors.getGyro().reset(); 
+		sensors.getGyro().reset();
 
 		driveControl = new DriveControl(base, controller);
 		turretControl = new TurretControl(turret, joystick, Vector2.ZERO.clone());
@@ -148,11 +148,11 @@ public class Robot extends SampleRobot {
 
 		while (isOperatorControl() && isEnabled()) {
 			mainLoop.update();
-			if(joystick.getButton(2)) {
+			if (joystick.getButton(2)) {
 				pixyFunc.turnAndGoStraightAuton();
 				pixyGear.pixyGear();
 			}
-			if(joystick.getButton(1)) {
+			if (joystick.getButton(1)) {
 				pixyFunc.alignShooterX();
 				turretControl.autoaim();
 			}
