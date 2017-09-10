@@ -157,10 +157,7 @@ public class Robot extends SampleRobot {
 				pixyFunc.turnAndGoStraightAuton();
 				pixyGear.pixyGear();
 			}
-			if (joystick.getButton(1)) {
-				pixyFunc.alignShooterX();
-				turretControl.autoaim();
-			}
+			nBroadcaster.println(sensors.ultraDistanceLeft());
 		}
 
 	}
