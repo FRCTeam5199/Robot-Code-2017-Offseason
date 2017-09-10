@@ -1,7 +1,13 @@
+/autonomous/
+/controllers/
 /drive/
-/org/
-/turret/
-/util/
 /intake/
 /interfaces/
-/controllers/
+/maths/
+/networking/
+/org/
+/pixy/
+/sensors/
+/transport/
+/turret/
+/util/

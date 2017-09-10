@@ -20,12 +20,13 @@ public class Turn implements AutFunction {
 	private double turnIntegral;
 	private boolean isDone;
 
+	//Turns the robot to angle degrees
 	public Turn(DriveBase base, double angle) {
 		this.base = base;
 		isDone = false;
 		gyro = Robot.sensors.getGyro();
 
-		if (angle < 0) {
+		while (angle < 0) {
 			angle += 360;
 		}
 
@@ -70,8 +71,7 @@ public class Turn implements AutFunction {
 
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
-		
+		//nothing to initialize
 	}
 
 }

@@ -7,21 +7,21 @@ import drive.DriveBase;
 import edu.wpi.first.wpilibj.Encoder;
 import interfaces.AutFunction;
 
-public class MoveForwardInInches implements AutFunction {
+public class MoveForwardInInchesUltra implements AutFunction {
 
 	private final DriveBase driveBase;
-	private final Encoder rightEncoder;
-	private final Encoder leftEncoder;
 
 	public boolean isDone = false;
 
-	final double P = 0.05d, I = 0.00015d, D = 0.01d;
+	final double P = 0.025d, I = 0.0002d, D = 0.002d;
 	double currentTravelDist, errorRate, integral;
 	double maxAcceptableDistError = 1d; // The robot can be x inches off from target and it will be okay.
-	double maxAcceptableRateError = 3d; // The robot can be moving at x inches/sec and it will be okay.
+	double maxAcceptableRateError = 0.01d; // The robot can be moving at x inches/sec and it will be okay.
 	double inchesToMove;
 	double distError; // The difference between the inchesToMove and the average of
 						// rightWheelTravelDist and leftWheelTravelDist
+	double lastPos =0;
+	
 
 	/**
 	 * Will move the robot forward by inches specified in inchesToMove.
@@ -31,10 +31,8 @@ public class MoveForwardInInches implements AutFunction {
 	 * @param inchesToMove
 	 *            How many inches you want the robot to move.
 	 */
-	public MoveForwardInInches(DriveBase driveBase, int inchesToMove) {
+	public MoveForwardInInchesUltra(DriveBase driveBase, int inchesToMove) {
 		this.driveBase = driveBase;
-		this.rightEncoder = Robot.sensors.getRightWheelEncoder();
-		this.leftEncoder = Robot.sensors.getLeftWheelEncoder();
 		this.inchesToMove = inchesToMove;
 
 	}
@@ -47,10 +45,10 @@ public class MoveForwardInInches implements AutFunction {
 		// -------------Left encoder is not working atm
 		// currentTravelDist = (Robot.sensors.getRightWheelEncoder().getDistance()
 		// + Robot.sensors.getLeftWheelEncoder().getDistance()) / 2;
-		currentTravelDist = Robot.sensors.getRightWheelEncoder().getDistance();
+		currentTravelDist = Robot.sensors.ultraDistanceLeft();
 
 		// Positive distError is not reached target, Negative is overshot target.
-		distError = inchesToMove - currentTravelDist;
+		distError = currentTravelDist - inchesToMove;
 
 		// ????????????????????????
 		integral += distError;
@@ -63,7 +61,7 @@ public class MoveForwardInInches implements AutFunction {
 		}
 
 		// errorRate = (rightEncoder.getRate() + leftEncoder.getRate())/2;
-		errorRate = rightEncoder.getRate();
+		errorRate = Robot.sensors.ultraDistanceLeft()-lastPos;
 
 		// Motor speed is recalculated every time this function is called.
 		double motorSpeed = 0;
@@ -74,8 +72,9 @@ public class MoveForwardInInches implements AutFunction {
 		// Robot.nBroadcaster.println(distError + "\t" + (distError - lastError));
 		// Robot.nBroadcaster.println(errorRate);
 
-		Robot.nBroadcaster.println(distError + "\t" + errorRate + "\t" + I * integral);
+		Robot.nBroadcaster.println(P * distError + "\t" + D * errorRate + "\t" + I * integral);
 		driveBase.move(motorSpeed, motorSpeed);
+		lastPos = Robot.sensors.ultraDistanceLeft();
 
 		// If the robot is within an acceptable range of the currentTravelDist.
 		if (Math.abs(distError) <= maxAcceptableDistError && Math.abs(errorRate) <= maxAcceptableRateError) {
@@ -87,6 +86,7 @@ public class MoveForwardInInches implements AutFunction {
 		// Reset the distance to zero.
 		Robot.sensors.getRightWheelEncoder().reset();
 		Robot.sensors.getLeftWheelEncoder().reset();
+		lastPos = Robot.sensors.ultraDistanceLeft();
 	}
 
 	@Override
