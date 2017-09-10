@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer.Range;
+import maths.Vector2;
 import pixy.Pixy;
 import pixy.PixyProcess;
 
@@ -16,17 +17,19 @@ public class Sensors {
 	private static Encoder flywheelEncoder;
 	private final Encoder wheelsLeft;
 	private final Encoder wheelsRight;
-	
+	private final Location location;
+
 	private static UltrasonicData ultraData;
 	private static Pixy pixyGear, pixyShooter;
 	private static PixyProcess pixyGearProc, pixyShooterProc;
-	
+
 	public static CircularAverageBuffer flywheelAVG;
 	public static CircularAverageBuffer shooterXAVG;
-	
-	private static Location location;
-	
+
 	public Sensors() {
+		// init accelerometer
+		accelerometer = new BuiltInAccelerometer(Range.k8G);
+
 		// init flywheel encoder
 		flywheelEncoder = new Encoder(RobotMap.encoderShooterDIOA, RobotMap.encoderShooterDIOB, false,
 				Encoder.EncodingType.k4X);
@@ -38,34 +41,33 @@ public class Sensors {
 				Encoder.EncodingType.k4X);
 		wheelsRight.reset();
 		wheelsRight.setDistancePerPulse(-RobotMap.inchesPerPulse);
-		
+
 		wheelsLeft = new Encoder(RobotMap.encoderLeftDIOA, RobotMap.encoderLeftDIOB, false, Encoder.EncodingType.k4X);
 		wheelsLeft.reset();
 		wheelsLeft.setDistancePerPulse(RobotMap.inchesPerPulse);
-		
-		// init accelerometer
-		accelerometer = new BuiltInAccelerometer(Range.k8G);
 
 		// init gyro
 		gyro = new ADXRS450_Gyro();
-		Robot.nBroadcaster.println("Calibrating Gyro...");
+		Robot.nBroadcaster.println("Calibrating gyro...");
 		gyro.calibrate();
-		Robot.nBroadcaster.println("Done!");
-		
-		//init ultrasonic
-		ultraData = new UltrasonicData(RobotMap.ultraRightEcho,RobotMap.ultraRightPing,RobotMap.ultraLeftEcho,RobotMap.ultraLeftPing);
-		
-		//init pixy
+		Robot.nBroadcaster.println("Done calibrating gyro");
+
+		// init ultrasonic
+		ultraData = new UltrasonicData(RobotMap.ultraRightEcho, RobotMap.ultraRightPing, RobotMap.ultraLeftEcho,
+				RobotMap.ultraLeftPing);
+
+		// init pixy
 		pixyGear = new Pixy(0x51);
 		pixyGearProc = new PixyProcess(pixyGear);
 		pixyShooter = new Pixy(0x53);
 		pixyShooterProc = new PixyProcess(pixyShooter);
-		
-		//?????????????
+
+		// ?????????????
 		flywheelAVG = new CircularAverageBuffer(75);
 		shooterXAVG = new CircularAverageBuffer(10);
-		
-		location = new Location();
+
+		location = new Location(accelerometer, wheelsLeft, wheelsRight);
+		location.start();
 	}
 
 	public ADXRS450_Gyro getGyro() {
@@ -73,6 +75,7 @@ public class Sensors {
 	}
 
 	public BuiltInAccelerometer getAccelerometer() {
+		Robot.nBroadcaster.println("getAccelerometer");
 		return accelerometer;
 	}
 
@@ -87,25 +90,37 @@ public class Sensors {
 	public Encoder getRightWheelEncoder() {
 		return wheelsRight;
 	}
-	public static double ultraDistanceRight(){
+
+	public Location getLocation() {
+		return location;
+	}
+
+	public static double ultraDistanceRight() {
 		return ultraData.distanceRight();
 	}
-	public static double ultraDistanceLeft(){
+
+	public static double ultraDistanceLeft() {
 		return ultraData.distanceLeft();
 	}
-	public static double pixyGearXPosCompensated(){
+
+	public static double pixyGearXPosCompensated() {
 		return pixyGearProc.compensatedGearPixyData();
 	}
-	public static double pixyGearXPos(){
+
+	public static double pixyGearXPos() {
 		return pixyGearProc.averageData(0, false)[0];
 	}
-	public static double pixyShooterXPos(){
+
+	public static double pixyShooterXPos() {
 		return pixyShooterProc.shooterData()[0];
 	}
-	public static double shooterRPM(){
+
+	public static double shooterRPM() {
 		return flywheelAVG.DataAverage(flywheelEncoder.getRate());
 	}
-	public static double shooterX(){
+
+	public static double shooterX() {
 		return shooterXAVG.DataAverage(pixyShooterXPos());
 	}
+
 }
