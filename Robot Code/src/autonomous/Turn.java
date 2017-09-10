@@ -26,7 +26,7 @@ public class Turn implements AutFunction {
 		isDone = false;
 		gyro = Robot.sensors.getGyro();
 
-		if (angle < 0) {
+		while (angle < 0) {
 			angle += 360;
 		}
 
