@@ -86,6 +86,7 @@ public class MoveForwardInInchesUltra implements AutFunction {
 		// Reset the distance to zero.
 		Robot.sensors.getRightWheelEncoder().reset();
 		Robot.sensors.getLeftWheelEncoder().reset();
+		lastPos = Robot.sensors.ultraDistanceLeft();
 	}
 
 	@Override
