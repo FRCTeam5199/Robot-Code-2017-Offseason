@@ -84,6 +84,7 @@ public class Robot extends SampleRobot {
 		intake = new Intake();
 		transport = new Transport();
 
+<<<<<<< HEAD
 		driveControl = new DriveControl(base, controller);
 		turretControl = new TurretControl(turret, joystick, Vector2.ZERO.clone());
 		intakeControl = new IntakeControl(intake, joystick, controller);
@@ -94,6 +95,8 @@ public class Robot extends SampleRobot {
 
 		pixyFunc = new PixyFunctions(gear, shooter);
 		pixyGear = new PixyGearPID(gear, base);
+=======
+>>>>>>> ff34d8b410dac4ab0b3bb52256636d545c509562
 	}
 
 	@Override
@@ -113,6 +116,8 @@ public class Robot extends SampleRobot {
 
 		autManager.add(new MoveForwardInInches(base, -36));
 
+<<<<<<< HEAD
+=======
 		autManager.init();
 		autManager.add(new MoveForwardInInches(base, 81));
 		autManager.add(new Turn(base, 60));
@@ -121,6 +126,7 @@ public class Robot extends SampleRobot {
 		autManager.add(new FlyWheelSpeed(turretControl, 3145, turret));
 		autManager.add(new TurretAim(turretControl, 3145, turret));
 		autManager.add(new Shoot(turretControl, 3145, intake, transport));
+>>>>>>> ff34d8b410dac4ab0b3bb52256636d545c509562
 		while (isAutonomous() && isEnabled() && !autManager.isDone()) {
 			autManager.update();
 		}
@@ -136,6 +142,14 @@ public class Robot extends SampleRobot {
 
 		sensors.getGyro().reset();
 
+<<<<<<< HEAD
+=======
+		driveControl = new DriveControl(base, controller);
+		turretControl = new TurretControl(turret, joystick);
+		intakeControl = new IntakeControl(intake, joystick, controller);
+		transportControl = new TransportControl(transport, joystick);
+
+>>>>>>> ff34d8b410dac4ab0b3bb52256636d545c509562
 		MainLoop mainLoop = new MainLoop(clockRegulator);
 
 		mainLoop.add(driveControl);

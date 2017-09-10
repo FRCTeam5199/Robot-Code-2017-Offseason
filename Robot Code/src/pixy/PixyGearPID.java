@@ -12,15 +12,17 @@ public class PixyGearPID {
 	private double d = .05;
 	private double integral = 0;
 	private DriveBase base;
-
-	public PixyGearPID(Vector2 target, DriveBase base) {
-		this.target = target;
+	PixyFunctionsFront pixyFuncFront;
+	public PixyGearPID(DriveBase base) {
+		this.target = new Vector2(0,0);
 		lastTarget = target.clone();
 		this.base = base;
+		pixyFuncFront = new PixyFunctionsFront();
 	}
 
 	public void pixyGear() {
 		double motorSpeed;
+		target = pixyFuncFront.getTarget();
 		integral += target.getX();
 		if (Math.abs(integral) > 1 / i) {
 			if (integral > 0) {
