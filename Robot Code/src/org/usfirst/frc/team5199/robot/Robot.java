@@ -59,8 +59,6 @@ public class Robot extends SampleRobot {
 	private IntakeControl intakeControl;
 	private TransportControl transportControl;
 
-	private Vector2 gear, shooter;
-
 	public Robot() {
 
 	}
@@ -85,15 +83,10 @@ public class Robot extends SampleRobot {
 		transport = new Transport();
 
 		driveControl = new DriveControl(base, controller);
-		turretControl = new TurretControl(turret, joystick, Vector2.ZERO.clone());
+		turretControl = new TurretControl(turret, joystick);
 		intakeControl = new IntakeControl(intake, joystick, controller);
 		transportControl = new TransportControl(transport, joystick);
 
-		gear = new Vector2(0, 0);
-		shooter = new Vector2(0, 0);
-
-		pixyFunc = new PixyFunctions(gear, shooter);
-		pixyGear = new PixyGearPID(gear, base);
 	}
 
 	@Override
@@ -109,7 +102,6 @@ public class Robot extends SampleRobot {
 		// autManager.add(new MoveForwardInInchesUltra(base, 4));
 		// autManager.add(new FlyWheelSpeed(turretControl, 3145, turret));
 		// // autManager.add(new TurretAim(pixyFunc, turretControl, 3145, turret));
-
 
 		autManager.add(new MoveForwardInInches(base, -36));
 
