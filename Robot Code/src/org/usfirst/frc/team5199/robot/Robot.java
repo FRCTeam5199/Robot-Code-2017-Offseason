@@ -22,9 +22,6 @@ import maths.Vector2;
 import util.ClockRegulator;
 import networking.RemoteOutput;
 
-import pixy.PixyFunctions;
-import pixy.PixyGearPID;
-
 /**
  * This is a demo program showing the use of the RobotDrive class. The
  * SampleRobot class is the base of a robot application that will automatically
@@ -62,8 +59,6 @@ public class Robot extends SampleRobot {
 	private IntakeControl intakeControl;
 	private TransportControl transportControl;
 
-	private PixyGearPID pixyGear;
-	private PixyFunctions pixyFunc;
 	private Vector2 gear, shooter;
 
 	public Robot() {
@@ -89,11 +84,6 @@ public class Robot extends SampleRobot {
 		intake = new Intake();
 		transport = new Transport();
 
-		gear = new Vector2(0, 0);
-		shooter = new Vector2(0, 0);
-
-		pixyFunc = new PixyFunctions(gear, shooter);
-		pixyGear = new PixyGearPID(gear, base);
 	}
 
 	@Override
@@ -118,10 +108,10 @@ public class Robot extends SampleRobot {
 		autManager.init();
 		autManager.add(new MoveForwardInInches(base, 81));
 		autManager.add(new Turn(base, 60));
-		autManager.add(new PixyForward(pixyFunc, pixyGear));
+		autManager.add(new PixyForward(driveControl));
 		autManager.add(new MoveForwardInInchesUltra(base, 4));
-		autManager.add(new FlyWheelSpeed(turretControl,3145, turret));
-		autManager.add(new TurretAim(pixyFunc, turretControl, 3145, turret));
+		autManager.add(new FlyWheelSpeed(turretControl, 3145, turret));
+		autManager.add(new TurretAim(turretControl, 3145, turret));
 		while (isAutonomous() && isEnabled() && !autManager.isDone()) {
 			autManager.update();
 		}
@@ -138,7 +128,7 @@ public class Robot extends SampleRobot {
 		sensors.getGyro().reset();
 
 		driveControl = new DriveControl(base, controller);
-		turretControl = new TurretControl(turret, joystick, Vector2.ZERO.clone());
+		turretControl = new TurretControl(turret, joystick);
 		intakeControl = new IntakeControl(intake, joystick, controller);
 		transportControl = new TransportControl(transport, joystick);
 
@@ -154,8 +144,7 @@ public class Robot extends SampleRobot {
 		while (isOperatorControl() && isEnabled()) {
 			mainLoop.update();
 			if (joystick.getButton(2)) {
-				pixyFunc.turnAndGoStraightAuton();
-				pixyGear.pixyGear();
+				driveControl.PixyGearAlign();
 			}
 			nBroadcaster.println(sensors.ultraDistanceLeft());
 		}

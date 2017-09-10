@@ -5,12 +5,13 @@ import org.usfirst.frc.team5199.robot.Robot;
 import controllers.JoystickController;
 import interfaces.LoopModule;
 import maths.Vector2;
+import pixy.PixyFunctionsTurret;
 
 public class TurretControl implements LoopModule {
 
 	private final JoystickController joystick;
 	private Turret turret;
- 
+
 	private double pTurret = .003;
 	private double iTurret = .0001;
 	private double dTurret = .05;
@@ -22,11 +23,13 @@ public class TurretControl implements LoopModule {
 
 	private Vector2 target;
 	private Vector2 lastTarget;
+	private PixyFunctionsTurret pixyFuncShooter;
 
-	public TurretControl(Turret turret, JoystickController joystick, Vector2 target) {
+	public TurretControl(Turret turret, JoystickController joystick) {
 		this.turret = turret;
 		this.joystick = joystick;
-		this.target = target;
+		target = new Vector2(0,0);
+		pixyFuncShooter = new PixyFunctionsTurret();
 		lastTarget = target.clone();
 	}
 
@@ -60,20 +63,20 @@ public class TurretControl implements LoopModule {
 
 	public void autoaim() {
 		// turret will try to move so that Target.x becomes 0
-		double motorSpeed; 
-		
-		integralTurret  += target.getX();
-		if(Math.abs(integralTurret)>1/iTurret) {
-			if(integralTurret>0) {
-				integralTurret = 1/iTurret;
-			}else {
-				integralTurret = -1/iTurret;
+		double motorSpeed;
+		target = pixyFuncShooter.getTarget();
+		integralTurret += target.getX();
+		if (Math.abs(integralTurret) > 1 / iTurret) {
+			if (integralTurret > 0) {
+				integralTurret = 1 / iTurret;
+			} else {
+				integralTurret = -1 / iTurret;
 			}
 		}
 		motorSpeed = pTurret * target.getX();
 		Robot.nBroadcaster.println(dTurret * (target.getX() - lastTarget.getX()));
 		motorSpeed += dTurret * (target.getX() - lastTarget.getX());
-		motorSpeed += iTurret*integralTurret;
+		motorSpeed += iTurret * integralTurret;
 		turret.setTurret(motorSpeed);
 		lastTarget = target.clone();
 	}

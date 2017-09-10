@@ -15,27 +15,18 @@ import maths.Vector2;
 import sensors.Sensors;
 import turret.TurretControl;
 
-public class PixyFunctions {
-	public static Vector2 targetShooter, targetGear;
+public class PixyFunctionsTurret {
+	public static Vector2 targetShooter;
 
-	public PixyFunctions(Vector2 vectorGear, Vector2 vectorShooter) {
-		this.targetGear = vectorGear;
-		this.targetShooter = vectorShooter;
-	}
-
-	public static void turnAndGoStraightAuton() {
-		if (Sensors.pixyGearXPos() != -1) {
-			double distance = Sensors.pixyGearXPosCompensated();
-			double distanceOff = distance - 160;
-			targetGear.setX(distanceOff);
-		}
+	public PixyFunctionsTurret() {
+		targetShooter = new Vector2(0, 0);
 	}
 
 	public static void alignShooterX() {
 		// checks to see if the turret is lined up with the boiler
 		// if it is not aligned, turret centers on target
 		if (Sensors.pixyShooterXPos() != -1) {
-			double distance = Sensors.pixyShooterXPos();
+			double distance = Robot.sensors.pixyShooterXPos();
 			double distanceOff = distance - 135;
 			targetShooter.setX(distanceOff);
 			Robot.nBroadcaster.println(targetShooter.getX());
@@ -49,12 +40,17 @@ public class PixyFunctions {
 		// checks to see if the turret is lined up with the boiler
 		// if it is not aligned, turret centers on target
 		if (Sensors.pixyShooterXPos() != -1) {
-			double distance = Sensors.pixyShooterXPos();
+			double distance = Robot.sensors.pixyShooterXPos();
 			double distanceOff = distance - 130;
 			targetShooter.setX(distanceOff);
 
 			// Subtract less pixels to go to the left
 			// Alter subtraction value to change left or right alignment
 		}
+	}
+
+	public static Vector2 getTarget() {
+		alignShooterX();
+		return targetShooter;
 	}
 }

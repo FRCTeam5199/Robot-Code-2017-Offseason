@@ -2,18 +2,16 @@ package autonomous;
 
 import intake.Intake;
 import interfaces.AutFunction;
-import pixy.PixyFunctions;
 import transport.Transport;
 import turret.TurretControl;
 
 public class Shoot implements AutFunction{
-	PixyFunctions pixyFunc;
+
 	TurretControl turretControl;
 	double rpm;
 	Intake intake;
 	Transport transport;
-	public Shoot(PixyFunctions pixyFunc, TurretControl turretControl, double rpm, Intake intake, Transport transport) {
-		this.pixyFunc = pixyFunc;
+	public Shoot(TurretControl turretControl, double rpm, Intake intake, Transport transport) {
 		this.turretControl = turretControl;
 		this.rpm = rpm;
 		this.intake = intake;
@@ -21,7 +19,6 @@ public class Shoot implements AutFunction{
 	}
 	@Override
 	public void update(long deltaTime) {
-		pixyFunc.alignShooterX();
 		turretControl.autoaim(); 
 		turretControl.setRPM(rpm);
 		intake.setSpeed(-1);
