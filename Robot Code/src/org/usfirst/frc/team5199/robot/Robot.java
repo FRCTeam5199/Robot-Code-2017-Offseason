@@ -115,6 +115,7 @@ public class Robot extends SampleRobot {
 		// autManager.add(new FlyWheelSpeed(turretControl, 3145, turret));
 		// // autManager.add(new TurretAim(pixyFunc, turretControl, 3145, turret));
 
+
 		autManager.add(new MoveForwardInInches(base, -36));
 
 		while (isAutonomous() && isEnabled() && !autManager.isDone()) {
@@ -147,7 +148,6 @@ public class Robot extends SampleRobot {
 				pixyFunc.turnAndGoStraightAuton();
 				pixyGear.pixyGear();
 			}
-			nBroadcaster.println(sensors.ultraDistanceLeft());
 		}
 
 	}

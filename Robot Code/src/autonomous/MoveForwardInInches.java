@@ -15,10 +15,10 @@ public class MoveForwardInInches implements AutFunction {
 
 	public boolean isDone = false;
 
-	final double P = 0.025d, I = 0.0002d, D = 0.002d;
+	final double P = 0.05d, I = 0.00015d, D = 0.01d;
 	double currentTravelDist, errorRate, integral;
 	double maxAcceptableDistError = 1d; // The robot can be x inches off from target and it will be okay.
-	double maxAcceptableRateError = 0.01d; // The robot can be moving at x inches/sec and it will be okay.
+	double maxAcceptableRateError = 3d; // The robot can be moving at x inches/sec and it will be okay.
 	double inchesToMove;
 	double distError; // The difference between the inchesToMove and the average of
 						// rightWheelTravelDist and leftWheelTravelDist
@@ -74,7 +74,7 @@ public class MoveForwardInInches implements AutFunction {
 		// Robot.nBroadcaster.println(distError + "\t" + (distError - lastError));
 		// Robot.nBroadcaster.println(errorRate);
 
-		Robot.nBroadcaster.println(P * distError + "\t" + D * errorRate + "\t" + I * integral);
+		Robot.nBroadcaster.println(distError + "\t" + errorRate + "\t" + I * integral);
 		driveBase.move(motorSpeed, motorSpeed);
 
 		// If the robot is within an acceptable range of the currentTravelDist.
