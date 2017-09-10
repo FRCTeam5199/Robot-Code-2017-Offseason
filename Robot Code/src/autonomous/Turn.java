@@ -20,6 +20,7 @@ public class Turn implements AutFunction {
 	private double turnIntegral;
 	private boolean isDone;
 
+	//Turns the robot to angle degrees
 	public Turn(DriveBase base, double angle) {
 		this.base = base;
 		isDone = false;
@@ -70,8 +71,7 @@ public class Turn implements AutFunction {
 
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
-		
+		//nothing to initialize
 	}
 
 }
