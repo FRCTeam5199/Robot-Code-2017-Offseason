@@ -95,19 +95,17 @@ public class Robot extends SampleRobot {
 	public void autonomous() {
 		sensors.getGyro().reset();
 		AutonomousManager autManager = new AutonomousManager(clockRegulator);
+		//// Square test
+		// autManager.add(new Turn(base, 0));
+		// autManager.add(new MoveForwardInInches(base, 36));
+		// autManager.add(new Turn(base, 270));
+		// autManager.add(new MoveForwardInInches(base, 36));
+		// autManager.add(new Turn(base, 180));
+		// autManager.add(new MoveForwardInInches(base, 36));
+		// autManager.add(new Turn(base, 90));
+		// autManager.add(new MoveForwardInInches(base, 36));
+		// autManager.add(new Turn(base, 0));
 
-		autManager.init();
-
-		// autManager.add(new MoveForwardInInches(base, 81));
-		// autManager.add(new Turn(base, 60));
-		// // autManager.add(new PixyForward(pixyFunc, pixyGear));
-		// autManager.add(new MoveForwardInInchesUltra(base, 4));
-		// autManager.add(new FlyWheelSpeed(turretControl, 3145, turret));
-		// // autManager.add(new TurretAim(pixyFunc, turretControl, 3145, turret));
-
-		autManager.add(new MoveForwardInInches(base, -36));
-
-		autManager.init();
 		switch (autController.getAutMode()) {
 
 		case 1:
@@ -149,6 +147,9 @@ public class Robot extends SampleRobot {
 		case 6:
 			autManager.add(new MoveForwardInInches(base, 80));
 		}
+		
+		autManager.init();
+		
 		while (isAutonomous() && isEnabled() && !autManager.isDone()) {
 			autManager.update();
 		}
