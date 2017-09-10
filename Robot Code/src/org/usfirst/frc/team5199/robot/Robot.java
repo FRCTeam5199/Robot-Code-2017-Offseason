@@ -93,7 +93,7 @@ public class Robot extends SampleRobot {
 		turretControl = new TurretControl(turret, joystick, Vector2.ZERO.clone());
 		intakeControl = new IntakeControl(intake, joystick, controller);
 		transportControl = new TransportControl(transport, joystick);
-		
+
 		gear = new Vector2(0, 0);
 		shooter = new Vector2(0, 0);
 
@@ -106,27 +106,17 @@ public class Robot extends SampleRobot {
 		sensors.getGyro().reset();
 		AutonomousManager autManager = new AutonomousManager(clockRegulator);
 
-		// autManager.add(new Turn(base, 180));
-		// autManager.add(new Turn(base, 0));
-
-		// //Move the robot in a 36 inch square
-		// autManager.add(new Turn(base, 0));
-		// autManager.add(new MoveForwardInInches(base, 36));
-		// autManager.add(new Turn(base, 270));
-		// autManager.add(new MoveForwardInInches(base, 36));
-		// autManager.add(new Turn(base, 180));
-		// autManager.add(new MoveForwardInInches(base, 36));
-		// autManager.add(new Turn(base, 90));
-		// autManager.add(new MoveForwardInInches(base, 36));
-		// autManager.add(new Turn(base, 0));
-
 		autManager.init();
-		autManager.add(new MoveForwardInInches(base, 81));
-		autManager.add(new Turn(base, 60));
-		autManager.add(new PixyForward(pixyFunc, pixyGear));
-		autManager.add(new MoveForwardInInchesUltra(base, 4));
-		autManager.add(new FlyWheelSpeed(turretControl,3145, turret));
-		autManager.add(new TurretAim(pixyFunc, turretControl, 3145, turret));
+
+		// autManager.add(new MoveForwardInInches(base, 81));
+		// autManager.add(new Turn(base, 60));
+		// // autManager.add(new PixyForward(pixyFunc, pixyGear));
+		// autManager.add(new MoveForwardInInchesUltra(base, 4));
+		// autManager.add(new FlyWheelSpeed(turretControl, 3145, turret));
+		// // autManager.add(new TurretAim(pixyFunc, turretControl, 3145, turret));
+
+		autManager.add(new MoveForwardInInches(base, -36));
+
 		while (isAutonomous() && isEnabled() && !autManager.isDone()) {
 			autManager.update();
 		}

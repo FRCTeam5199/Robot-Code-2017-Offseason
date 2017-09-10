@@ -10,7 +10,7 @@ public class TurretControl implements LoopModule {
 
 	private final JoystickController joystick;
 	private Turret turret;
- 
+
 	private double pTurret = .003;
 	private double iTurret = .0001;
 	private double dTurret = .05;
@@ -60,26 +60,29 @@ public class TurretControl implements LoopModule {
 
 	public void autoaim() {
 		// turret will try to move so that Target.x becomes 0
-		double motorSpeed; 
-		
-		integralTurret  += target.getX();
-		if(Math.abs(integralTurret)>1/iTurret) {
-			if(integralTurret>0) {
-				integralTurret = 1/iTurret;
-			}else {
-				integralTurret = -1/iTurret;
+		double motorSpeed;
+
+		integralTurret += target.getX();
+		if (Math.abs(integralTurret) > 1 / iTurret) {
+			if (integralTurret > 0) {
+				integralTurret = 1 / iTurret;
+			} else {
+				integralTurret = -1 / iTurret;
 			}
 		}
 		motorSpeed = pTurret * target.getX();
 		Robot.nBroadcaster.println(dTurret * (target.getX() - lastTarget.getX()));
 		motorSpeed += dTurret * (target.getX() - lastTarget.getX());
-		motorSpeed += iTurret*integralTurret;
+		motorSpeed += iTurret * integralTurret;
 		turret.setTurret(motorSpeed);
 		lastTarget = target.clone();
 	}
 
 	public void setRPM(double rpm) {
-		double error = rpm - turret.getFlyWheelRPM();
+		// convert rpm to rps
+		rpm = rpm / 60;
+
+		double error = rpm - turret.getFlyWheelRPS();
 		integralFlywheel += error;
 
 		integralFlywheel = clamp(integralFlywheel, 1 / iFlywheel);
