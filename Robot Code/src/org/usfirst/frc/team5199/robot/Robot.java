@@ -112,6 +112,7 @@ public class Robot extends SampleRobot {
 		autManager.add(new MoveForwardInInchesUltra(base, 4));
 		autManager.add(new FlyWheelSpeed(turretControl, 3145, turret));
 		autManager.add(new TurretAim(turretControl, 3145, turret));
+		autManager.add(new Shoot(turretControl, 3145, intake, transport));
 		while (isAutonomous() && isEnabled() && !autManager.isDone()) {
 			autManager.update();
 		}
