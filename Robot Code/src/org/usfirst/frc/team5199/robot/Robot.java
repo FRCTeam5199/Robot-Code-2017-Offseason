@@ -3,7 +3,7 @@ package org.usfirst.frc.team5199.robot;
 import edu.wpi.first.wpilibj.SampleRobot;
 
 import autonomous.*;
-
+import controllers.AutController;
 import controllers.JoystickController;
 import controllers.XBoxController;
 
@@ -53,6 +53,7 @@ public class Robot extends SampleRobot {
 
 	private XBoxController controller;
 	private JoystickController joystick;
+	private AutController autController;
 
 	private DriveControl driveControl;
 	private TurretControl turretControl;
@@ -78,6 +79,7 @@ public class Robot extends SampleRobot {
 
 		controller = new XBoxController(0);
 		joystick = new JoystickController(1);
+		autController = new AutController(2);
 
 		base = new DriveBase();
 		turret = new Turret();
@@ -106,13 +108,47 @@ public class Robot extends SampleRobot {
 		// autManager.add(new Turn(base, 0));
 
 		autManager.init();
-		autManager.add(new MoveForwardInInches(base, 81));
-		autManager.add(new Turn(base, 60));
-		autManager.add(new PixyForward(driveControl));
-		autManager.add(new MoveForwardInInchesUltra(base, 4));
-		autManager.add(new FlyWheelSpeed(turretControl, 3145, turret));
-		autManager.add(new TurretAim(turretControl, 3145, turret));
-		autManager.add(new Shoot(turretControl, 3145, intake, transport));
+		switch (autController.getAutMode()) {
+
+		case 1:
+			autManager.add(new MoveForwardInInches(base, 81));
+			autManager.add(new Turn(base, -60));
+			autManager.add(new PixyForward(driveControl));
+			autManager.add(new MoveForwardInInchesUltra(base, 4));
+			autManager.add(new FlyWheelSpeed(turretControl, 3145, turret));
+			autManager.add(new TurretAim(turretControl, 3145, turret));
+			autManager.add(new Shoot(turretControl, 3145, intake, transport));
+
+		case 2:
+			autManager.add(new MoveForwardInInches(base, 81));
+			autManager.add(new Turn(base, -60));
+			autManager.add(new PixyForward(driveControl));
+			autManager.add(new MoveForwardInInchesUltra(base, 4));
+
+		case 3:
+			autManager.add(new PixyForward(driveControl));
+			autManager.add(new MoveForwardInInchesUltra(base, 4));
+			autManager.add(new FlyWheelSpeed(turretControl, 3425, turret));
+			autManager.add(new TurretAim(turretControl, 3425, turret));
+			autManager.add(new Shoot(turretControl, 3425, intake, transport));
+
+		case 4:
+			autManager.add(new MoveForwardInInches(base, 81));
+			autManager.add(new Turn(base, 60));
+			autManager.add(new PixyForward(driveControl));
+			autManager.add(new MoveForwardInInchesUltra(base, 4));
+		case 5:
+			autManager.add(new MoveForwardInInches(base, 81));
+			autManager.add(new Turn(base, 60));
+			autManager.add(new PixyForward(driveControl));
+			autManager.add(new MoveForwardInInchesUltra(base, 4));
+			autManager.add(new FlyWheelSpeed(turretControl, 3145, turret));
+			autManager.add(new TurretAim(turretControl, 3145, turret));
+			autManager.add(new Shoot(turretControl, 3145, intake, transport));
+
+		case 6:
+			autManager.add(new MoveForwardInInches(base, 80));
+		}
 		while (isAutonomous() && isEnabled() && !autManager.isDone()) {
 			autManager.update();
 		}
