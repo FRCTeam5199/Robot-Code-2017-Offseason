@@ -89,6 +89,11 @@ public class Robot extends SampleRobot {
 		intake = new Intake();
 		transport = new Transport();
 
+		driveControl = new DriveControl(base, controller);
+		turretControl = new TurretControl(turret, joystick, Vector2.ZERO.clone());
+		intakeControl = new IntakeControl(intake, joystick, controller);
+		transportControl = new TransportControl(transport, joystick);
+		
 		gear = new Vector2(0, 0);
 		shooter = new Vector2(0, 0);
 
@@ -136,11 +141,6 @@ public class Robot extends SampleRobot {
 		Robot.nBroadcaster.println("\nStarting TeleOp");
 
 		sensors.getGyro().reset();
-
-		driveControl = new DriveControl(base, controller);
-		turretControl = new TurretControl(turret, joystick, Vector2.ZERO.clone());
-		intakeControl = new IntakeControl(intake, joystick, controller);
-		transportControl = new TransportControl(transport, joystick);
 
 		MainLoop mainLoop = new MainLoop(clockRegulator);
 
