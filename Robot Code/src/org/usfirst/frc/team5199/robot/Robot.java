@@ -116,7 +116,12 @@ public class Robot extends SampleRobot {
 		// autManager.add(new Turn(base, 0));
 
 		autManager.init();
-
+		autManager.add(new MoveForwardInInches(base, 81));
+		autManager.add(new Turn(base, 60));
+		autManager.add(new PixyForward(pixyFunc, pixyGear));
+		autManager.add(new MoveForwardInInchesUltra(base, 4));
+		autManager.add(new FlyWheelSpeed(turretControl,3145, turret));
+		autManager.add(new TurretAim(pixyFunc, turretControl, 3145, turret));
 		while (isAutonomous() && isEnabled() && !autManager.isDone()) {
 			autManager.update();
 		}

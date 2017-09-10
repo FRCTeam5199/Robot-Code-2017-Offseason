@@ -5,3 +5,9 @@
 /intake/
 /interfaces/
 /controllers/
+/autonomous/
+/maths/
+/networking/
+/pixy/
+/sensors/
+/transport/
