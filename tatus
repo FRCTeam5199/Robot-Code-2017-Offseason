@@ -1,0 +1,196 @@
+warning: LF will be replaced by CRLF in Robot Code/bin/.gitignore.
+The file will have its original line endings in your working directory.
+[1mdiff --git a/Robot Code/.classpath b/Robot Code/.classpath[m
+[1mindex 616c997..c4cf58d 100644[m
+[1m--- a/Robot Code/.classpath[m	
+[1m+++ b/Robot Code/.classpath[m	
+[36m@@ -7,5 +7,6 @@[m
+ 	<classpathentry kind="var" path="cscore" sourcepath="cscore.sources"/>[m
+ 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>[m
+ 	<classpathentry kind="var" path="USERLIBS_DIR/CTRLib.jar"/>[m
+[32m+[m	[32m<classpathentry kind="var" path="USERLIBS_DIR/jsch-0.1.50.jar"/>[m
+ 	<classpathentry kind="output" path="bin"/>[m
+ </classpath>[m
+[1mdiff --git a/Robot Code/bin/.gitignore b/Robot Code/bin/.gitignore[m
+[1mindex 009010f..7d7237f 100644[m
+[1m--- a/Robot Code/bin/.gitignore[m	
+[1m+++ b/Robot Code/bin/.gitignore[m	
+[36m@@ -1,7 +1,5 @@[m
+[31m-/drive/[m
+[31m-/org/[m
+[31m-/turret/[m
+[31m-/util/[m
+[31m-/intake/[m
+[32m+[m[32m/pixy/[m
+[32m+[m[32m/sensors/[m
+ /interfaces/[m
+[31m-/controllers/[m
+[32m+[m[32m/autonomous/[m
+[32m+[m[32m/org/[m
+[1mdiff --git a/Robot Code/bin/Drive/DriveBase.class b/Robot Code/bin/Drive/DriveBase.class[m
+[1mindex c079062..34a39b0 100644[m
+Binary files a/Robot Code/bin/Drive/DriveBase.class and b/Robot Code/bin/Drive/DriveBase.class differ
+[1mdiff --git a/Robot Code/bin/Drive/DriveControl.class b/Robot Code/bin/Drive/DriveControl.class[m
+[1mindex 7bb4909..27bf9b1 100644[m
+Binary files a/Robot Code/bin/Drive/DriveControl.class and b/Robot Code/bin/Drive/DriveControl.class differ
+[1mdiff --git a/Robot Code/bin/Networking/SSHThread.class b/Robot Code/bin/Networking/SSHThread.class[m
+[1mdeleted file mode 100644[m
+[1mindex 0b89379..0000000[m
+Binary files a/Robot Code/bin/Networking/SSHThread.class and /dev/null differ
+[1mdiff --git a/Robot Code/bin/Networking/Vision.class b/Robot Code/bin/Networking/Vision.class[m
+[1mdeleted file mode 100644[m
+[1mindex fa4d8dc..0000000[m
+Binary files a/Robot Code/bin/Networking/Vision.class and /dev/null differ
+[1mdiff --git a/Robot Code/bin/Networking/commandSSH.class b/Robot Code/bin/Networking/commandSSH.class[m
+[1mdeleted file mode 100644[m
+[1mindex 8610ef2..0000000[m
+Binary files a/Robot Code/bin/Networking/commandSSH.class and /dev/null differ
+[1mdiff --git a/Robot Code/bin/org/usfirst/frc/team5199/robot/Robot.class b/Robot Code/bin/org/usfirst/frc/team5199/robot/Robot.class[m
+[1mindex 7628d50..3ac06cf 100644[m
+Binary files a/Robot Code/bin/org/usfirst/frc/team5199/robot/Robot.class and b/Robot Code/bin/org/usfirst/frc/team5199/robot/Robot.class differ
+[1mdiff --git a/Robot Code/bin/org/usfirst/frc/team5199/robot/RobotMap.class b/Robot Code/bin/org/usfirst/frc/team5199/robot/RobotMap.class[m
+[1mindex 0bd54b9..1d2439d 100644[m
+Binary files a/Robot Code/bin/org/usfirst/frc/team5199/robot/RobotMap.class and b/Robot Code/bin/org/usfirst/frc/team5199/robot/RobotMap.class differ
+[1mdiff --git a/Robot Code/src/autonomous/AutonomousManager.java b/Robot Code/src/autonomous/AutonomousManager.java[m
+[1mindex 4331637..11378b6 100644[m
+[1m--- a/Robot Code/src/autonomous/AutonomousManager.java[m	
+[1m+++ b/Robot Code/src/autonomous/AutonomousManager.java[m	
+[36m@@ -36,7 +36,7 @@[m [mpublic class AutonomousManager {[m
+ 			}[m
+ 		} else {[m
+ 			if (!done) {[m
+[31m-				Robot.nBroadcaster.println("Auton end");[m
+[32m+[m				[32mRobot.nBroadcaster.println("AutonomousManager finished");[m
+ 				done = true;[m
+ 			}[m
+ 		}[m
+[36m@@ -46,5 +46,9 @@[m [mpublic class AutonomousManager {[m
+ 	public void add(AutFunction f) {[m
+ 		functions.add(f);[m
+ 	}[m
+[32m+[m[41m	[m
+[32m+[m	[32mpublic boolean isDone(){[m
+[32m+[m		[32mreturn done;[m
+[32m+[m	[32m}[m
+ [m
+ }[m
+[1mdiff --git a/Robot Code/src/autonomous/Turn.java b/Robot Code/src/autonomous/Turn.java[m
+[1mindex b1d825a..09edbcf 100644[m
+[1m--- a/Robot Code/src/autonomous/Turn.java[m	
+[1m+++ b/Robot Code/src/autonomous/Turn.java[m	
+[36m@@ -20,6 +20,7 @@[m [mpublic class Turn implements AutFunction {[m
+ 	private double turnIntegral;[m
+ 	private boolean isDone;[m
+ [m
+[32m+[m	[32m//Turns the robot to angle degrees[m
+ 	public Turn(DriveBase base, double angle) {[m
+ 		this.base = base;[m
+ 		isDone = false;[m
+[36m@@ -70,8 +71,7 @@[m [mpublic class Turn implements AutFunction {[m
+ [m
+ 	@Override[m
+ 	public void init() {[m
+[31m-		// TODO Auto-generated method stub[m
+[31m-		[m
+[32m+[m		[32m//nothing to initialize[m
+ 	}[m
+ [m
+ }[m
+[1mdiff --git a/Robot Code/src/org/usfirst/frc/team5199/robot/Robot.java b/Robot Code/src/org/usfirst/frc/team5199/robot/Robot.java[m
+[1mindex 4eb96da..9e0df05 100644[m
+[1m--- a/Robot Code/src/org/usfirst/frc/team5199/robot/Robot.java[m	
+[1m+++ b/Robot Code/src/org/usfirst/frc/team5199/robot/Robot.java[m	
+[36m@@ -25,7 +25,6 @@[m [mimport networking.RemoteOutput;[m
+ import pixy.PixyFunctions;[m
+ import pixy.PixyGearPID;[m
+ [m
+[31m-[m
+ /**[m
+  * This is a demo program showing the use of the RobotDrive class. The[m
+  * SampleRobot class is the base of a robot application that will automatically[m
+[36m@@ -62,7 +61,7 @@[m [mpublic class Robot extends SampleRobot {[m
+ 	private TurretControl turretControl;[m
+ 	private IntakeControl intakeControl;[m
+ 	private TransportControl transportControl;[m
+[31m-	[m
+[32m+[m
+ 	private PixyGearPID pixyGear;[m
+ 	private PixyFunctions pixyFunc;[m
+ 	private Vector2 gear, shooter;[m
+[36m@@ -89,10 +88,10 @@[m [mpublic class Robot extends SampleRobot {[m
+ 		turret = new Turret();[m
+ 		intake = new Intake();[m
+ 		transport = new Transport();[m
+[31m-		[m
+[31m-		gear = new Vector2(0,0);[m
+[31m-		shooter = new Vector2(0,0);[m
+[31m-		[m
+[32m+[m
+[32m+[m		[32mgear = new Vector2(0, 0);[m
+[32m+[m		[32mshooter = new Vector2(0, 0);[m
+[32m+[m
+ 		pixyFunc = new PixyFunctions(gear, shooter);[m
+ 		pixyGear = new PixyGearPID(gear, base);[m
+ 	}[m
+[36m@@ -105,32 +104,33 @@[m [mpublic class Robot extends SampleRobot {[m
+ 		// autManager.add(new Turn(base, 180));[m
+ 		// autManager.add(new Turn(base, 0));[m
+ [m
+[31m-		autManager.add(new Turn(base, 0));[m
+[31m-		autManager.add(new MoveForwardInInches(base, 36));[m
+[31m-		autManager.add(new Turn(base, 270));[m
+[31m-		autManager.add(new MoveForwardInInches(base, 36));[m
+[31m-		autManager.add(new Turn(base, 180));[m
+[31m-		autManager.add(new MoveForwardInInches(base, 36));[m
+[31m-		autManager.add(new Turn(base, 90));[m
+[31m-		autManager.add(new MoveForwardInInches(base, 36));[m
+[31m-		autManager.add(new Turn(base, 0));[m
+[31m-		[m
+[31m-		[m
+[31m-		autManager.add(new Stop(base, turret, intake));[m
+[32m+[m		[32m// //Move the robot in a 36 inch square[m
+[32m+[m		[32m// autManager.add(new Turn(base, 0));[m
+[32m+[m		[32m// autManager.add(new MoveForwardInInches(base, 36));[m
+[32m+[m		[32m// autManager.add(new Turn(base, 270));[m
+[32m+[m		[32m// autManager.add(new MoveForwardInInches(base, 36));[m
+[32m+[m		[32m// autManager.add(new Turn(base, 180));[m
+[32m+[m		[32m// autManager.add(new MoveForwardInInches(base, 36));[m
+[32m+[m		[32m// autManager.add(new Turn(base, 90));[m
+[32m+[m		[32m// autManager.add(new MoveForwardInInches(base, 36));[m
+[32m+[m		[32m// autManager.add(new Turn(base, 0));[m
+ [m
+ 		autManager.init();[m
+ [m
+[31m-		while (isAutonomous() && isEnabled()) {[m
+[32m+[m		[32mwhile (isAutonomous() && isEnabled() && !autManager.isDone()) {[m
+ 			autManager.update();[m
+ 		}[m
+ [m
+[32m+[m		[32mnew Stop(base, turret, intake).update(1);[m
+[32m+[m
+[32m+[m		[32mRobot.nBroadcaster.println("End of autonomous");[m
+ 	}[m
+ [m
+ 	@Override[m
+ 	public void operatorControl() {[m
+ 		Robot.nBroadcaster.println("\nStarting TeleOp");[m
+ [m
+[31m-		sensors.getGyro().reset(); [m
+[32m+[m		[32msensors.getGyro().reset();[m
+ [m
+ 		driveControl = new DriveControl(base, controller);[m
+ 		turretControl = new TurretControl(turret, joystick, Vector2.ZERO.clone());[m
+[36m@@ -148,11 +148,11 @@[m [mpublic class Robot extends SampleRobot {[m
+ [m
+ 		while (isOperatorControl() && isEnabled()) {[m
+ 			mainLoop.update();[m
+[31m-			if(joystick.getButton(2)) {[m
+[32m+[m			[32mif (joystick.getButton(2)) {[m
+ 				pixyFunc.turnAndGoStraightAuton();[m
+ 				pixyGear.pixyGear();[m
+ 			}[m
+[31m-			if(joystick.getButton(1)) {[m
+[32m+[m			[32mif (joystick.getButton(1)) {[m
+ 				pixyFunc.alignShooterX();[m
+ 				turretControl.autoaim();[m
+ 			}[m

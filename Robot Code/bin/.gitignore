@@ -1,7 +1,5 @@
-/drive/
-/org/
-/turret/
-/util/
-/intake/
+/pixy/
+/sensors/
 /interfaces/
-/controllers/
+/autonomous/
+/org/
