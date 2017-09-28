@@ -2,4 +2,15 @@
 /sensors/
 /interfaces/
 /autonomous/
+/controllers/
+/drive/
+/intake/
+/interfaces/
+/maths/
+/networking/
 /org/
+/pixy/
+/sensors/
+/transport/
+/turret/
+/util/

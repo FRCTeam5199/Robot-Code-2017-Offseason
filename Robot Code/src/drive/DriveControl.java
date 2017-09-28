@@ -5,10 +5,12 @@ import org.usfirst.frc.team5199.robot.Robot;
 import controllers.XBoxController;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import interfaces.LoopModule;
+import pixy.PixyGearPID;
 
 public class DriveControl implements LoopModule {
 	private final DriveBase base;
 	private final ADXRS450_Gyro gyro;
+	private final PixyGearPID pixyGear;
 	// private final JoystickController joystick;
 	private final double speed = .7;
 	private final double rSpeed = 400;
@@ -25,7 +27,7 @@ public class DriveControl implements LoopModule {
 		this.base = base;
 		this.gyro = Robot.sensors.getGyro();
 		this.controller = controller;
-
+		this.pixyGear = new PixyGearPID(base);
 		driveMode = DriveMode.POINT;
 	}
 
@@ -169,6 +171,10 @@ public class DriveControl implements LoopModule {
 
 		base.move(controller.getStickLY() - turnSpeed, controller.getStickLY() + turnSpeed);
 
+	}
+	
+	public void PixyGearAlign() {
+		pixyGear.pixyGear();
 	}
 
 	public DriveBase getBase() {

@@ -36,7 +36,7 @@ public class AutonomousManager {
 			}
 		} else {
 			if (!done) {
-				Robot.nBroadcaster.println("Auton end");
+				Robot.nBroadcaster.println("AutonomousManager finished");
 				done = true;
 			}
 		}
@@ -45,6 +45,10 @@ public class AutonomousManager {
 
 	public void add(AutFunction f) {
 		functions.add(f);
+	}
+	
+	public boolean isDone(){
+		return done;
 	}
 
 }

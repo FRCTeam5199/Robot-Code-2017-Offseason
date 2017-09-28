@@ -28,7 +28,7 @@ public class TurretControl implements LoopModule {
 	public TurretControl(Turret turret, JoystickController joystick) {
 		this.turret = turret;
 		this.joystick = joystick;
-		target = new Vector2(0, 0);
+		target = new Vector2(0,0);
 		pixyFuncShooter = new PixyFunctionsTurret();
 		lastTarget = target.clone();
 	}
@@ -40,23 +40,20 @@ public class TurretControl implements LoopModule {
 	@Override
 	public void update(long delta) {
 
-		manualControl();
-
-		// if (joystick.getButton(1) || joystick.getButton(2)) {
-		// // autoaim() function needs to be updated to use Pixycam
-		// // autoaim();
-		// setRPM(joystick.getScaledSlider() * 6000);
-		//
-		// } else {
-		// manualControl();
-		// integralTurret = 0;
-		// }
+		if (joystick.getButton(1) || joystick.getButton(2)) {
+			// autoaim() function needs to be updated to use Pixycam
+			// autoaim();
+			setRPM(joystick.getScaledSlider() * 100);
+		} else {
+			manualControl();
+			integralTurret = 0;
+		}
 	}
 
 	public void manualControl() {
 		turret.setTurret(joystick.getZ() * .3);
 		if (joystick.getTrigger()) {
-			setRPM(joystick.getScaledSlider() * 6000);
+			turret.setFlyWheel(joystick.getScaledSlider());
 		} else {
 			turret.setFlyWheel(0);
 		}
@@ -67,8 +64,11 @@ public class TurretControl implements LoopModule {
 	public void autoaim() {
 		// turret will try to move so that Target.x becomes 0
 		double motorSpeed;
+<<<<<<< HEAD
 
+=======
 		target = pixyFuncShooter.getTarget();
+>>>>>>> ff34d8b410dac4ab0b3bb52256636d545c509562
 		integralTurret += target.getX();
 		if (Math.abs(integralTurret) > 1 / iTurret) {
 			if (integralTurret > 0) {
