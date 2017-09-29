@@ -12,7 +12,7 @@ public class Turn implements AutFunction {
 	private final DriveBase base;
 
 	private final double p = 0.07;
-	private final double i = 0.00002;
+	private final double i = 0.0000002;
 	private final double d = 0.02;
 	private final double acceptRange = 3;
 	private final double acceptRangeRate = 2;
@@ -20,7 +20,7 @@ public class Turn implements AutFunction {
 	private double turnIntegral;
 	private boolean isDone;
 
-	//Turns the robot to angle degrees
+	// Turns the robot to angle degrees
 	public Turn(DriveBase base, double angle) {
 		this.base = base;
 		isDone = false;
@@ -53,7 +53,7 @@ public class Turn implements AutFunction {
 			error += 360;
 		}
 
-		turnIntegral += error;
+		turnIntegral += error * deltaTime;
 
 		double turnSpeed = error * p - gyro.getRate() * d + turnIntegral * i;
 
@@ -71,7 +71,7 @@ public class Turn implements AutFunction {
 
 	@Override
 	public void init() {
-		//nothing to initialize
+		// nothing to initialize
 	}
 
 }

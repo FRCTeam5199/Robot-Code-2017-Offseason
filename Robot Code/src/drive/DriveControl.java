@@ -38,12 +38,14 @@ public class DriveControl implements LoopModule {
 	@Override
 	public void update(long delta) {
 		selectDriveMode();
-//		Robot.nBroadcaster.println(Robot.sensors.getAccelerometer().getX() + " \t"
-//				+ Robot.sensors.getAccelerometer().getY() + " \t" + Robot.sensors.getAccelerometer().getZ());
-		
+		// Robot.nBroadcaster.println(Robot.sensors.getAccelerometer().getX() +
+		// " \t"
+		// + Robot.sensors.getAccelerometer().getY() + " \t" +
+		// Robot.sensors.getAccelerometer().getZ());
+
 		switch (driveMode) {
 		case POINT:
-			pointControl();
+			pointControl(delta);
 			// Robot.nBroadcaster.println("Point Control");
 			break;
 		case TANK_ASSISTED:
@@ -129,9 +131,9 @@ public class DriveControl implements LoopModule {
 		base.move(controller.getStickLY() - turnSpeed, controller.getStickLY() + turnSpeed);
 	}
 
-	public void pointControl() {
+	public void pointControl(long delta) {
 		double p = 0.04;
-		double i = 0.0001;
+		double i = 0.000001;
 		double d = 0.005;
 		double deadzone = 0.5;
 
@@ -165,14 +167,14 @@ public class DriveControl implements LoopModule {
 			error += 360;
 		}
 
-		integral += error;
+		integral += error * delta;
 
 		double turnSpeed = error * p - gyro.getRate() * d + integral * i;
 
 		base.move(controller.getStickLY() - turnSpeed, controller.getStickLY() + turnSpeed);
 
 	}
-	
+
 	public void PixyGearAlign() {
 		pixyGear.pixyGear();
 	}

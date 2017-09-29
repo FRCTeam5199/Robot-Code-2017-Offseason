@@ -15,12 +15,15 @@ public class MoveForwardInInches implements AutFunction {
 
 	public boolean isDone = false;
 
-	final double P = 0.05d, I = 0.00015d, D = 0.01d;
+	final double P = 0.05d, I = 0.0000015d, D = 0.01d;
 	double currentTravelDist, errorRate, integral;
-	double maxAcceptableDistError = 1d; // The robot can be x inches off from target and it will be okay.
-	double maxAcceptableRateError = 3d; // The robot can be moving at x inches/sec and it will be okay.
+	double maxAcceptableDistError = 1d; // The robot can be x inches off from
+										// target and it will be okay.
+	double maxAcceptableRateError = 3d; // The robot can be moving at x
+										// inches/sec and it will be okay.
 	double inchesToMove;
-	double distError; // The difference between the inchesToMove and the average of
+	double distError; // The difference between the inchesToMove and the average
+						// of
 						// rightWheelTravelDist and leftWheelTravelDist
 
 	/**
@@ -41,19 +44,22 @@ public class MoveForwardInInches implements AutFunction {
 
 	@Override
 	public void update(long deltaTime) {
-		// Get the new travel distance from the average travel distance of the left and
+		// Get the new travel distance from the average travel distance of the
+		// left and
 		// right motors.
 
 		// -------------Left encoder is not working atm
-		// currentTravelDist = (Robot.sensors.getRightWheelEncoder().getDistance()
+		// currentTravelDist =
+		// (Robot.sensors.getRightWheelEncoder().getDistance()
 		// + Robot.sensors.getLeftWheelEncoder().getDistance()) / 2;
 		currentTravelDist = Robot.sensors.getRightWheelEncoder().getDistance();
 
-		// Positive distError is not reached target, Negative is overshot target.
+		// Positive distError is not reached target, Negative is overshot
+		// target.
 		distError = inchesToMove - currentTravelDist;
 
 		// ????????????????????????
-		integral += distError;
+		integral += distError * deltaTime;
 		if (Math.abs(integral) > 1 / I) {
 			if (integral > 0) {
 				integral = 1 / I;
@@ -71,7 +77,8 @@ public class MoveForwardInInches implements AutFunction {
 		motorSpeed -= D * errorRate;
 		motorSpeed += I * integral;
 
-		// Robot.nBroadcaster.println(distError + "\t" + (distError - lastError));
+		// Robot.nBroadcaster.println(distError + "\t" + (distError -
+		// lastError));
 		// Robot.nBroadcaster.println(errorRate);
 
 		Robot.nBroadcaster.println(distError + "\t" + errorRate + "\t" + I * integral);

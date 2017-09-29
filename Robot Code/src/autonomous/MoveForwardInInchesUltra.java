@@ -1,11 +1,10 @@
 package autonomous;
 
 import org.usfirst.frc.team5199.robot.Robot;
-import org.usfirst.frc.team5199.robot.RobotMap;
 
 import drive.DriveBase;
-import edu.wpi.first.wpilibj.Encoder;
 import interfaces.AutFunction;
+import sensors.Sensors;
 
 public class MoveForwardInInchesUltra implements AutFunction {
 
@@ -13,15 +12,15 @@ public class MoveForwardInInchesUltra implements AutFunction {
 
 	public boolean isDone = false;
 
-	final double P = 0.025d, I = 0.0002d, D = 0.002d;
-	double currentTravelDist, errorRate, integral;
-	double maxAcceptableDistError = 1d; // The robot can be x inches off from target and it will be okay.
-	double maxAcceptableRateError = 0.01d; // The robot can be moving at x inches/sec and it will be okay.
-	double inchesToMove;
-	double distError; // The difference between the inchesToMove and the average of
-						// rightWheelTravelDist and leftWheelTravelDist
-	double lastPos =0;
-	
+	final double P = 0.00d, I = 0.00d, D = 0.00d;
+	double error, errorRate, integral;
+	double maxAcceptableDistError = 1d; // The robot can be x cm off from
+										// target and it will be okay.
+	double maxAcceptableRateError = 0.01d; // The robot can be moving at x
+											// cm/sec and it will be okay.
+	double target;
+
+	double lastPos = 0;
 
 	/**
 	 * Will move the robot forward by inches specified in inchesToMove.
@@ -31,27 +30,24 @@ public class MoveForwardInInchesUltra implements AutFunction {
 	 * @param inchesToMove
 	 *            How many inches you want the robot to move.
 	 */
-	public MoveForwardInInchesUltra(DriveBase driveBase, int inchesToMove) {
+	public MoveForwardInInchesUltra(DriveBase driveBase, int distance) {
 		this.driveBase = driveBase;
-		this.inchesToMove = inchesToMove;
+		target = ultraAverage() - distance;
 
 	}
 
 	@Override
 	public void update(long deltaTime) {
-		// Get the new travel distance from the average travel distance of the left and
+		// Get the new travel distance from the average travel distance of the
+		// left and
 		// right motors.
 
-		// -------------Left encoder is not working atm
-		// currentTravelDist = (Robot.sensors.getRightWheelEncoder().getDistance()
-		// + Robot.sensors.getLeftWheelEncoder().getDistance()) / 2;
-		currentTravelDist = Robot.sensors.ultraDistanceLeft();
-
-		// Positive distError is not reached target, Negative is overshot target.
-		distError = currentTravelDist - inchesToMove;
+		// Positive distError is not reached target, Negative is overshot
+		// target.
+		error = ultraAverage() - target;
 
 		// ????????????????????????
-		integral += distError;
+		integral += error * deltaTime;
 		if (Math.abs(integral) > 1 / I) {
 			if (integral > 0) {
 				integral = 1 / I;
@@ -60,38 +56,40 @@ public class MoveForwardInInchesUltra implements AutFunction {
 			}
 		}
 
-		// errorRate = (rightEncoder.getRate() + leftEncoder.getRate())/2;
-		errorRate = Robot.sensors.ultraDistanceLeft()-lastPos;
+		errorRate = (ultraAverage() - lastPos) / deltaTime;
 
 		// Motor speed is recalculated every time this function is called.
 		double motorSpeed = 0;
-		motorSpeed += P * distError;
+		motorSpeed += P * error;
 		motorSpeed -= D * errorRate;
 		motorSpeed += I * integral;
 
-		// Robot.nBroadcaster.println(distError + "\t" + (distError - lastError));
+		// Robot.nBroadcaster.println(distError + "\t" + (distError -
+		// lastError));
 		// Robot.nBroadcaster.println(errorRate);
 
-		Robot.nBroadcaster.println(P * distError + "\t" + D * errorRate + "\t" + I * integral);
+		Robot.nBroadcaster.println(P * error + "\t" + D * errorRate + "\t" + I * integral);
 		driveBase.move(motorSpeed, motorSpeed);
-		lastPos = Robot.sensors.ultraDistanceLeft();
+		lastPos = ultraAverage();
 
 		// If the robot is within an acceptable range of the currentTravelDist.
-		if (Math.abs(distError) <= maxAcceptableDistError && Math.abs(errorRate) <= maxAcceptableRateError) {
+		if (Math.abs(error) <= maxAcceptableDistError && Math.abs(errorRate) <= maxAcceptableRateError) {
 			isDone = true;
 		}
 	}
 
 	public void init() {
 		// Reset the distance to zero.
-		Robot.sensors.getRightWheelEncoder().reset();
-		Robot.sensors.getLeftWheelEncoder().reset();
-		lastPos = Robot.sensors.ultraDistanceLeft();
+		lastPos = ultraAverage();
 	}
 
 	@Override
 	public boolean isDone() {
 		return isDone;
+	}
+
+	private double ultraAverage() {
+		return (Sensors.ultraDistanceLeft() + Sensors.ultraDistanceRight()) / 2;
 	}
 
 }

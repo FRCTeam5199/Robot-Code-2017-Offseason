@@ -3,9 +3,7 @@ package org.usfirst.frc.team5199.robot;
 import edu.wpi.first.wpilibj.SampleRobot;
 
 import autonomous.*;
-import controllers.AutController;
-import controllers.JoystickController;
-import controllers.XBoxController;
+import controllers.*;
 
 import sensors.Sensors;
 import drive.DriveBase;
@@ -14,11 +12,9 @@ import intake.Intake;
 import intake.IntakeControl;
 import transport.Transport;
 import transport.TransportControl;
-
 import turret.Turret;
 import turret.TurretControl;
 
-import maths.Vector2;
 import util.ClockRegulator;
 import networking.RemoteOutput;
 
