@@ -7,7 +7,7 @@ public class TransportControl implements LoopModule {
 	private final Transport transport;
 	private final JoystickController joystick;
 
-	private final double speed = 1;
+	private final double speed = .9;
 
 	public TransportControl(Transport transport, JoystickController joystick) {
 		this.transport = transport;
@@ -23,7 +23,7 @@ public class TransportControl implements LoopModule {
 	@Override
 	public void update(long delta) {
 		// TODO Auto-generated method stub
-		if (joystick.getButton(12)) {
+		if (joystick.getButton(1)||joystick.getButton(12)) {
 			transport.setSpeed(speed);
 		}else {
 			transport.setSpeed(0);
