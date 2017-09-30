@@ -8,7 +8,6 @@ import drive.DriveBase;
 import drive.DriveControl;
 
 import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import intake.Intake;
@@ -204,6 +203,7 @@ public class Robot extends SampleRobot {
 		mainLoop.add(turretControl);
 		mainLoop.add(intakeControl);
 		mainLoop.add(transportControl);
+		mainLoop.add(climberControl);
 
 		mainLoop.init();
 
