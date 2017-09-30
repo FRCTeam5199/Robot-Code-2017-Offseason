@@ -1,6 +1,3 @@
-/pixy/
-/sensors/
-/interfaces/
 /autonomous/
 /controllers/
 /drive/
@@ -14,3 +11,4 @@
 /transport/
 /turret/
 /util/
+/dashboard/

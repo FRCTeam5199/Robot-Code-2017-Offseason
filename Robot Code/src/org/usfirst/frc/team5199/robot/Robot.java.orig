@@ -3,22 +3,24 @@ package org.usfirst.frc.team5199.robot;
 import edu.wpi.first.wpilibj.SampleRobot;
 
 import autonomous.*;
-
-import controllers.JoystickController;
-import controllers.XBoxController;
+import controllers.*;
 
 import sensors.Sensors;
 import drive.DriveBase;
 import drive.DriveControl;
+<<<<<<< HEAD
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.SampleRobot;
+=======
+>>>>>>> a2c473bac491dfee9e5f670154234fdae1402aff
 import intake.Intake;
 import intake.IntakeControl;
 import transport.Transport;
 import transport.TransportControl;
-
 import turret.Turret;
 import turret.TurretControl;
 
-import maths.Vector2;
 import util.ClockRegulator;
 import networking.RemoteOutput;
 
@@ -53,13 +55,15 @@ public class Robot extends SampleRobot {
 
 	private XBoxController controller;
 	private JoystickController joystick;
+	private AutController autController;
 
 	private DriveControl driveControl;
 	private TurretControl turretControl;
 	private IntakeControl intakeControl;
 	private TransportControl transportControl;
-
-	private Vector2 gear, shooter;
+	
+	private UsbCamera camera1;
+	
 
 	public Robot() {
 
@@ -73,30 +77,27 @@ public class Robot extends SampleRobot {
 		// currently working on getting this to work without it
 
 		sensors = new Sensors();
+		
+		CameraServer.getInstance().startAutomaticCapture(0);
+		camera1.setResolution(640, 360);
+		camera1.setFPS(15);
 
 		clockRegulator = new ClockRegulator(100);
 
 		controller = new XBoxController(0);
 		joystick = new JoystickController(1);
+		autController = new AutController(2);
 
 		base = new DriveBase();
 		turret = new Turret();
 		intake = new Intake();
 		transport = new Transport();
 
-<<<<<<< HEAD
 		driveControl = new DriveControl(base, controller);
-		turretControl = new TurretControl(turret, joystick, Vector2.ZERO.clone());
+		turretControl = new TurretControl(turret, joystick);
 		intakeControl = new IntakeControl(intake, joystick, controller);
 		transportControl = new TransportControl(transport, joystick);
 
-		gear = new Vector2(0, 0);
-		shooter = new Vector2(0, 0);
-
-		pixyFunc = new PixyFunctions(gear, shooter);
-		pixyGear = new PixyGearPID(gear, base);
-=======
->>>>>>> ff34d8b410dac4ab0b3bb52256636d545c509562
 	}
 
 	@Override
@@ -104,29 +105,79 @@ public class Robot extends SampleRobot {
 		sensors.getGyro().reset();
 		AutonomousManager autManager = new AutonomousManager(clockRegulator);
 
+		// // Forward test
+		// autManager.add(new MoveForwardInInches(base, 36));
+
+		// // Square test
+		// autManager.add(new Turn(base, 0));
+		// autManager.add(new MoveForwardInInches(base, 36));
+		// autManager.add(new Turn(base, 270));
+		// autManager.add(new MoveForwardInInches(base, 36));
+		// autManager.add(new Turn(base, 180));
+		// autManager.add(new MoveForwardInInches(base, 36));
+		// autManager.add(new Turn(base, 90));
+		// autManager.add(new MoveForwardInInches(base, 36));
+		// autManager.add(new Turn(base, 0));
+
+		// // Turn test
+		// autManager.add(new Turn(base, 180));
+		// autManager.add(new Turn(base, 0));
+		// autManager.add(new Turn(base, 90));
+		// autManager.add(new Turn(base, -90));
+		// autManager.add(new Turn(base, 0));
+		// autManager.add(new Turn(base, -90));
+		// autManager.add(new Turn(base, 90));
+		// autManager.add(new Turn(base, 0));
+		// autManager.add(new Turn(base, 900));
+		// autManager.add(new Turn(base, 360));
+		// autManager.add(new Turn(base, 120));
+		// autManager.add(new Turn(base, 240));
+		// autManager.add(new Turn(base, 0));
+
+		 switch (autController.getAutMode()) {
+		
+		 case 1:
+		 autManager.add(new MoveForwardInInches(base, 81));
+		 autManager.add(new Turn(base, -60));
+		 autManager.add(new PixyForward(driveControl));
+		 autManager.add(new MoveForwardInInchesUltra(base, 4));
+		 autManager.add(new FlyWheelSpeed(turretControl, 3145, turret));
+		 autManager.add(new TurretAim(turretControl, 3145, turret));
+		 autManager.add(new Shoot(turretControl, 3145, intake, transport));
+		
+		 case 2:
+		 autManager.add(new MoveForwardInInches(base, 81));
+		 autManager.add(new Turn(base, -60));
+		 autManager.add(new PixyForward(driveControl));
+		 autManager.add(new MoveForwardInInchesUltra(base, 4));
+		
+		 case 3:
+		 autManager.add(new PixyForward(driveControl));
+		 autManager.add(new MoveForwardInInchesUltra(base, 4));
+		 autManager.add(new FlyWheelSpeed(turretControl, 3425, turret));
+		 autManager.add(new TurretAim(turretControl, 3425, turret));
+		 autManager.add(new Shoot(turretControl, 3425, intake, transport));
+		
+		 case 4:
+		 autManager.add(new MoveForwardInInches(base, 81));
+		 autManager.add(new Turn(base, 60));
+		 autManager.add(new PixyForward(driveControl));
+		 autManager.add(new MoveForwardInInchesUltra(base, 4));
+		 case 5:
+		 autManager.add(new MoveForwardInInches(base, 81));
+		 autManager.add(new Turn(base, 60));
+		 autManager.add(new PixyForward(driveControl));
+		 autManager.add(new MoveForwardInInchesUltra(base, 4));
+		 autManager.add(new FlyWheelSpeed(turretControl, 3145, turret));
+		 autManager.add(new TurretAim(turretControl, 3145, turret));
+		 autManager.add(new Shoot(turretControl, 3145, intake, transport));
+		
+		 case 6:
+		 autManager.add(new MoveForwardInInches(base, 80));
+		 }
+
 		autManager.init();
 
-		// autManager.add(new MoveForwardInInches(base, 81));
-		// autManager.add(new Turn(base, 60));
-		// // autManager.add(new PixyForward(pixyFunc, pixyGear));
-		// autManager.add(new MoveForwardInInchesUltra(base, 4));
-		// autManager.add(new FlyWheelSpeed(turretControl, 3145, turret));
-		// // autManager.add(new TurretAim(pixyFunc, turretControl, 3145, turret));
-
-
-		autManager.add(new MoveForwardInInches(base, -36));
-
-<<<<<<< HEAD
-=======
-		autManager.init();
-		autManager.add(new MoveForwardInInches(base, 81));
-		autManager.add(new Turn(base, 60));
-		autManager.add(new PixyForward(driveControl));
-		autManager.add(new MoveForwardInInchesUltra(base, 4));
-		autManager.add(new FlyWheelSpeed(turretControl, 3145, turret));
-		autManager.add(new TurretAim(turretControl, 3145, turret));
-		autManager.add(new Shoot(turretControl, 3145, intake, transport));
->>>>>>> ff34d8b410dac4ab0b3bb52256636d545c509562
 		while (isAutonomous() && isEnabled() && !autManager.isDone()) {
 			autManager.update();
 		}
@@ -142,14 +193,6 @@ public class Robot extends SampleRobot {
 
 		sensors.getGyro().reset();
 
-<<<<<<< HEAD
-=======
-		driveControl = new DriveControl(base, controller);
-		turretControl = new TurretControl(turret, joystick);
-		intakeControl = new IntakeControl(intake, joystick, controller);
-		transportControl = new TransportControl(transport, joystick);
-
->>>>>>> ff34d8b410dac4ab0b3bb52256636d545c509562
 		MainLoop mainLoop = new MainLoop(clockRegulator);
 
 		mainLoop.add(driveControl);
