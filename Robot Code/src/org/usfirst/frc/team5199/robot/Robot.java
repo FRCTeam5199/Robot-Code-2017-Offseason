@@ -5,6 +5,8 @@ import controllers.JoystickController;
 import controllers.XBoxController;
 import drive.DriveBase;
 import drive.DriveControl;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.SampleRobot;
 import intake.Intake;
 import intake.IntakeControl;
@@ -52,6 +54,9 @@ public class Robot extends SampleRobot {
 	private TurretControl turretControl;
 	private IntakeControl intakeControl;
 	private TransportControl transportControl;
+	
+	private UsbCamera camera1;
+	
 
 	public Robot() {
 
@@ -65,6 +70,10 @@ public class Robot extends SampleRobot {
 		// currently working on getting this to work without it
 
 		sensors = new Sensors();
+		
+		CameraServer.getInstance().startAutomaticCapture(0);
+		camera1.setResolution(640, 360);
+		camera1.setFPS(15);
 
 		clockRegulator = new ClockRegulator(100);
 
