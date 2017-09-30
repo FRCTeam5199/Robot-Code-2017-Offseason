@@ -35,11 +35,13 @@ public class TurretControl implements LoopModule {
 
 	@Override
 	public void init() {
-	}
+		Robot.dashboard.putDouble("Flywheel rip-ems", 0d);
+		//Robot.dashboard.putData("Flywheel rip-ems", turret.getFlyWheelRPM());	
+		}
 
 	@Override
 	public void update(long delta) {
-
+		Robot.dashboard.putDouble("Flywheel rip-ems", turret.getFlyWheelRPM());
 		manualControl();
 
 		// if (joystick.getButton(1) || joystick.getButton(2)) {

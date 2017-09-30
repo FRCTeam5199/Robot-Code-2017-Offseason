@@ -2,7 +2,7 @@ package org.usfirst.frc.team5199.robot;
 
 import autonomous.*;
 import controllers.*;
-
+import dashboard.DriverCamera;
 import sensors.Sensors;
 import drive.DriveBase;
 import drive.DriveControl;
@@ -10,7 +10,7 @@ import drive.DriveControl;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.SampleRobot;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import intake.Intake;
 import intake.IntakeControl;
 import transport.Transport;
@@ -41,6 +41,7 @@ import networking.RemoteOutput;
 public class Robot extends SampleRobot {
 
 	public static RemoteOutput nBroadcaster;
+	public static SmartDashboard dashboard;
 	public static Sensors sensors;
 
 	private ClockRegulator clockRegulator;
@@ -59,7 +60,7 @@ public class Robot extends SampleRobot {
 	private IntakeControl intakeControl;
 	private TransportControl transportControl;
 	
-	private UsbCamera camera1;
+	private UsbCamera camera;
 	
 
 	public Robot() {
@@ -75,9 +76,7 @@ public class Robot extends SampleRobot {
 
 		sensors = new Sensors();
 		
-		CameraServer.getInstance().startAutomaticCapture(0);
-		camera1.setResolution(640, 360);
-		camera1.setFPS(15);
+		new DriverCamera(camera);
 
 		clockRegulator = new ClockRegulator(100);
 
