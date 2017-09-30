@@ -33,6 +33,7 @@ public class DriveControl implements LoopModule {
 
 	@Override
 	public void init() {
+		Robot.dashboard.putDouble("Pixy Error", 0);
 	}
 
 	@Override
@@ -42,25 +43,29 @@ public class DriveControl implements LoopModule {
 		// " \t"
 		// + Robot.sensors.getAccelerometer().getY() + " \t" +
 		// Robot.sensors.getAccelerometer().getZ());
-
-		switch (driveMode) {
-		case POINT:
-			pointControl(delta);
-			// Robot.nBroadcaster.println("Point Control");
-			break;
-		case TANK_ASSISTED:
-			tankControlAssisted();
-			// Robot.nBroadcaster.println("Tank Assisted Control");
-			break;
-		case ARCADE_ASSISTED:
-			arcadeControlAssisted();
-			// Robot.nBroadcaster.println("Arcade Control Assisted Control");
-			break;
-		case TANK:
-			tankControl();
-			// Robot.nBroadcaster.println("Tank Control");
-			break;
+		if (controller.getButton(8)) {
+			PixyGearAlign(delta);
+		} else {
+			switch (driveMode) {
+			case POINT:
+				pointControl(delta);
+				// Robot.nBroadcaster.println("Point Control");
+				break;
+			case TANK_ASSISTED:
+				tankControlAssisted();
+				// Robot.nBroadcaster.println("Tank Assisted Control");
+				break;
+			case ARCADE_ASSISTED:
+				arcadeControlAssisted();
+				// Robot.nBroadcaster.println("Arcade Control Assisted Control");
+				break;
+			case TANK:
+				tankControl();
+				// Robot.nBroadcaster.println("Tank Control");
+				break;
+			}
 		}
+
 	}
 
 	public void selectDriveMode() {

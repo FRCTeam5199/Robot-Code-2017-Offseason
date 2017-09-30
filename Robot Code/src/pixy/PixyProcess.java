@@ -265,7 +265,7 @@ public class PixyProcess {
 					avgY = block.getAvgY();
 				}
 
-				sumOfBufferX += block.getAvgX() - gearAverageDataValueArrayX[counter];
+				sumOfBufferX += block.getAvgX() - gearAverageDataValueArrayX[counter] -160;
 				if (mode == 1) {
 					sumOfBufferY += block.getAvgY() - gearAverageDataValueArrayY[counter];
 				}
@@ -274,7 +274,7 @@ public class PixyProcess {
 							- gearAverageDataValueArrayBetweenX[counter];
 				}
 
-				gearAverageDataValueArrayX[counter] = block.getAvgX();
+				gearAverageDataValueArrayX[counter] = (short) (block.getAvgX() -160);
 				if (mode == 1) {
 					gearAverageDataValueArrayY[counter] = block.getAvgY();
 				}
@@ -317,10 +317,6 @@ public class PixyProcess {
 				return result;
 			}
 
-		} else {
-			// result[0] = -1;
-			// result [1] = -1;
-			// result [2] = -1;
 		}
 
 		if (displayResults) {

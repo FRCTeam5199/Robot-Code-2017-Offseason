@@ -14,8 +14,7 @@ public class PixyFunctionsFront {
 
 	public static void turnAndGoStraightAuton() {
 		double distance = Robot.sensors.pixyGearXPosCompensated();
-		double distanceOff = distance - 160;
-		targetGear.setX(distanceOff);
+		targetGear.setX(distance);
 	}
 	public Vector2 getTarget() {
 		turnAndGoStraightAuton();
