@@ -8,12 +8,12 @@ import interfaces.LoopModule;
 
 public class ClimberControl implements LoopModule {
 	
-	public final JoystickController joystick;
-	public final Spark climberMotor;
+	private final JoystickController joystick;
+	private final Spark climberMotor;
 	
 	// This is defined in RobotMap as 4 and 5 but Kevin said he wanted 5 and 6.
-	public final int CLIMB_BUTTON_PRIMARY = 5;
-	public final int CLIMB_BUTTON_SECONDARY = 6;
+	private final int CLIMB_BUTTON_PRIMARY = 5;
+	private final int CLIMB_BUTTON_SECONDARY = 6;
 	
 	public ClimberControl(JoystickController joystick) {
 		this.joystick = joystick;
