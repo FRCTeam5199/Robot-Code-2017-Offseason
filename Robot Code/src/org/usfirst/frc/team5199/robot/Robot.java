@@ -59,9 +59,8 @@ public class Robot extends SampleRobot {
 	private TurretControl turretControl;
 	private IntakeControl intakeControl;
 	private TransportControl transportControl;
-	
+
 	private UsbCamera camera;
-	
 
 	public Robot() {
 
@@ -75,7 +74,7 @@ public class Robot extends SampleRobot {
 		// currently working on getting this to work without it
 
 		sensors = new Sensors();
-		
+
 		new DriverCamera(camera);
 
 		clockRegulator = new ClockRegulator(100);
@@ -130,47 +129,54 @@ public class Robot extends SampleRobot {
 		// autManager.add(new Turn(base, 240));
 		// autManager.add(new Turn(base, 0));
 
-		 switch (autController.getAutMode()) {
-		
-		 case 1:
-		 autManager.add(new Move(base, 81));
-		 autManager.add(new Turn(base, -60));
-		 autManager.add(new PixyForward(driveControl));
-		 autManager.add(new MoveUltra(base, 4));
-		 autManager.add(new FlyWheelSpeed(turretControl, 3145, turret));
-		 autManager.add(new TurretAim(turretControl, 3145, turret));
-		 autManager.add(new Shoot(turretControl, 3145, intake, transport));
-		
-		 case 2:
-		 autManager.add(new Move(base, 81));
-		 autManager.add(new Turn(base, -60));
-		 autManager.add(new PixyForward(driveControl));
-		 autManager.add(new MoveUltra(base, 4));
-		
-		 case 3:
-		 autManager.add(new PixyForward(driveControl));
-		 autManager.add(new MoveUltra(base, 4));
-		 autManager.add(new FlyWheelSpeed(turretControl, 3425, turret));
-		 autManager.add(new TurretAim(turretControl, 3425, turret));
-		 autManager.add(new Shoot(turretControl, 3425, intake, transport));
-		
-		 case 4:
-		 autManager.add(new Move(base, 81));
-		 autManager.add(new Turn(base, 60));
-		 autManager.add(new PixyForward(driveControl));
-		 autManager.add(new MoveUltra(base, 4));
-		 case 5:
-		 autManager.add(new Move(base, 81));
-		 autManager.add(new Turn(base, 60));
-		 autManager.add(new PixyForward(driveControl));
-		 autManager.add(new MoveUltra(base, 4));
-		 autManager.add(new FlyWheelSpeed(turretControl, 3145, turret));
-		 autManager.add(new TurretAim(turretControl, 3145, turret));
-		 autManager.add(new Shoot(turretControl, 3145, intake, transport));
-		
-		 case 6:
-		 autManager.add(new Move(base, 80));
-		 }
+		switch (autController.getAutMode()) {
+
+		case 1:
+			autManager.add(new Move(base, 81));
+			autManager.add(new Turn(base, -60));
+			autManager.add(new PixyForward(driveControl));
+			autManager.add(new MoveUltra(base, 4));
+			autManager.add(new FlyWheelSpeed(turretControl, 3145, turret));
+			autManager.add(new TurretAim(turretControl, 3145, turret));
+			autManager.add(new Shoot(turretControl, 3145, intake, transport));
+			break;
+
+		case 2:
+			autManager.add(new Move(base, 81));
+			autManager.add(new Turn(base, -60));
+			autManager.add(new PixyForward(driveControl));
+			autManager.add(new MoveUltra(base, 4));
+			break;
+
+		case 3:
+			autManager.add(new PixyForward(driveControl));
+			autManager.add(new MoveUltra(base, 4));
+			autManager.add(new FlyWheelSpeed(turretControl, 3425, turret));
+			autManager.add(new TurretAim(turretControl, 3425, turret));
+			autManager.add(new Shoot(turretControl, 3425, intake, transport));
+			break;
+
+		case 4:
+			autManager.add(new Move(base, 81));
+			autManager.add(new Turn(base, 60));
+			autManager.add(new PixyForward(driveControl));
+			autManager.add(new MoveUltra(base, 4));
+			break;
+
+		case 5:
+			autManager.add(new Move(base, 81));
+			autManager.add(new Turn(base, 60));
+			autManager.add(new PixyForward(driveControl));
+			autManager.add(new MoveUltra(base, 4));
+			autManager.add(new FlyWheelSpeed(turretControl, 3145, turret));
+			autManager.add(new TurretAim(turretControl, 3145, turret));
+			autManager.add(new Shoot(turretControl, 3145, intake, transport));
+			break;
+
+		case 6:
+			autManager.add(new Move(base, 80));
+			break;
+		}
 
 		autManager.init();
 
