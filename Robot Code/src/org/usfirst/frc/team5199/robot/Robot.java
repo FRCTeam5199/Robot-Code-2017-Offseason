@@ -1,22 +1,25 @@
 package org.usfirst.frc.team5199.robot;
 
 import autonomous.*;
-import controllers.JoystickController;
-import controllers.XBoxController;
+import controllers.*;
+
+import sensors.Sensors;
 import drive.DriveBase;
 import drive.DriveControl;
+
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.SampleRobot;
+
 import intake.Intake;
 import intake.IntakeControl;
-import maths.Vector2;
-import networking.RemoteOutput;
 import transport.Transport;
 import transport.TransportControl;
 import turret.Turret;
 import turret.TurretControl;
+
 import util.ClockRegulator;
+import networking.RemoteOutput;
 
 /**
  * This is a demo program showing the use of the RobotDrive class. The
@@ -49,6 +52,7 @@ public class Robot extends SampleRobot {
 
 	private XBoxController controller;
 	private JoystickController joystick;
+	private AutController autController;
 
 	private DriveControl driveControl;
 	private TurretControl turretControl;
@@ -79,11 +83,17 @@ public class Robot extends SampleRobot {
 
 		controller = new XBoxController(0);
 		joystick = new JoystickController(1);
+		autController = new AutController(2);
 
 		base = new DriveBase();
 		turret = new Turret();
 		intake = new Intake();
 		transport = new Transport();
+
+		driveControl = new DriveControl(base, controller);
+		turretControl = new TurretControl(turret, joystick);
+		intakeControl = new IntakeControl(intake, joystick, controller);
+		transportControl = new TransportControl(transport, joystick);
 
 	}
 
@@ -92,28 +102,86 @@ public class Robot extends SampleRobot {
 		sensors.getGyro().reset();
 		AutonomousManager autManager = new AutonomousManager(clockRegulator);
 
+		// // Forward test
+		// autManager.add(new MoveForwardInInches(base, 36));
+
+		// // Square test
+		// autManager.add(new Turn(base, 0));
+		// autManager.add(new MoveForwardInInches(base, 36));
+		// autManager.add(new Turn(base, 270));
+		// autManager.add(new MoveForwardInInches(base, 36));
 		// autManager.add(new Turn(base, 180));
+		// autManager.add(new MoveForwardInInches(base, 36));
+		// autManager.add(new Turn(base, 90));
+		// autManager.add(new MoveForwardInInches(base, 36));
 		// autManager.add(new Turn(base, 0));
 
-		autManager.add(new Turn(base, 0));
-		autManager.add(new MoveForwardInInches(base, 36));
-		autManager.add(new Turn(base, 270));
-		autManager.add(new MoveForwardInInches(base, 36));
-		autManager.add(new Turn(base, 180));
-		autManager.add(new MoveForwardInInches(base, 36));
-		autManager.add(new Turn(base, 90));
-		autManager.add(new MoveForwardInInches(base, 36));
-		autManager.add(new Turn(base, 0));
+		// // Turn test
+		// autManager.add(new Turn(base, 180));
+		// autManager.add(new Turn(base, 0));
+		// autManager.add(new Turn(base, 90));
+		// autManager.add(new Turn(base, -90));
+		// autManager.add(new Turn(base, 0));
+		// autManager.add(new Turn(base, -90));
+		// autManager.add(new Turn(base, 90));
+		// autManager.add(new Turn(base, 0));
+		// autManager.add(new Turn(base, 900));
+		// autManager.add(new Turn(base, 360));
+		// autManager.add(new Turn(base, 120));
+		// autManager.add(new Turn(base, 240));
+		// autManager.add(new Turn(base, 0));
+
+		 switch (autController.getAutMode()) {
 		
+		 case 1:
+		 autManager.add(new MoveForwardInInches(base, 81));
+		 autManager.add(new Turn(base, -60));
+		 autManager.add(new PixyForward(driveControl));
+		 autManager.add(new MoveForwardInInchesUltra(base, 4));
+		 autManager.add(new FlyWheelSpeed(turretControl, 3145, turret));
+		 autManager.add(new TurretAim(turretControl, 3145, turret));
+		 autManager.add(new Shoot(turretControl, 3145, intake, transport));
 		
-		autManager.add(new Stop(base, turret, intake));
+		 case 2:
+		 autManager.add(new MoveForwardInInches(base, 81));
+		 autManager.add(new Turn(base, -60));
+		 autManager.add(new PixyForward(driveControl));
+		 autManager.add(new MoveForwardInInchesUltra(base, 4));
+		
+		 case 3:
+		 autManager.add(new PixyForward(driveControl));
+		 autManager.add(new MoveForwardInInchesUltra(base, 4));
+		 autManager.add(new FlyWheelSpeed(turretControl, 3425, turret));
+		 autManager.add(new TurretAim(turretControl, 3425, turret));
+		 autManager.add(new Shoot(turretControl, 3425, intake, transport));
+		
+		 case 4:
+		 autManager.add(new MoveForwardInInches(base, 81));
+		 autManager.add(new Turn(base, 60));
+		 autManager.add(new PixyForward(driveControl));
+		 autManager.add(new MoveForwardInInchesUltra(base, 4));
+		 case 5:
+		 autManager.add(new MoveForwardInInches(base, 81));
+		 autManager.add(new Turn(base, 60));
+		 autManager.add(new PixyForward(driveControl));
+		 autManager.add(new MoveForwardInInchesUltra(base, 4));
+		 autManager.add(new FlyWheelSpeed(turretControl, 3145, turret));
+		 autManager.add(new TurretAim(turretControl, 3145, turret));
+		 autManager.add(new Shoot(turretControl, 3145, intake, transport));
+		
+		 case 6:
+		 autManager.add(new MoveForwardInInches(base, 80));
+		 }
 
 		autManager.init();
 
-		while (isAutonomous() && isEnabled()) {
+		while (isAutonomous() && isEnabled() && !autManager.isDone()) {
 			autManager.update();
 		}
 
+		new Stop(base, turret, intake).update(1);
+
+		Robot.nBroadcaster.println("End of autonomous");
 	}
 
 	@Override
@@ -121,11 +189,6 @@ public class Robot extends SampleRobot {
 		Robot.nBroadcaster.println("\nStarting TeleOp");
 
 		sensors.getGyro().reset();
-
-		driveControl = new DriveControl(base, controller);
-		turretControl = new TurretControl(turret, joystick, Vector2.ZERO.clone());
-		intakeControl = new IntakeControl(intake, joystick, controller);
-		transportControl = new TransportControl(transport, joystick);
 
 		MainLoop mainLoop = new MainLoop(clockRegulator);
 
@@ -138,6 +201,9 @@ public class Robot extends SampleRobot {
 
 		while (isOperatorControl() && isEnabled()) {
 			mainLoop.update();
+			if (joystick.getButton(2)) {
+				driveControl.PixyGearAlign();
+			}
 		}
 
 	}

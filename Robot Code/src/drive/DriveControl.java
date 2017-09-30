@@ -5,10 +5,12 @@ import org.usfirst.frc.team5199.robot.Robot;
 import controllers.XBoxController;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import interfaces.LoopModule;
+import pixy.PixyGearPID;
 
 public class DriveControl implements LoopModule {
 	private final DriveBase base;
 	private final ADXRS450_Gyro gyro;
+	private final PixyGearPID pixyGear;
 	// private final JoystickController joystick;
 	private final double speed = .7;
 	private final double rSpeed = 400;
@@ -25,7 +27,7 @@ public class DriveControl implements LoopModule {
 		this.base = base;
 		this.gyro = Robot.sensors.getGyro();
 		this.controller = controller;
-
+		this.pixyGear = new PixyGearPID(base);
 		driveMode = DriveMode.POINT;
 	}
 
@@ -36,12 +38,14 @@ public class DriveControl implements LoopModule {
 	@Override
 	public void update(long delta) {
 		selectDriveMode();
-//		Robot.nBroadcaster.println(Robot.sensors.getAccelerometer().getX() + " \t"
-//				+ Robot.sensors.getAccelerometer().getY() + " \t" + Robot.sensors.getAccelerometer().getZ());
-		
+		// Robot.nBroadcaster.println(Robot.sensors.getAccelerometer().getX() +
+		// " \t"
+		// + Robot.sensors.getAccelerometer().getY() + " \t" +
+		// Robot.sensors.getAccelerometer().getZ());
+
 		switch (driveMode) {
 		case POINT:
-			pointControl();
+			pointControl(delta);
 			// Robot.nBroadcaster.println("Point Control");
 			break;
 		case TANK_ASSISTED:
@@ -127,9 +131,9 @@ public class DriveControl implements LoopModule {
 		base.move(controller.getStickLY() - turnSpeed, controller.getStickLY() + turnSpeed);
 	}
 
-	public void pointControl() {
+	public void pointControl(long delta) {
 		double p = 0.04;
-		double i = 0.0001;
+		double i = 0.000001;
 		double d = 0.005;
 		double deadzone = 0.5;
 
@@ -163,12 +167,16 @@ public class DriveControl implements LoopModule {
 			error += 360;
 		}
 
-		integral += error;
+		integral += error * delta;
 
 		double turnSpeed = error * p - gyro.getRate() * d + integral * i;
 
 		base.move(controller.getStickLY() - turnSpeed, controller.getStickLY() + turnSpeed);
 
+	}
+
+	public void PixyGearAlign() {
+		pixyGear.pixyGear();
 	}
 
 	public DriveBase getBase() {

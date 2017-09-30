@@ -25,8 +25,12 @@ public class Turret {
 		flyWheelMotor.set(n);
 	}
 
-	public double getFlyWheelRPM() {
+	public double getFlyWheelRPS() {
 		return encoder.getRate();
+	}
+
+	public double getFlyWheelRPM() {
+		return getFlyWheelRPS() * 60;
 	}
 
 	public Encoder getEncoder() {
