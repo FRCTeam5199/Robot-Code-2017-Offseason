@@ -8,8 +8,8 @@ import maths.Vector2;
 public class PixyGearPID {
 	private Vector2 target, lastTarget;
 	private double p = .003;
-	private double i = .0001;
-	private double d = .05;
+	private double i = .000001;
+	private double d = 5;
 	private double integral = 0;
 	private DriveBase base;
 	PixyFunctionsFront pixyFuncFront;
@@ -20,10 +20,10 @@ public class PixyGearPID {
 		pixyFuncFront = new PixyFunctionsFront();
 	}
 
-	public void pixyGear() {
+	public void pixyGear(long deltaTime) {
 		double motorSpeed;
 		target = pixyFuncFront.getTarget();
-		integral += target.getX();
+		integral += target.getX()*deltaTime;
 		if (Math.abs(integral) > 1 / i) {
 			if (integral > 0) {
 				integral = 1 / i;
@@ -33,7 +33,7 @@ public class PixyGearPID {
 		}
 		motorSpeed = p * target.getX();
 		Robot.nBroadcaster.println(d * (target.getX() - lastTarget.getX()));
-		motorSpeed += d * (target.getX() - lastTarget.getX());
+		motorSpeed += d * (target.getX() - lastTarget.getX())/deltaTime;
 		motorSpeed += i * integral;
 		base.moveArcade(.4, motorSpeed);
 		lastTarget = target.clone();

@@ -12,9 +12,11 @@ public class TurretControl implements LoopModule {
 	private final JoystickController joystick;
 	private Turret turret;
 
+	private final int maxRPM = 6000;
+
 	private double pTurret = .003;
-	private double iTurret = .0001;
-	private double dTurret = .05;
+	private double iTurret = .000001;
+	private double dTurret = 5;
 	private double integralTurret = 0;
 
 	private double pFlywheel = .02;
@@ -36,8 +38,8 @@ public class TurretControl implements LoopModule {
 	@Override
 	public void init() {
 		Robot.dashboard.putDouble("Flywheel rip-ems", 0d);
-		//Robot.dashboard.putData("Flywheel rip-ems", turret.getFlyWheelRPM());	
-		}
+		// Robot.dashboard.putData("Flywheel rip-ems", turret.getFlyWheelRPM());
+	}
 
 	@Override
 	public void update(long delta) {
@@ -58,7 +60,7 @@ public class TurretControl implements LoopModule {
 	public void manualControl() {
 		turret.setTurret(joystick.getZ() * .3);
 		if (joystick.getTrigger()) {
-			setRPM(joystick.getScaledSlider() * 6000);
+			setRPM(joystick.getScaledSlider() * maxRPM);
 		} else {
 			turret.setFlyWheel(0);
 		}
@@ -66,12 +68,12 @@ public class TurretControl implements LoopModule {
 		// Robot.nBroadcaster.println(turret.getEncoder().getDistance());
 	}
 
-	public void autoaim() {
+	public void autoaim(long deltaTime) {
 		// turret will try to move so that Target.x becomes 0
 		double motorSpeed;
 
 		target = pixyFuncShooter.getTarget();
-		integralTurret += target.getX();
+		integralTurret += target.getX() * deltaTime;
 		if (Math.abs(integralTurret) > 1 / iTurret) {
 			if (integralTurret > 0) {
 				integralTurret = 1 / iTurret;
@@ -81,7 +83,7 @@ public class TurretControl implements LoopModule {
 		}
 		motorSpeed = pTurret * target.getX();
 		Robot.nBroadcaster.println(dTurret * (target.getX() - lastTarget.getX()));
-		motorSpeed += dTurret * (target.getX() - lastTarget.getX());
+		motorSpeed += dTurret * (target.getX() - lastTarget.getX()) / deltaTime;
 		motorSpeed += iTurret * integralTurret;
 		turret.setTurret(motorSpeed);
 		lastTarget = target.clone();

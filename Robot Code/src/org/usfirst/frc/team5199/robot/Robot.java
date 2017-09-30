@@ -201,7 +201,7 @@ public class Robot extends SampleRobot {
 		while (isOperatorControl() && isEnabled()) {
 			mainLoop.update();
 			if (joystick.getButton(2)) {
-				driveControl.PixyGearAlign();
+				driveControl.PixyGearAlign(clockRegulator.getMsPerUpdate());
 			}
 		}
 

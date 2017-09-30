@@ -175,8 +175,8 @@ public class DriveControl implements LoopModule {
 
 	}
 
-	public void PixyGearAlign() {
-		pixyGear.pixyGear();
+	public void PixyGearAlign(long deltaTime) {
+		pixyGear.pixyGear(deltaTime);
 	}
 
 	public DriveBase getBase() {

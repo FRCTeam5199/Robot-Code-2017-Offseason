@@ -17,7 +17,7 @@ public class TurretAim implements AutFunction {
 
 	@Override
 	public void update(long deltaTime) {
-		turretControl.autoaim();
+		turretControl.autoaim(deltaTime);
 		turretControl.setRPM(rpm);
 		// TODO Auto-generated method stub
 
