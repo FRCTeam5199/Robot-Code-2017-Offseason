@@ -12,7 +12,7 @@ public class TurretControl implements LoopModule {
 	private final JoystickController joystick;
 	private Turret turret;
 
-	private final int maxRPM = 6000;
+	private final int maxRPM = 4500;
 
 	private double pTurret = .003;
 	private double iTurret = .000001;
