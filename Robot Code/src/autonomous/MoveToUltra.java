@@ -6,7 +6,7 @@ import drive.DriveBase;
 import interfaces.AutFunction;
 import sensors.Sensors;
 
-public class MoveForwardInInchesUltra implements AutFunction {
+public class MoveToUltra implements AutFunction {
 
 	private final DriveBase driveBase;
 
@@ -23,16 +23,16 @@ public class MoveForwardInInchesUltra implements AutFunction {
 	double lastPos = 0;
 
 	/**
-	 * Will move the robot forward by inches specified in inchesToMove.
+	 * Will move the robot so it is distance cm away from a wall
 	 * 
 	 * @param driveBase
 	 *            Provide a DriveBase object so the robot can move.
-	 * @param inchesToMove
-	 *            How many inches you want the robot to move.
+	 * @param distance
+	 *            How many cm you want the robot to be from a wall.
 	 */
-	public MoveForwardInInchesUltra(DriveBase driveBase, int distance) {
+	public MoveToUltra(DriveBase driveBase, int distance) {
 		this.driveBase = driveBase;
-		target = ultraAverage() - distance;
+		target = distance;
 
 	}
 

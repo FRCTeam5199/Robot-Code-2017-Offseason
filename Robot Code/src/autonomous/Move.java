@@ -7,7 +7,7 @@ import drive.DriveBase;
 import edu.wpi.first.wpilibj.Encoder;
 import interfaces.AutFunction;
 
-public class MoveForwardInInches implements AutFunction {
+public class Move implements AutFunction {
 
 	private final DriveBase driveBase;
 	private final Encoder rightEncoder;
@@ -16,6 +16,8 @@ public class MoveForwardInInches implements AutFunction {
 	public boolean isDone = false;
 
 	final double P = 0.05d, I = 0.0000015d, D = 0.01d;
+	double lOffset, rOffset;
+
 	double currentTravelDist, errorRate, integral;
 	double maxAcceptableDistError = 1d; // The robot can be x inches off from
 										// target and it will be okay.
@@ -34,7 +36,7 @@ public class MoveForwardInInches implements AutFunction {
 	 * @param inchesToMove
 	 *            How many inches you want the robot to move.
 	 */
-	public MoveForwardInInches(DriveBase driveBase, int inchesToMove) {
+	public Move(DriveBase driveBase, int inchesToMove) {
 		this.driveBase = driveBase;
 		this.rightEncoder = Robot.sensors.getRightWheelEncoder();
 		this.leftEncoder = Robot.sensors.getLeftWheelEncoder();
@@ -49,10 +51,8 @@ public class MoveForwardInInches implements AutFunction {
 		// right motors.
 
 		// -------------Left encoder is not working atm
-		// currentTravelDist =
-		// (Robot.sensors.getRightWheelEncoder().getDistance()
-		// + Robot.sensors.getLeftWheelEncoder().getDistance()) / 2;
-		currentTravelDist = Robot.sensors.getRightWheelEncoder().getDistance();
+		// currentTravelDist = (getRightDistance() + getLeftDistance()) / 2;
+		currentTravelDist = getRightDistance();
 
 		// Positive distError is not reached target, Negative is overshot
 		// target.
@@ -90,10 +90,18 @@ public class MoveForwardInInches implements AutFunction {
 		}
 	}
 
+	private double getRightDistance() {
+		return rightEncoder.getDistance() - rOffset;
+	}
+
+	private double getLeftDistance() {
+		return leftEncoder.getDistance() - lOffset;
+	}
+
 	public void init() {
 		// Reset the distance to zero.
-		Robot.sensors.getRightWheelEncoder().reset();
-		Robot.sensors.getLeftWheelEncoder().reset();
+		rOffset = rightEncoder.getDistance();
+		lOffset = leftEncoder.getDistance();
 	}
 
 	@Override

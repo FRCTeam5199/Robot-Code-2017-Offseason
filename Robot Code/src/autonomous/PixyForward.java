@@ -32,7 +32,7 @@ public class PixyForward implements AutFunction{
 	@Override
 	public boolean isDone() {
 		// TODO Auto-generated method stub
-		return isDone();
+		return isDone;
 	}
 
 }
