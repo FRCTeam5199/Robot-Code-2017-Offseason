@@ -31,6 +31,8 @@ public class ClimberControl implements LoopModule {
 	private void manualControl() {
 		if(joystick.getButton(CLIMB_BUTTON_PRIMARY) || joystick.getButton(CLIMB_BUTTON_SECONDARY)) {
 			climberMotor.set(1);
+		} else {
+			climberMotor.set(0);
 		}
 	}
 	
