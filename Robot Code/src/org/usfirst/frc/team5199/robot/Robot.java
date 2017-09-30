@@ -17,6 +17,7 @@ import transport.Transport;
 import transport.TransportControl;
 import turret.Turret;
 import turret.TurretControl;
+import climber.ClimberControl;
 
 import util.ClockRegulator;
 import networking.RemoteOutput;
@@ -59,6 +60,7 @@ public class Robot extends SampleRobot {
 	private TurretControl turretControl;
 	private IntakeControl intakeControl;
 	private TransportControl transportControl;
+	private ClimberControl climberControl;
 
 	private UsbCamera camera;
 
@@ -92,6 +94,7 @@ public class Robot extends SampleRobot {
 		turretControl = new TurretControl(turret, joystick);
 		intakeControl = new IntakeControl(intake, joystick, controller);
 		transportControl = new TransportControl(transport, joystick);
+		climberControl = new ClimberControl(joystick);
 
 	}
 
