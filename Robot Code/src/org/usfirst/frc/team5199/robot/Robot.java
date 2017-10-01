@@ -16,6 +16,7 @@ import transport.Transport;
 import transport.TransportControl;
 import turret.Turret;
 import turret.TurretControl;
+import climber.Climber;
 import climber.ClimberControl;
 
 import util.ClockRegulator;
@@ -46,14 +47,15 @@ public class Robot extends SampleRobot {
 
 	private ClockRegulator clockRegulator;
 
+	private XBoxController controller;
+	private JoystickController joystick;
+	private AutController autController;
+
 	private DriveBase base;
 	private Turret turret;
 	private Intake intake;
 	private Transport transport;
-
-	private XBoxController controller;
-	private JoystickController joystick;
-	private AutController autController;
+	private Climber climber;
 
 	private DriveControl driveControl;
 	private TurretControl turretControl;
@@ -88,12 +90,13 @@ public class Robot extends SampleRobot {
 		turret = new Turret();
 		intake = new Intake();
 		transport = new Transport();
+		climber = new Climber();
 
 		driveControl = new DriveControl(base, controller);
 		turretControl = new TurretControl(turret, joystick);
 		intakeControl = new IntakeControl(intake, joystick, controller);
 		transportControl = new TransportControl(transport, joystick);
-		climberControl = new ClimberControl(joystick);
+		climberControl = new ClimberControl(climber, joystick);
 
 	}
 
