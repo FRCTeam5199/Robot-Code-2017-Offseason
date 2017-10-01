@@ -68,6 +68,7 @@ public class Robot extends SampleRobot {
 		// set first parameter in RemoteOutput constructor to your computer's
 		// local address. (ex: "10.51.99.197")
 		// currently working on getting this to work without it
+		Robot.nBroadcaster.println("Initializing Robot...");
 
 		sensors = new Sensors();
 
@@ -81,6 +82,7 @@ public class Robot extends SampleRobot {
 		intake = new Intake();
 		transport = new Transport();
 
+		Robot.nBroadcaster.println("Robot initialized");
 	}
 
 	@Override
@@ -100,8 +102,7 @@ public class Robot extends SampleRobot {
 		autManager.add(new Turn(base, 90));
 		autManager.add(new MoveForwardInInches(base, 36));
 		autManager.add(new Turn(base, 0));
-		
-		
+
 		autManager.add(new Stop(base, turret, intake));
 
 		autManager.init();
@@ -132,6 +133,7 @@ public class Robot extends SampleRobot {
 
 		mainLoop.init();
 
+		sensors.getLocation().reset();
 		while (isOperatorControl() && isEnabled()) {
 			mainLoop.update();
 		}
