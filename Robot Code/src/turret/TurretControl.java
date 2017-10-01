@@ -95,7 +95,6 @@ public class TurretControl implements LoopModule {
 			}
 		}
 		
-		Robot.nBroadcaster.println(target.getX());
 		motorSpeed = pTurret * target.getX();
 		motorSpeed += dTurret * (target.getX() - lastTarget.getX()) / deltaTime;
 		motorSpeed += iTurret * integralTurret;
