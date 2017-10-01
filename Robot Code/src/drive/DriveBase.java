@@ -17,7 +17,6 @@ public class DriveBase {
 		// right is reversed
 		left.set(l);
 		right.set(-r);
-		// Robot.nBroadcaster.println("left: " + l + "\tright: " + -r);
 	}
 
 	public void moveArcade(double y, double x) {
