@@ -85,6 +85,7 @@ public class TurretControl implements LoopModule {
 		double motorSpeed;
 
 		target = pixyFuncShooter.getTarget();
+		Robot.nBroadcaster.println(target.getX());
 		target.setX(target.getX() + turretOffset);
 		integralTurret += target.getX() * deltaTime;
 		if (Math.abs(integralTurret) > 1 / iTurret) {

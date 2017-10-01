@@ -459,8 +459,6 @@ public class PixyProcess {
 		// returns 0 if the timeout period is over blockTimeoutThreshold
 		double[] pixyValues = shooterData();
 
-		Robot.nBroadcaster.println(pixyValues[3]);
-
 		if (pixyValues[3] > blockTimeoutThreshold) {
 			shooterSumOfBufferX = 0;
 			firstRun = true;
@@ -470,7 +468,7 @@ public class PixyProcess {
 			}
 			return 0;
 		}
-
+		
 		return pixyValues[0];
 	}
 
@@ -492,9 +490,9 @@ public class PixyProcess {
 				counter = 0;
 			}
 			if (firstRun) {
-				shooterResult[0] = (shooterSumOfBufferX / counter);
+				shooterResult[0] = (shooterSumOfBufferX / counter) - 135;
 			} else {
-				shooterResult[0] = (shooterSumOfBufferX / pixyBuffer);
+				shooterResult[0] = (shooterSumOfBufferX / pixyBuffer) - 135;
 			}
 
 		} else {

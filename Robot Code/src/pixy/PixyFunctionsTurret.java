@@ -28,7 +28,8 @@ public class PixyFunctionsTurret {
 		if (Sensors.pixyShooterXPos() != -1) {
 			double distance = Robot.sensors.pixyShooterXPos();
 			targetShooter.setX(distance);
-			Robot.nBroadcaster.println(targetShooter.getX());
+			// Robot.nBroadcaster.println(targetShooter.getX());
+
 			// Subtract less pixels to go to the left
 			// Alter subtraction value to change left or right alignment
 
