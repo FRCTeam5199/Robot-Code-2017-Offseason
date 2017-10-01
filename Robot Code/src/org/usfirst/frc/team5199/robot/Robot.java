@@ -75,6 +75,7 @@ public class Robot extends SampleRobot {
 		// set first parameter in RemoteOutput constructor to your computer's
 		// local address. (ex: "10.51.99.197")
 		// currently working on getting this to work without it
+		Robot.nBroadcaster.println("Initializing Robot...");
 
 		sensors = new Sensors();
 
@@ -98,6 +99,7 @@ public class Robot extends SampleRobot {
 		transportControl = new TransportControl(transport, joystick);
 		climberControl = new ClimberControl(climber, joystick);
 
+		Robot.nBroadcaster.println("Robot initialized");
 	}
 
 	@Override
@@ -117,21 +119,6 @@ public class Robot extends SampleRobot {
 		// autManager.add(new MoveForwardInInches(base, 36));
 		// autManager.add(new Turn(base, 90));
 		// autManager.add(new MoveForwardInInches(base, 36));
-		// autManager.add(new Turn(base, 0));
-
-		// // Turn test
-		// autManager.add(new Turn(base, 180));
-		// autManager.add(new Turn(base, 0));
-		// autManager.add(new Turn(base, 90));
-		// autManager.add(new Turn(base, -90));
-		// autManager.add(new Turn(base, 0));
-		// autManager.add(new Turn(base, -90));
-		// autManager.add(new Turn(base, 90));
-		// autManager.add(new Turn(base, 0));
-		// autManager.add(new Turn(base, 900));
-		// autManager.add(new Turn(base, 360));
-		// autManager.add(new Turn(base, 120));
-		// autManager.add(new Turn(base, 240));
 		// autManager.add(new Turn(base, 0));
 
 		switch (autController.getAutMode()) {
@@ -209,7 +196,6 @@ public class Robot extends SampleRobot {
 		mainLoop.add(climberControl);
 
 		mainLoop.init();
-
 		while (isOperatorControl() && isEnabled()) {
 			mainLoop.update();
 		}
