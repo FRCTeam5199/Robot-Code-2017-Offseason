@@ -13,7 +13,7 @@ public class TurretControl implements LoopModule {
 	private Turret turret;
 
 	private final int maxRPM = 4500;
-	private int turretOffset = 0;
+	private int turretOffset = -12;
 
 	//tuned: no touchy
 	private double pTurret = .0025;
@@ -60,7 +60,7 @@ public class TurretControl implements LoopModule {
 		if (joystick.getButton(1) || joystick.getButton(2)) {
 			autoaim(delta);
 			//setRPM(joystick.getScaledSlider() * maxRPM);
-			setRPM(3425);
+			setRPM(3725);
 		} else {
 			manualControl();
 			integralTurret = 0;
