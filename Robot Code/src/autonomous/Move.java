@@ -15,7 +15,8 @@ public class Move implements AutFunction {
 
 	public boolean isDone = false;
 
-	private double P = 0.05d, I = 0.0000015d, D = 0.01d;
+	// tuned: no touchy
+	private double P = 0.07d, I = 0.0001d, D = 0.02d;
 	private double lOffset, rOffset;
 
 	private double currentTravelDist, errorRate, integral;
