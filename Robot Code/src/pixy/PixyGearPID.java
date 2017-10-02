@@ -50,7 +50,7 @@ public class PixyGearPID {
 		motorSpeed = p * target.getX();
 		motorSpeed += d * (target.getX() - lastTarget.getX())/deltaTime;
 		motorSpeed += i * integral;
-		base.moveArcade(0, motorSpeed);
+		base.moveArcade(.2, motorSpeed);
 		lastTarget = target.clone();
 	}
 }
