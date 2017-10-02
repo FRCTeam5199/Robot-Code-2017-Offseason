@@ -15,18 +15,18 @@ public class Move implements AutFunction {
 
 	public boolean isDone = false;
 
-	final double P = 0.05d, I = 0.0000015d, D = 0.01d;
-	double lOffset, rOffset;
+	private double P = 0.05d, I = 0.0000015d, D = 0.01d;
+	private double lOffset, rOffset;
 
-	double currentTravelDist, errorRate, integral;
-	double maxAcceptableDistError = 1d; // The robot can be x inches off from
-										// target and it will be okay.
-	double maxAcceptableRateError = 3d; // The robot can be moving at x
-										// inches/sec and it will be okay.
-	double inchesToMove;
-	double distError; // The difference between the inchesToMove and the average
-						// of
-						// rightWheelTravelDist and leftWheelTravelDist
+	private double currentTravelDist, errorRate, integral;
+	private double maxAcceptableDistError = 1d; // The robot can be x inches off from
+	// target and it will be okay.
+	private double maxAcceptableRateError = 3d; // The robot can be moving at x
+	// inches/sec and it will be okay.
+	private double inchesToMove;
+	private double distError; // The difference between the inchesToMove and the average
+	// of
+	// rightWheelTravelDist and leftWheelTravelDist
 
 	/**
 	 * Will move the robot forward by inches specified in inchesToMove.
@@ -46,6 +46,9 @@ public class Move implements AutFunction {
 
 	@Override
 	public void update(long deltaTime) {
+		P = Robot.dashboard.getNumber("Move P");
+		I = Robot.dashboard.getNumber("Move I");
+		D = Robot.dashboard.getNumber("Move D");
 		// Get the new travel distance from the average travel distance of the
 		// left and
 		// right motors.
