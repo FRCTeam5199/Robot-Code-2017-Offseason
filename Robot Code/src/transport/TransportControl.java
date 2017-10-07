@@ -23,9 +23,9 @@ public class TransportControl implements LoopModule {
 	@Override
 	public void update(long delta) {
 		// TODO Auto-generated method stub
-		if (joystick.getButton(1)||joystick.getButton(12)) {
+		if (joystick.getButton(1)) {
 			transport.setSpeed(speed);
-		}else {
+		} else {
 			transport.setSpeed(0);
 		}
 
