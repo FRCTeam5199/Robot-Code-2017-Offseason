@@ -18,14 +18,15 @@ public class TurretControl implements LoopModule {
 
 	// tuned: no touchy
 	// ---- for fresh motor ----
-	// private double pTurret = .0025;
-	// private double iTurret = .000001;
-	// private double dTurret = .7;
+	private double pTurret = .0025;
+	private double iTurret = .000001;
+	private double dTurret = .7;
 
 	// tuned: no touchy
-	private double pTurret = .005;
-	private double iTurret = .000003;
-	private double dTurret = 1.4;
+	// ---- for almost ded motor ----
+	// private double pTurret = .005;
+	// private double iTurret = .000003;
+	// private double dTurret = 1.4;
 
 	private double integralTurret = 0;
 
