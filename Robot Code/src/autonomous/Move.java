@@ -4,6 +4,7 @@ import org.usfirst.frc.team5199.robot.Robot;
 import org.usfirst.frc.team5199.robot.RobotMap;
 
 import drive.DriveBase;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Encoder;
 import interfaces.AutFunction;
 
@@ -12,20 +13,26 @@ public class Move implements AutFunction {
 	private final DriveBase driveBase;
 	private final Encoder rightEncoder;
 	private final Encoder leftEncoder;
+	private final ADXRS450_Gyro gyro;
 
 	public boolean isDone = false;
 
 	// tuned: no touchy
 	private double P = 0.07d, I = 0.0001d, D = 0.02d;
+	private double pTurn = 0.07, iTurn = 0.0000002, dTurn = 0.02;
 	private double lOffset, rOffset;
 
 	private double currentTravelDist, errorRate, integral;
-	private double maxAcceptableDistError = 1d; // The robot can be x inches off from
+	private double turnErrorRate, turnIntegral;
+	private double maxAcceptableDistError = 1d; // The robot can be x inches off
+												// from
 	// target and it will be okay.
 	private double maxAcceptableRateError = 3d; // The robot can be moving at x
 	// inches/sec and it will be okay.
 	private double inchesToMove;
-	private double distError; // The difference between the inchesToMove and the average
+	private double angle;
+	private double distError; // The difference between the inchesToMove and the
+								// average
 	// of
 	// rightWheelTravelDist and leftWheelTravelDist
 
@@ -41,22 +48,18 @@ public class Move implements AutFunction {
 		this.driveBase = driveBase;
 		this.rightEncoder = Robot.sensors.getRightWheelEncoder();
 		this.leftEncoder = Robot.sensors.getLeftWheelEncoder();
+		this.gyro = Robot.sensors.getGyro();
 		this.inchesToMove = inchesToMove;
 
 	}
 
 	@Override
 	public void update(long deltaTime) {
-		P = Robot.dashboard.getNumber("Move P");
-		I = Robot.dashboard.getNumber("Move I");
-		D = Robot.dashboard.getNumber("Move D");
 		// Get the new travel distance from the average travel distance of the
 		// left and
 		// right motors.
 
-		// -------------Left encoder is not working atm
-		// currentTravelDist = (getRightDistance() + getLeftDistance()) / 2;
-		currentTravelDist = getRightDistance();
+		currentTravelDist = getDistance();
 
 		// Positive distError is not reached target, Negative is overshot
 		// target.
@@ -86,12 +89,25 @@ public class Move implements AutFunction {
 		// Robot.nBroadcaster.println(errorRate);
 
 		Robot.nBroadcaster.println(distError + "\t" + errorRate + "\t" + I * integral);
-		driveBase.move(motorSpeed, motorSpeed);
+
+		double turnError = angle - gyro.getAngle();
+		double turnSpeed = 0;
+		turnIntegral += turnError;
+
+		turnSpeed += turnError * pTurn;
+		turnSpeed -= gyro.getRate() * dTurn;
+		turnSpeed += turnIntegral * iTurn;
+
+		driveBase.moveArcade(motorSpeed, turnSpeed);
 
 		// If the robot is within an acceptable range of the currentTravelDist.
 		if (Math.abs(distError) <= maxAcceptableDistError && Math.abs(errorRate) <= maxAcceptableRateError) {
 			isDone = true;
 		}
+	}
+
+	private double getDistance() {
+		return (getRightDistance() + getLeftDistance()) / 2;
 	}
 
 	private double getRightDistance() {
@@ -106,6 +122,9 @@ public class Move implements AutFunction {
 		// Reset the distance to zero.
 		rOffset = rightEncoder.getDistance();
 		lOffset = leftEncoder.getDistance();
+
+		// get the angle to maintain
+		angle = gyro.getAngle();
 	}
 
 	@Override
