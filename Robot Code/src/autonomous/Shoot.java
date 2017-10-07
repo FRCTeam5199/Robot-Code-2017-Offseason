@@ -3,17 +3,22 @@ package autonomous;
 import intake.Intake;
 import interfaces.AutFunction;
 import transport.Transport;
+import turret.Turret;
 import turret.TurretControl;
 
 public class Shoot implements AutFunction {
 
-	TurretControl turretControl;
-	double rpm;
-	Intake intake;
-	Transport transport;
+	private TurretControl turretControl;
+	private Turret turret;
+	private Intake intake;
+	private Transport transport;
 
-	public Shoot(TurretControl turretControl, double rpm, Intake intake, Transport transport) {
+	private double rpm;
+	private double lockAngle;
+
+	public Shoot(TurretControl turretControl, Turret turret, Intake intake, Transport transport, double rpm) {
 		this.turretControl = turretControl;
+		this.turret = turret;
 		this.rpm = rpm;
 		this.intake = intake;
 		this.transport = transport;
@@ -21,7 +26,7 @@ public class Shoot implements AutFunction {
 
 	@Override
 	public void update(long deltaTime) {
-		turretControl.autoaim(deltaTime);
+		turretControl.goTo(lockAngle);
 		turretControl.setRPM(rpm);
 		intake.setSpeed(-1);
 		transport.setSpeed(1);
@@ -32,7 +37,7 @@ public class Shoot implements AutFunction {
 	@Override
 	public void init() {
 		// TODO Auto-generated method stub
-
+		lockAngle = turret.getTurretAngle();
 	}
 
 	@Override
