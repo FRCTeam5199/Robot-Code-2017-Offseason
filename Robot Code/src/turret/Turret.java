@@ -27,7 +27,7 @@ public class Turret {
 		flyWheelMotor = new CANTalon(RobotMap.shooter);
 		encoder = Robot.sensors.getFlywheelEncoder();
 
-		turnWatchdog = new CANTalonWatchdog(turnMotor, 45, 500, 1000);
+		turnWatchdog = new CANTalonWatchdog(turnMotor, 20, 500, 1000);
 		turnWatchdog.start();
 
 		flyWheelWatchdog = new CANTalonWatchdog(flyWheelMotor, 80, 250, 2500);
@@ -40,6 +40,7 @@ public class Turret {
 
 	public void setTurret(double n) {
 		if (turnWatchdog.isOk()) {
+			Robot.nBroadcaster.println(turnMotor.getOutputCurrent());
 			turnMotor.set(n);
 		} else {
 			turnMotor.set(0);
