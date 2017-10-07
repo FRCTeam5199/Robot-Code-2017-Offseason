@@ -1,21 +1,24 @@
 package autonomous;
 
+import climber.Climber;
 import drive.DriveBase;
 import intake.Intake;
 import interfaces.AutFunction;
 import turret.Turret;
 
 public class Stop implements AutFunction {
-	
+
 	private final DriveBase base;
 	private final Turret turret;
 	private final Intake intake;
+	private final Climber climber;
 	private boolean done;
-	
-	public Stop(DriveBase base, Turret turret, Intake intake) {
+
+	public Stop(DriveBase base, Turret turret, Intake intake, Climber climber) {
 		this.base = base;
 		this.turret = turret;
 		this.intake = intake;
+		this.climber = climber;
 		done = true;
 	}
 
@@ -25,6 +28,7 @@ public class Stop implements AutFunction {
 		turret.setFlyWheel(0);
 		turret.setTurret(0);
 		intake.setSpeed(0);
+		climber.setSpeed(0);
 		done = true;
 	}
 
@@ -36,6 +40,6 @@ public class Stop implements AutFunction {
 	@Override
 	public void init() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
