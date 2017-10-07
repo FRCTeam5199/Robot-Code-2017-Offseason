@@ -5,12 +5,14 @@ import interfaces.AutFunction;
 import turret.Turret;
 import turret.TurretControl;
 
-public class TurretAim implements AutFunction {
-	TurretControl turretControl;
-	Turret turret;
-	double rpm;
+public class ShootPrep implements AutFunction {
+	private TurretControl turretControl;
+	private Turret turret;
+	private double rpm;
+	private double rpmMargin = 10;
+	private double aimMargin = 5;
 
-	public TurretAim(TurretControl turretControl, double rpm, Turret turret) {
+	public ShootPrep(TurretControl turretControl, double rpm, Turret turret) {
 		this.turretControl = turretControl;
 		this.turret = turret;
 	}
@@ -19,8 +21,6 @@ public class TurretAim implements AutFunction {
 	public void update(long deltaTime) {
 		turretControl.autoaim(deltaTime);
 		turretControl.setRPM(rpm);
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -31,9 +31,7 @@ public class TurretAim implements AutFunction {
 
 	@Override
 	public boolean isDone() {
-		// TODO Auto-generated method stub
-
-		return false;
+		return Math.abs(turret.getFlyWheelRPM() - rpm) < rpmMargin && Math.abs(turretControl.getError()) < aimMargin;
 	}
 
 }
