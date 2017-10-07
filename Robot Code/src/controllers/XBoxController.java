@@ -19,11 +19,11 @@ public class XBoxController {
 	}
 	
 	public double getStickRX(){
-		return stick.getRawAxis(3);
+		return stick.getRawAxis(4);
 	}
 	
 	public double getStickRY(){
-		return -stick.getRawAxis(4);
+		return -stick.getRawAxis(5);
 	}
 	
 	public double getLTrigger(){
@@ -31,7 +31,7 @@ public class XBoxController {
 	}
 	
 	public double getRTrigger(){
-		return stick.getRawAxis(5);
+		return stick.getRawAxis(3);
 	}
 	
 	public boolean getButton(int n){
