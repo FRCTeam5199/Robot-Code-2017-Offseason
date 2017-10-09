@@ -1,6 +1,6 @@
 package pixy;
 
-
+import org.usfirst.frc.team5199.robot.Robot;
 
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Joystick;
@@ -9,11 +9,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class PixyProcess {
 	private static final int debugLevel = 1; // edit depending on future needs
+	private static final int blockTimeoutThreshold = 100;
 	public static Pixy pixyCam;
 	public static Pixy gearPixy = new Pixy(0x51);
 	public static Pixy shooterPixy = new Pixy(0x53);
-	public static final int pixyBuffer = 5;// size of the ring buffer for
+	public static final int pixyBuffer = 1;// size of the ring buffer for
 											// averaging
+//	public static final int pixyBuffer = 5;// size of the ring buffer for
+//	// averaging
 	public static short[] gearAverageDataValueArrayX;
 	public static short[] shooterAverageDataValueArrayX;
 	public static short[] gearAverageDataValueArrayY;
@@ -42,11 +45,13 @@ public class PixyProcess {
 	public static double oldX1 = 0;
 	public static double oldX2 = 0;
 	public static double[] gearData = { -1, -1, -1 };
-	public static double[] result = { -1, -1, -1 };
-	public static double[] shooterResult = { -1, -1, -1 };
+	public static double[] result = { -1, -1, -1, -1 };
+	public static double[] shooterResult = { -1, -1, -1, -1 };
 	private static int tempBlockCount = 0;
 	private static double currentTime = 0;
 	private static double lastTime = 0;
+	private static long lastBlockTime = 0;
+	private static long lastTurretBlockTime = 0;
 
 	public PixyProcess(Pixy pixy) {
 		pixyCam = pixy;
@@ -77,8 +82,6 @@ public class PixyProcess {
 		}
 
 	}
-
-
 
 	public void pixyGearTest() {
 		loops++;
@@ -199,17 +202,28 @@ public class PixyProcess {
 		// The difference between is multiplied by the distance they are apart
 		// in inches
 		// and the value is divided by the number of inches away the pixy cam is
-		// from the center		// This is to convert the inches offset into pixels to compensate.
+		// from the center // This is to convert the inches offset into pixels
+		// to
+		// compensate.
 		// On our robot, we have the line as: normal
 
 		// for blue blur
 		// return pixyValues[0]+((8*(pixyValues[2]/15)));
+
 		double[] pixyValues = averageData(2, false);
+
+		if (pixyValues[3] > blockTimeoutThreshold) {
+			sumOfBufferX = 0;
+			firstRun = true;
+			counter = 0;
+			for (int i = 0; i < gearAverageDataValueArrayX.length; i++) {
+				gearAverageDataValueArrayX[i] = 0;
+			}
+			return 0;
+		}
 
 		return pixyValues[0] + ((8.5 * (pixyValues[2] / 9.5)));
 	}
-
-	
 
 	public static double xPosShooter() {
 		if (pixyCam.getStartOfData() == 1) {
@@ -235,7 +249,8 @@ public class PixyProcess {
 		// mode = 2; return average x value, and average distance between x
 
 		if (gearPixy.getStartOfData() == 1) {
-
+			blockCount++;
+			lastBlockTime = System.currentTimeMillis();
 			short sig;
 			int avgX, avgY;
 			byte[] syncedBufferWithoutSync = new byte[26];
@@ -265,7 +280,7 @@ public class PixyProcess {
 					avgY = block.getAvgY();
 				}
 
-				sumOfBufferX += block.getAvgX() - gearAverageDataValueArrayX[counter] -160;
+				sumOfBufferX += block.getAvgX() - gearAverageDataValueArrayX[counter] - 160;
 				if (mode == 1) {
 					sumOfBufferY += block.getAvgY() - gearAverageDataValueArrayY[counter];
 				}
@@ -274,7 +289,7 @@ public class PixyProcess {
 							- gearAverageDataValueArrayBetweenX[counter];
 				}
 
-				gearAverageDataValueArrayX[counter] = (short) (block.getAvgX() -160);
+				gearAverageDataValueArrayX[counter] = (short) (block.getAvgX() - 160);
 				if (mode == 1) {
 					gearAverageDataValueArrayY[counter] = block.getAvgY();
 				}
@@ -308,23 +323,41 @@ public class PixyProcess {
 				}
 
 			} else {
+				result[3] = System.currentTimeMillis() - lastBlockTime;
+
 				if (displayResults) {
-					SmartDashboard.putNumber("Avg X", result[0]);
-					SmartDashboard.putNumber("PixyBlocks", blockCount);
-					SmartDashboard.putNumber("Loops per second", loops / elapsedTime);
-					SmartDashboard.putNumber("PixyBlocks per second", blockCount / elapsedTime);
+					// SmartDashboard.putNumber("Avg X", result[0]);
+					// SmartDashboard.putNumber("PixyBlocks", blockCount);
+					// SmartDashboard.putNumber("Loops per second", loops /
+					// elapsedTime);
+					// SmartDashboard.putNumber("PixyBlocks per second",
+					// blockCount / elapsedTime);
+
+					// Robot.dashboard.putNumber("PixyBLocks", blockCount);
+					Robot.dashboard.putNumber("PixyBlocks per second", blockCount / elapsedTime);
+					Robot.dashboard.putNumber("Time since last block", result[3]);
 				}
 				return result;
 			}
 
 		}
 
+		result[3] = System.currentTimeMillis() - lastBlockTime;
+
 		if (displayResults) {
-			SmartDashboard.putNumber("Avg X", result[0]);
-			SmartDashboard.putNumber("PixyBlocks", blockCount);
-			SmartDashboard.putNumber("Loops per second", loops / elapsedTime);
-			SmartDashboard.putNumber("PixyBlocks per second", blockCount / elapsedTime);
+			// SmartDashboard.putNumber("Avg X", result[0]);
+			// SmartDashboard.putNumber("PixyBlocks", blockCount);
+			// SmartDashboard.putNumber("Loops per second", loops /
+			// elapsedTime);
+			// SmartDashboard.putNumber("PixyBlocks per second", blockCount /
+			// elapsedTime);
+
+			// Robot.dashboard.putNumber("PixyBLocks", blockCount);
+			Robot.dashboard.putNumber("PixyBlocks per second", blockCount / elapsedTime);
+			Robot.dashboard.putNumber("Time since last block", result[3]);
+
 		}
+
 		return result;
 
 	}
@@ -390,7 +423,7 @@ public class PixyProcess {
 				}
 
 				if (firstRun) {
-					shooterResult[0] = (shooterSumOfBufferX / counter);
+					shooterResult[0] = (shooterSumOfBufferX / counter) - 135;
 					if (mode == 1) {
 						shooterResult[1] = (shooterSumOfBufferY / counter);
 					}
@@ -398,7 +431,7 @@ public class PixyProcess {
 						shooterResult[2] = (shooterSumOfBufferBetweenX / counter);
 					}
 				} else {
-					shooterResult[0] = (shooterSumOfBufferX / pixyBuffer);
+					shooterResult[0] = (shooterSumOfBufferX / pixyBuffer) - 135;
 					if (mode == 1) {
 						shooterResult[1] = (shooterSumOfBufferY / pixyBuffer);
 					}
@@ -429,8 +462,26 @@ public class PixyProcess {
 
 	}
 
+	public double filteredShooterData() {
+		// returns 0 if the timeout period is over blockTimeoutThreshold
+		double[] pixyValues = shooterData();
+
+		if (pixyValues[3] > blockTimeoutThreshold) {
+			shooterSumOfBufferX = 0;
+			firstRun = true;
+			counter = 0;
+			for (int i = 0; i < shooterAverageDataValueArrayX.length; i++) {
+				shooterAverageDataValueArrayX[i] = 0;
+			}
+			return 0;
+		}
+
+		return pixyValues[0];
+	}
+
 	public double[] shooterData() {
 		if (shooterPixy.getStartOfData() == 1) {
+			lastTurretBlockTime = System.currentTimeMillis();
 			short sig;
 			int avgX, avgY;
 			byte[] syncedBufferWithoutSync = new byte[14];
@@ -446,14 +497,15 @@ public class PixyProcess {
 				counter = 0;
 			}
 			if (firstRun) {
-				shooterResult[0] = (shooterSumOfBufferX / counter);
+				shooterResult[0] = (shooterSumOfBufferX / counter) - 135;
 			} else {
-				shooterResult[0] = (shooterSumOfBufferX / pixyBuffer);
+				shooterResult[0] = (shooterSumOfBufferX / pixyBuffer) - 135;
 			}
 
 		} else {
 			// shooterResult[0] = -1;
 		}
+		shooterResult[3] = System.currentTimeMillis() - lastTurretBlockTime;
 		return shooterResult;
 
 	}

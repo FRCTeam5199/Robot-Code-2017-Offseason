@@ -44,11 +44,13 @@ public class PixyGearPID {
 				integral = -1 / i;
 			}
 		}
+		
+		Robot.dashboard.putNumber("Gear PID error", target.getX());
+		
 		motorSpeed = p * target.getX();
-		Robot.nBroadcaster.println(d * (target.getX() - lastTarget.getX()));
 		motorSpeed += d * (target.getX() - lastTarget.getX())/deltaTime;
 		motorSpeed += i * integral;
-		base.moveArcade(0, motorSpeed);
+		base.moveArcade(.4, motorSpeed);
 		lastTarget = target.clone();
 	}
 }

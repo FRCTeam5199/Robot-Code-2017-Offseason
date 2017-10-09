@@ -111,8 +111,8 @@ public class Sensors {
 		return pixyGearProc.averageData(0, false)[0];
 	}
 
-	public static double pixyShooterXPos() {
-		return pixyShooterProc.shooterData()[0];
+	public static double pixyShooterXPos(){
+		return pixyShooterProc.filteredShooterData();
 	}
 
 	public static double shooterRPM() {

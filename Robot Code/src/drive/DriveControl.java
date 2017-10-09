@@ -12,7 +12,7 @@ public class DriveControl implements LoopModule {
 	private final ADXRS450_Gyro gyro;
 	private final PixyGearPID pixyGear;
 	// private final JoystickController joystick;
-	private final double speed = .7;
+	private final double speed = 1;
 	private final double rSpeed = 400;
 	private final double radToDegrees = 180 / Math.PI;
 	private final XBoxController controller;
@@ -57,7 +57,8 @@ public class DriveControl implements LoopModule {
 				break;
 			case ARCADE_ASSISTED:
 				arcadeControlAssisted();
-				// Robot.nBroadcaster.println("Arcade Control Assisted Control");
+				// Robot.nBroadcaster.println("Arcade Control Assisted
+				// Control");
 				break;
 			case TANK:
 				tankControl();
@@ -138,7 +139,8 @@ public class DriveControl implements LoopModule {
 
 	public void pointControl(long delta) {
 		double p = 0.04;
-		double i = 0.000001;
+		//double i = 0.000001;
+		double i = 0;
 		double d = 0.005;
 		double deadzone = 0.5;
 

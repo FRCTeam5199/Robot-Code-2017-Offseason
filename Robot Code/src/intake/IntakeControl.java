@@ -22,7 +22,7 @@ public class IntakeControl implements LoopModule {
 
 	@Override
 	public void update(long delta) {
-		if (joystick.getButton(3) || joystick.getButton(4) || controller.getButton(5)) {
+		if (joystick.getButton(1) || joystick.getButton(3) || joystick.getButton(4) || controller.getButton(5)) {
 			intake.setSpeed(intakeSpeed);
 		} else {
 			intake.setSpeed(0);
