@@ -8,6 +8,7 @@ import climber.Climber;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import intake.Intake;
 import interfaces.AutFunction;
+import transport.Transport;
 import turret.Turret;
 import util.ClockRegulator;
 import drive.DriveBase;
@@ -21,11 +22,11 @@ public class AutonomousManager {
 	private int step;
 	private boolean done;
 
-	public AutonomousManager(DriveBase base, Turret turret, Intake intake, Climber climber,
+	public AutonomousManager(DriveBase base, Turret turret, Intake intake, Transport transport, Climber climber,
 			ClockRegulator clockRegulator) {
 		this.clockRegulator = clockRegulator;
 
-		stop = new Stop(base, turret, intake, climber);
+		stop = new Stop(base, turret, intake, transport, climber);
 
 		functions = new ArrayList<AutFunction>();
 		step = 0;
