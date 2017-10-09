@@ -13,8 +13,10 @@ public class PixyProcess {
 	public static Pixy pixyCam;
 	public static Pixy gearPixy = new Pixy(0x51);
 	public static Pixy shooterPixy = new Pixy(0x53);
-	public static final int pixyBuffer = 5;// size of the ring buffer for
+	public static final int pixyBuffer = 1;// size of the ring buffer for
 											// averaging
+//	public static final int pixyBuffer = 5;// size of the ring buffer for
+//	// averaging
 	public static short[] gearAverageDataValueArrayX;
 	public static short[] shooterAverageDataValueArrayX;
 	public static short[] gearAverageDataValueArrayY;
@@ -200,7 +202,8 @@ public class PixyProcess {
 		// The difference between is multiplied by the distance they are apart
 		// in inches
 		// and the value is divided by the number of inches away the pixy cam is
-		// from the center // This is to convert the inches offset into pixels to
+		// from the center // This is to convert the inches offset into pixels
+		// to
 		// compensate.
 		// On our robot, we have the line as: normal
 
@@ -325,8 +328,10 @@ public class PixyProcess {
 				if (displayResults) {
 					// SmartDashboard.putNumber("Avg X", result[0]);
 					// SmartDashboard.putNumber("PixyBlocks", blockCount);
-					// SmartDashboard.putNumber("Loops per second", loops / elapsedTime);
-					// SmartDashboard.putNumber("PixyBlocks per second", blockCount / elapsedTime);
+					// SmartDashboard.putNumber("Loops per second", loops /
+					// elapsedTime);
+					// SmartDashboard.putNumber("PixyBlocks per second",
+					// blockCount / elapsedTime);
 
 					// Robot.dashboard.putNumber("PixyBLocks", blockCount);
 					Robot.dashboard.putNumber("PixyBlocks per second", blockCount / elapsedTime);
@@ -342,8 +347,10 @@ public class PixyProcess {
 		if (displayResults) {
 			// SmartDashboard.putNumber("Avg X", result[0]);
 			// SmartDashboard.putNumber("PixyBlocks", blockCount);
-			// SmartDashboard.putNumber("Loops per second", loops / elapsedTime);
-			// SmartDashboard.putNumber("PixyBlocks per second", blockCount / elapsedTime);
+			// SmartDashboard.putNumber("Loops per second", loops /
+			// elapsedTime);
+			// SmartDashboard.putNumber("PixyBlocks per second", blockCount /
+			// elapsedTime);
 
 			// Robot.dashboard.putNumber("PixyBLocks", blockCount);
 			Robot.dashboard.putNumber("PixyBlocks per second", blockCount / elapsedTime);
@@ -468,7 +475,7 @@ public class PixyProcess {
 			}
 			return 0;
 		}
-		
+
 		return pixyValues[0];
 	}
 
