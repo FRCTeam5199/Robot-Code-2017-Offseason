@@ -61,7 +61,8 @@ public class RobotMap {
 													// Pixycam
 
 	// 1 rotation = 120 pulses
-	public static double inchesPerPulse = (4 * Math.PI) / 120; // for 4 inch wheels
+	public static double inchesPerPulse = (4 * Math.PI) / 120; // for 4 inch
+																// wheels
 	public static double rotationsPerStepShooter = -1 / 9d; // for the rpms
 	public static double stoppedDetectionTime = .1; // sets time for max period
 													// in seconds
@@ -142,12 +143,16 @@ public class RobotMap {
 	public static int middlePegShootButton = 11;
 	public static int encoderTestDriveButton = 12;
 	/*
-	 * Joystick Trigger is full shoot spin up flywheel thumb shooter constant of .9
-	 * 4 and 3 intake pov hat is servo 5 and 6 climber
+	 * Joystick Trigger is full shoot spin up flywheel thumb shooter constant of
+	 * .9 4 and 3 intake pov hat is servo 5 and 6 climber
 	 * 
 	 * 
 	 * xBox stick driving (halo) drive swap on y also switches camera
 	 * 
 	 */
+
+	public static int ledR = 1;
+	public static int ledG = 3;
+	public static int ledB = 2;
 
 }
