@@ -12,7 +12,7 @@ public class DriveControl implements LoopModule {
 	private final ADXRS450_Gyro gyro;
 	private final PixyGearPID pixyGear;
 	// private final JoystickController joystick;
-	private final double speed = .7;
+	private final double speed = 1;
 	private final double rSpeed = 400;
 	private final double radToDegrees = 180 / Math.PI;
 	private final XBoxController controller;
@@ -33,32 +33,40 @@ public class DriveControl implements LoopModule {
 
 	@Override
 	public void init() {
+		Robot.dashboard.putDouble("Pixy Error", 0);
 	}
 
 	@Override
 	public void update(long delta) {
 		selectDriveMode();
-//		Robot.nBroadcaster.println(Robot.sensors.getAccelerometer().getX() + " \t"
-//				+ Robot.sensors.getAccelerometer().getY() + " \t" + Robot.sensors.getAccelerometer().getZ());
-		
-		switch (driveMode) {
-		case POINT:
-			pointControl();
-			// Robot.nBroadcaster.println("Point Control");
-			break;
-		case TANK_ASSISTED:
-			tankControlAssisted();
-			// Robot.nBroadcaster.println("Tank Assisted Control");
-			break;
-		case ARCADE_ASSISTED:
-			arcadeControlAssisted();
-			// Robot.nBroadcaster.println("Arcade Control Assisted Control");
-			break;
-		case TANK:
-			tankControl();
-			// Robot.nBroadcaster.println("Tank Control");
-			break;
+		// Robot.nBroadcaster.println(Robot.sensors.getAccelerometer().getX() +
+		// " \t"
+		// + Robot.sensors.getAccelerometer().getY() + " \t" +
+		// Robot.sensors.getAccelerometer().getZ());
+		if (controller.getButton(8)) {
+			PixyGearAlign(delta);
+		} else {
+			switch (driveMode) {
+			case POINT:
+				pointControl(delta);
+				// Robot.nBroadcaster.println("Point Control");
+				break;
+			case TANK_ASSISTED:
+				tankControlAssisted();
+				// Robot.nBroadcaster.println("Tank Assisted Control");
+				break;
+			case ARCADE_ASSISTED:
+				arcadeControlAssisted();
+				// Robot.nBroadcaster.println("Arcade Control Assisted
+				// Control");
+				break;
+			case TANK:
+				tankControl();
+				// Robot.nBroadcaster.println("Tank Control");
+				break;
+			}
 		}
+
 	}
 
 	public void selectDriveMode() {
@@ -129,9 +137,10 @@ public class DriveControl implements LoopModule {
 		base.move(controller.getStickLY() - turnSpeed, controller.getStickLY() + turnSpeed);
 	}
 
-	public void pointControl() {
+	public void pointControl(long delta) {
 		double p = 0.04;
-		double i = 0.0001;
+		//double i = 0.000001;
+		double i = 0;
 		double d = 0.005;
 		double deadzone = 0.5;
 
@@ -165,16 +174,16 @@ public class DriveControl implements LoopModule {
 			error += 360;
 		}
 
-		integral += error;
+		integral += error * delta;
 
 		double turnSpeed = error * p - gyro.getRate() * d + integral * i;
 
 		base.move(controller.getStickLY() - turnSpeed, controller.getStickLY() + turnSpeed);
 
 	}
-	
-	public void PixyGearAlign() {
-		pixyGear.pixyGear();
+
+	public void PixyGearAlign(long deltaTime) {
+		pixyGear.pixyGear(deltaTime);
 	}
 
 	public DriveBase getBase() {

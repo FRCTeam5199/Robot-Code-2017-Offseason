@@ -11,16 +11,16 @@ public class Turn implements AutFunction {
 	private final ADXRS450_Gyro gyro;
 	private final DriveBase base;
 
-	private final double p = 0.07;
-	private final double i = 0.00002;
-	private final double d = 0.02;
-	private final double acceptRange = 3;
+	private double p = 0.07;
+	private double i = 0.0000002;
+	private double d = 0.02;
+	private double acceptRange = 6;
 	private final double acceptRangeRate = 2;
 
 	private double turnIntegral;
 	private boolean isDone;
 
-	//Turns the robot to angle degrees
+	// Turns the robot to angle degrees
 	public Turn(DriveBase base, double angle) {
 		this.base = base;
 		isDone = false;
@@ -39,6 +39,11 @@ public class Turn implements AutFunction {
 
 	public void update(long deltaTime) {
 
+		p = Robot.dashboard.getNumber("Turn P");
+		i = Robot.dashboard.getNumber("Turn I");
+		d = Robot.dashboard.getNumber("Turn D");
+		acceptRange = Robot.dashboard.getNumber("Turn tolerance");
+
 		double curretAngle = gyro.getAngle();
 
 		double error = angle - curretAngle;
@@ -53,7 +58,7 @@ public class Turn implements AutFunction {
 			error += 360;
 		}
 
-		turnIntegral += error;
+		turnIntegral += error * deltaTime;
 
 		double turnSpeed = error * p - gyro.getRate() * d + turnIntegral * i;
 
@@ -71,7 +76,7 @@ public class Turn implements AutFunction {
 
 	@Override
 	public void init() {
-		//nothing to initialize
+		// nothing to initialize
 	}
 
 }

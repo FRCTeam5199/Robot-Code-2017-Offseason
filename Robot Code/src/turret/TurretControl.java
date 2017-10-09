@@ -1,25 +1,46 @@
 package turret;
 
 import org.usfirst.frc.team5199.robot.Robot;
-
 import controllers.JoystickController;
 import interfaces.LoopModule;
 import maths.Vector2;
 import pixy.PixyFunctionsTurret;
+import util.PIDController;
 
 public class TurretControl implements LoopModule {
 
 	private final JoystickController joystick;
 	private Turret turret;
 
-	private double pTurret = .003;
-	private double iTurret = .0001;
-	private double dTurret = .05;
+	private final int centerRPM = 3575;
+	private final int sideRPM = 3375;
+	private int turretOffset = -5;
+
+	// tuned: no touchy
+	// ---- for fresh motor ----
+	// private double pTurret = .0025;
+	// private double iTurret = .000001;
+	// private double dTurret = .7;
+
+	private double pTurret = 0.005;
+	private double iTurret = 0.0000006;
+	private double dTurret = 0.4;
+
+	// tuned: no touchy
+	// ---- for almost ded motor ----
+	// private double pTurret = .005;
+	// private double iTurret = .000003;
+	// private double dTurret = 1.4;
+
 	private double integralTurret = 0;
 
-	private double pFlywheel = .02;
-	private double iFlywheel = .00025;
-	private double integralFlywheel = 0;
+	private PIDController flyWheelPID;
+
+	private double lockAngle = 0;
+	private double targetRPM = 0;
+	private double adjustedRPM = 0;
+
+	private PIDController lockPID;
 
 	private Vector2 target;
 	private Vector2 lastTarget;
@@ -31,45 +52,91 @@ public class TurretControl implements LoopModule {
 		target = new Vector2(0, 0);
 		pixyFuncShooter = new PixyFunctionsTurret();
 		lastTarget = target.clone();
+
+		flyWheelPID = new PIDController("Flywheel", .007, 0.015, 0);
+		lockPID = new PIDController("Turret", .07, 0, .003);
 	}
 
 	@Override
 	public void init() {
+		// Robot.dashboard.putDouble("Flywheel rip-ems", 0d);
+
+		Robot.dashboard.putNumber("Turret offset", turretOffset);
+
+		Robot.dashboard.putNumber("P Turret", pTurret);
+		Robot.dashboard.putNumber("I Turret", iTurret);
+		Robot.dashboard.putNumber("D Turret", dTurret);
+
+		// flyWheelPID.putOnDashboard();
+		// lockPID.putOnDashboard();
+
 	}
 
 	@Override
 	public void update(long delta) {
+		// Robot.dashboard.putNumber("Flywheel rip-ems",
+		// turret.getBufferedFlyWheelRPM());
+		// flyWheelPID.getFromDashboard();
 
-		manualControl();
+		turretOffset = (int) Robot.dashboard.getNumber("Turret offset");
 
-		// if (joystick.getButton(1) || joystick.getButton(2)) {
-		// // autoaim() function needs to be updated to use Pixycam
-		// // autoaim();
-		// setRPM(joystick.getScaledSlider() * 6000);
-		//
-		// } else {
-		// manualControl();
-		// integralTurret = 0;
-		// }
+		pTurret = Robot.dashboard.getNumber("P Turret");
+		iTurret = Robot.dashboard.getNumber("I Turret");
+		dTurret = Robot.dashboard.getNumber("D Turret");
+
+		Robot.dashboard.putNumber("Turret error", getError());
+		Robot.dashboard.putNumber("Turret integral", integralTurret);
+
+		if (joystick.getButton(9) || joystick.getButton(10)) {
+			targetRPM = centerRPM;
+		} else if (joystick.getButton(11) || joystick.getButton(12)) {
+			targetRPM = sideRPM;
+		}
+
+		adjustedRPM = targetRPM - joystick.getSlider() * 50;
+
+		// Robot.dashboard.putNumber("Target RPM", targetRPM);
+
+		if (joystick.getButton(5) || joystick.getButton(6)) {
+			goTo(0);
+		} else if (joystick.getButton(1)) {
+			goTo(lockAngle);
+			setRPM(adjustedRPM);
+		} else if (joystick.getButton(2)) {
+			lockPID.reset(turret.getTurretAngle());
+			autoaim(delta);
+			setRPM(adjustedRPM);
+		} else if (joystick.getButton(7)) {
+			lockPID.reset(turret.getTurretAngle());
+			turret.zeroTurret();
+		} else {
+			lockPID.reset(turret.getTurretAngle());
+			manualControl();
+			integralTurret = 0;
+		}
+	}
+
+	public void goTo(double n) {
+		lockPID.setTarget(n);
+		turret.setTurret(lockPID.update(turret.getTurretAngle()));
 	}
 
 	public void manualControl() {
-		turret.setTurret(joystick.getZ() * .3);
-		if (joystick.getTrigger()) {
-			setRPM(joystick.getScaledSlider() * 6000);
-		} else {
-			turret.setFlyWheel(0);
-		}
-		// Robot.nBroadcaster.println(turret.getFlyWheelRPM());
-		// Robot.nBroadcaster.println(turret.getEncoder().getDistance());
+		turret.setTurret(joystick.getZ() * .5);
+
+		turret.setFlyWheel(0);
+
 	}
 
-	public void autoaim() {
+	public void autoaim(long deltaTime) {
 		// turret will try to move so that Target.x becomes 0
 		double motorSpeed;
-
 		target = pixyFuncShooter.getTarget();
-		integralTurret += target.getX();
+		// Robot.nBroadcaster.println(target.getX());
+
+		target.setX(target.getX() + turretOffset);
+
+		integralTurret += target.getX() * deltaTime;
 		if (Math.abs(integralTurret) > 1 / iTurret) {
 			if (integralTurret > 0) {
 				integralTurret = 1 / iTurret;
@@ -77,24 +144,31 @@ public class TurretControl implements LoopModule {
 				integralTurret = -1 / iTurret;
 			}
 		}
+
 		motorSpeed = pTurret * target.getX();
-		Robot.nBroadcaster.println(dTurret * (target.getX() - lastTarget.getX()));
-		motorSpeed += dTurret * (target.getX() - lastTarget.getX());
+		motorSpeed += dTurret * (target.getX() - lastTarget.getX()) / deltaTime;
 		motorSpeed += iTurret * integralTurret;
 		turret.setTurret(motorSpeed);
 		lastTarget = target.clone();
+
+		lockAngle = turret.getTurretAngle();
+	}
+
+	public void setOffset(int n) {
+		turretOffset = n;
 	}
 
 	public void setRPM(double rpm) {
-		// convert rpm to rps
-		rpm = rpm / 60;
+		flyWheelPID.setTarget(rpm);
+		turret.setFlyWheel(flyWheelPID.update(turret.getFlyWheelRPM()));
+	}
 
-		double error = rpm - turret.getFlyWheelRPS();
-		integralFlywheel += error;
+	public double getError() {
+		return target.getX();
+	}
 
-		integralFlywheel = clamp(integralFlywheel, 1 / iFlywheel);
-
-		turret.setFlyWheel(pFlywheel * error + iFlywheel * integralFlywheel);
+	public double getLockErrorRate() {
+		return lockPID.getErrorRate();
 	}
 
 	private double clamp(double n, double clamp) {
@@ -104,10 +178,6 @@ public class TurretControl implements LoopModule {
 			return -clamp;
 		}
 		return n;
-	}
-
-	public Turret getTurret() {
-		return turret;
 	}
 
 }
