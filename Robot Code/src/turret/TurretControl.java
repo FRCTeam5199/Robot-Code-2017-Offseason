@@ -14,13 +14,17 @@ public class TurretControl implements LoopModule {
 
 	private final int centerRPM = 3575;
 	private final int sideRPM = 3375;
-	private int turretOffset = 4;
+	private int turretOffset = -5;
 
 	// tuned: no touchy
 	// ---- for fresh motor ----
-	private double pTurret = .0025;
-	private double iTurret = .000001;
-	private double dTurret = .7;
+	// private double pTurret = .0025;
+	// private double iTurret = .000001;
+	// private double dTurret = .7;
+
+	private double pTurret = 0.005;
+	private double iTurret = 0.0000006;
+	private double dTurret = 0.4;
 
 	// tuned: no touchy
 	// ---- for almost ded motor ----
@@ -57,8 +61,15 @@ public class TurretControl implements LoopModule {
 	public void init() {
 		// Robot.dashboard.putDouble("Flywheel rip-ems", 0d);
 
+		Robot.dashboard.putNumber("Turret offset", turretOffset);
+
+		Robot.dashboard.putNumber("P Turret", pTurret);
+		Robot.dashboard.putNumber("I Turret", iTurret);
+		Robot.dashboard.putNumber("D Turret", dTurret);
+
 		// flyWheelPID.putOnDashboard();
 		// lockPID.putOnDashboard();
+
 	}
 
 	@Override
@@ -67,7 +78,14 @@ public class TurretControl implements LoopModule {
 		// turret.getBufferedFlyWheelRPM());
 		// flyWheelPID.getFromDashboard();
 
-		// turretOffset = Robot.dashboard.getInt("Turret offset");
+		turretOffset = (int) Robot.dashboard.getNumber("Turret offset");
+
+		pTurret = Robot.dashboard.getNumber("P Turret");
+		iTurret = Robot.dashboard.getNumber("I Turret");
+		dTurret = Robot.dashboard.getNumber("D Turret");
+
+		Robot.dashboard.putNumber("Turret error", getError());
+		Robot.dashboard.putNumber("Turret integral", integralTurret);
 
 		if (joystick.getButton(9) || joystick.getButton(10)) {
 			targetRPM = centerRPM;
@@ -113,10 +131,11 @@ public class TurretControl implements LoopModule {
 	public void autoaim(long deltaTime) {
 		// turret will try to move so that Target.x becomes 0
 		double motorSpeed;
-
 		target = pixyFuncShooter.getTarget();
 		// Robot.nBroadcaster.println(target.getX());
+
 		target.setX(target.getX() + turretOffset);
+
 		integralTurret += target.getX() * deltaTime;
 		if (Math.abs(integralTurret) > 1 / iTurret) {
 			if (integralTurret > 0) {
@@ -135,6 +154,10 @@ public class TurretControl implements LoopModule {
 		lockAngle = turret.getTurretAngle();
 	}
 
+	public void setOffset(int n) {
+		turretOffset = n;
+	}
+
 	public void setRPM(double rpm) {
 		flyWheelPID.setTarget(rpm);
 		turret.setFlyWheel(flyWheelPID.update(turret.getFlyWheelRPM()));
@@ -142,6 +165,10 @@ public class TurretControl implements LoopModule {
 
 	public double getError() {
 		return target.getX();
+	}
+
+	public double getLockErrorRate() {
+		return lockPID.getErrorRate();
 	}
 
 	private double clamp(double n, double clamp) {

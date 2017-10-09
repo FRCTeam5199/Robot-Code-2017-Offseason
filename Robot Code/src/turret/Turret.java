@@ -40,7 +40,6 @@ public class Turret {
 
 	public void setTurret(double n) {
 		if (turnWatchdog.isOk()) {
-			Robot.nBroadcaster.println(turnMotor.getOutputCurrent());
 			turnMotor.set(n);
 		} else {
 			turnMotor.set(0);
