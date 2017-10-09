@@ -1,5 +1,6 @@
 package org.usfirst.frc.team5199.robot;
 
+import Pistons.PistonControl;
 import autonomous.*;
 import controllers.*;
 import dashboard.DriverCamera;
@@ -10,11 +11,15 @@ import drive.DriveControl;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import intake.Intake;
 import intake.IntakeControl;
+import led.LED;
+import led.LEDControl;
 import transport.Transport;
 import transport.TransportControl;
 import turret.Turret;
@@ -59,12 +64,17 @@ public class Robot extends SampleRobot {
 	private Intake intake;
 	private Transport transport;
 	private Climber climber;
+	private LED led;
 
 	private DriveControl driveControl;
 	private TurretControl turretControl;
 	private IntakeControl intakeControl;
 	private TransportControl transportControl;
 	private ClimberControl climberControl;
+	private LEDControl ledControl;
+	private PistonControl pistonControl;
+
+	private DoubleSolenoid releasePistons;
 
 	private UsbCamera camera;
 
@@ -84,7 +94,7 @@ public class Robot extends SampleRobot {
 		new DriverCamera(camera);
 		new Compressor();
 
-		clockRegulator = new ClockRegulator(100);
+		clockRegulator = new ClockRegulator(50);
 
 		controller = new XBoxController(0);
 		joystick = new JoystickController(1);
@@ -95,12 +105,19 @@ public class Robot extends SampleRobot {
 		intake = new Intake();
 		transport = new Transport();
 		climber = new Climber();
+		led = new LED(RobotMap.ledR, RobotMap.ledG, RobotMap.ledB);
+
+		releasePistons = new DoubleSolenoid(4, 5);
+
+		releasePistons.set(DoubleSolenoid.Value.kOff);
 
 		driveControl = new DriveControl(base, controller);
 		turretControl = new TurretControl(turret, joystick);
 		intakeControl = new IntakeControl(intake, joystick, controller);
 		transportControl = new TransportControl(transport, joystick);
 		climberControl = new ClimberControl(climber, joystick);
+		ledControl = new LEDControl(led);
+		pistonControl = new PistonControl(releasePistons, joystick);
 
 		Robot.dashboard.putNumber("Turn P", .07);
 		Robot.dashboard.putNumber("Turn I", .0000002);
@@ -111,9 +128,10 @@ public class Robot extends SampleRobot {
 	@Override
 	public void autonomous() {
 		sensors.getGyro().reset();
-		AutonomousManager autManager = new AutonomousManager(base, turret, intake, climber, clockRegulator);
+		AutonomousManager autManager = new AutonomousManager(base, turret, intake, transport, climber, clockRegulator);
 
-		autManager.add(new Stop(base, turret, intake, climber));
+		autManager.add(new Stop(base, turret, intake, transport, climber));
+		autManager.add(new ReleasePistons(releasePistons));
 
 		switch (autController.getAutMode()) {
 
@@ -121,7 +139,7 @@ public class Robot extends SampleRobot {
 			autManager.add(new Move(base, 81));
 			autManager.add(new Turn(base, -60));
 			autManager.add(new PixyForward(driveControl));
-			autManager.add(new ShootPrep(turretControl, 3375, turret));
+			autManager.add(new ShootPrep(turretControl, turret, 3375, -5));
 			autManager.add(new Shoot(turretControl, turret, intake, transport, 3375));
 			break;
 
@@ -134,7 +152,8 @@ public class Robot extends SampleRobot {
 
 		case 3:
 			autManager.add(new PixyForward(driveControl));
-			autManager.add(new ShootPrep(turretControl, 3575, turret));
+			autManager.add(new TurnTurret(turretControl, turret, 60));
+			autManager.add(new ShootPrep(turretControl, turret, 3575, -20));
 			autManager.add(new Shoot(turretControl, turret, intake, transport, 3575));
 			break;
 
@@ -149,13 +168,15 @@ public class Robot extends SampleRobot {
 			autManager.add(new Move(base, 81));
 			autManager.add(new Turn(base, 60));
 			autManager.add(new PixyForward(driveControl));
-			autManager.add(new ShootPrep(turretControl, 3375, turret));
+			autManager.add(new ShootPrep(turretControl, turret, 3375, -5));
 			autManager.add(new Shoot(turretControl, turret, intake, transport, 3375));
 			break;
 
 		case 6:
-			// autManager.add(new Move(base, 80));
-			autManager.add(new Turn(base, 60));
+			autManager.add(new PixyForward(driveControl));
+			autManager.add(new TurnTurret(turretControl, turret, -60));
+			autManager.add(new ShootPrep(turretControl, turret, 3575, 20));
+			autManager.add(new Shoot(turretControl, turret, intake, transport, 3575));
 			break;
 		}
 
@@ -181,6 +202,7 @@ public class Robot extends SampleRobot {
 		mainLoop.add(intakeControl);
 		mainLoop.add(transportControl);
 		mainLoop.add(climberControl);
+		mainLoop.add(pistonControl);
 
 		mainLoop.init();
 
@@ -195,33 +217,29 @@ public class Robot extends SampleRobot {
 		turret.zeroTurret();
 		sensors.getGyro().reset();
 
-		byte colorCount = 0;
+		int colorCount = 0;
 
-		// DoubleSolenoid solenoid = new DoubleSolenoid(4, 5);
-		// Solenoid r = new Solenoid(1);
-		// Solenoid g = new Solenoid(2);
-		// Solenoid b = new Solenoid(3);
-
-		ClockRegulator testRegulator = new ClockRegulator(2);
+		boolean lastState = false;
 
 		while (this.isTest() && this.isEnabled()) {
-			turretControl.setRPM(3375);
+			if (joystick.getButton(1)) {
+				releasePistons.set(DoubleSolenoid.Value.kForward);
+			} else {
+				releasePistons.set(DoubleSolenoid.Value.kOff);
+			}
 
-			// Robot.nBroadcaster.println(
-			// sensors.getLeftWheelEncoder().getDistance() + "\t" +
-			// sensors.getRightWheelEncoder().getDistance());
+			if (joystick.getButton(1) && !lastState) {
+				colorCount++;
+			}
 
-			// r.set((colorCount & 0x01) != 0);
-			// g.set((colorCount & 0x02) != 0);
-			// b.set((colorCount & 0x04) != 0);
-			//
-			// if (colorCount > 7) {
-			// colorCount = 0;
-			// }
-			//
-			// colorCount++;
-			//
-			// testRegulator.sync();
+			lastState = joystick.getButton(1);
+
+			ledControl.setColor(colorCount);
+
+			if (colorCount == 8) {
+				colorCount = 0;
+			}
+
 			clockRegulator.sync();
 		}
 	}
