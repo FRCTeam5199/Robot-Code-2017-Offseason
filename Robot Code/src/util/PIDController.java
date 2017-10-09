@@ -14,6 +14,7 @@ public class PIDController {
 	private double lastPos;
 	private double integral;
 	private double lastTime;
+	private double errorRate;
 
 	public PIDController(String name, double p, double i, double d) {
 		this.name = name;
@@ -79,6 +80,10 @@ public class PIDController {
 
 	public void setD(double d) {
 		this.d = d;
+	}
+
+	public double getErrorRate() {
+		return errorRate;
 	}
 
 	// public void putOnDashboard() {
