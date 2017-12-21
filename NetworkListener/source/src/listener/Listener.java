@@ -44,9 +44,9 @@ public class Listener {
 
             byte[] data = packet.getData();
 
-            int length = ByteUtils.toInt(ByteUtils.portionOf(data, 0, 4));
+            //int length = ByteUtils.toInt(ByteUtils.portionOf(data, 0, 4));
 
-            String recieve = new String(data, 4, length + 4);
+            String recieve = new String(data,0, packet.getLength());
             System.out.print(recieve);
            // System.out.println(recieve.length());
         }

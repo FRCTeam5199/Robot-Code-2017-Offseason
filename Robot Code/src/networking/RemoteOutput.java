@@ -37,12 +37,10 @@ public class RemoteOutput {
 	}
 
 	public void print(String s) {
-		byte[] data = s.getBytes();
-		byte[] buf = ByteUtils.addArray(ByteUtils.toByteArray(data.length), data);
+		byte[] buf = s.getBytes();
 		packet = new DatagramPacket(buf, buf.length, address, port);
 		try {
 			socket.send(packet);
-			System.out.println("sent");
 		} catch (IOException e) {
 			System.err.println("Failed to send");
 		}
