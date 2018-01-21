@@ -13,6 +13,7 @@ public class Pixycam implements Runnable {
 	private static final Vector2I center = Vector2I.divide(resolution, 2);
 
 	private final int frequency = 200;
+	private final long blockTimeout = 1000;
 
 	private final Thread t;
 	private final ClockRegulator regulator;
@@ -27,6 +28,7 @@ public class Pixycam implements Runnable {
 	private final int startWordX = 0x55aa;
 
 	private boolean newData;
+	private long timeSinceData;
 
 	/**
 	 * @param address
@@ -39,6 +41,7 @@ public class Pixycam implements Runnable {
 		blocks = new ArrayList<PixyBlock>();
 		t = new Thread(this, "PixyCam " + address);
 
+		timeSinceData = System.currentTimeMillis();
 		start();
 	}
 
@@ -49,23 +52,43 @@ public class Pixycam implements Runnable {
 		int word = 0xffff;
 
 		while (isAlive) {
-			word = getWord();
 
+			if (timeSinceData + blockTimeout < System.currentTimeMillis()) {
+				timeSinceData = System.currentTimeMillis();
+				System.err.println("No data from pixycam " + address + ". Is the address correct?");
+			}
+
+			word = getWord();
 			if (word == 0 && lastWord == 0) {
 				// nothing
 				// this empty if statement might reduce cpu usage...
 			} else if (word == startWord && lastWord == startWord) {
 				// normal block frame start
+				timeSinceData = System.currentTimeMillis();
 				synchronized (blocks) {
 					blocks.clear();
-					blocks.add(new PixyBlock(getBlockData()));
+					//blocks.add(new PixyBlock(getBlockData()));
+					PixyBlock pb1 = new PixyBlock(getBlockData());
+					if (pb1.checkSum()) {
+						blocks.add(pb1);
+						Robot.nBroadcaster.println("Pixycam " + address + ": new block");
+					} else {
+						Robot.nBroadcaster.println("Pixycam " + address + ": invalid checksum!");
+					}
 					while (getWord() == startWord) {
-						blocks.add(new PixyBlock(getBlockData()));
+						PixyBlock pb = new PixyBlock(getBlockData());
+						if (pb.checkSum()) {
+							blocks.add(pb);
+							Robot.nBroadcaster.println("Pixycam " + address + ": new block");
+						} else {
+							Robot.nBroadcaster.println("Pixycam " + address + ": invalid checksum!");
+						}
 					}
 				}
 				newData = true;
 			} else if (word == startWordColor && lastWord == startWord) {
 				// color block frame start
+				timeSinceData = System.currentTimeMillis();
 				blocks.clear();
 			} else if (word == startWordX) {
 				// out of sync!
