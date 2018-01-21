@@ -38,11 +38,11 @@ public class Turn implements AutFunction {
 	}
 
 	public void update(long deltaTime) {
-
-		p = Robot.dashboard.getNumber("Turn P");
-		i = Robot.dashboard.getNumber("Turn I");
-		d = Robot.dashboard.getNumber("Turn D");
-		acceptRange = Robot.dashboard.getNumber("Turn tolerance");
+		
+		p = Robot.dashboard.getNumber("Turn P", p);
+		i = Robot.dashboard.getNumber("Turn I", i);
+		d = Robot.dashboard.getNumber("Turn D", d);
+		acceptRange = Robot.dashboard.getNumber("Turn tolerance", acceptRange);
 
 		double curretAngle = gyro.getAngle();
 

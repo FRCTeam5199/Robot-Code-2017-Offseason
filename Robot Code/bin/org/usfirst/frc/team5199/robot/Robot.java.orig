@@ -1,7 +1,5 @@
 package org.usfirst.frc.team5199.robot;
 
-import java.util.ArrayList;
-
 import Pistons.PistonControl;
 import autonomous.*;
 import controllers.*;
@@ -13,7 +11,10 @@ import drive.DriveControl;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SampleRobot;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import intake.Intake;
 import intake.IntakeControl;
@@ -28,8 +29,6 @@ import climber.ClimberControl;
 
 import util.ClockRegulator;
 import networking.RemoteOutput;
-import pixy.PixyBlock;
-import pixy.Pixycam;
 
 /**
  * This is a demo program showing the use of the RobotDrive class. The
@@ -85,7 +84,7 @@ public class Robot extends SampleRobot {
 
 	@Override
 	public void robotInit() {
-		nBroadcaster = new RemoteOutput("10.51.99.206", 1180);
+		nBroadcaster = new RemoteOutput("10.51.99.197", 1180);
 		// set first parameter in RemoteOutput constructor to your computer's
 		// local address. (ex: "10.51.99.197")
 		// currently working on getting this to work without it
@@ -121,21 +120,41 @@ public class Robot extends SampleRobot {
 		ledControl = new LEDControl(led);
 		pistonControl = new PistonControl(releasePistons, joystick);
 
+<<<<<<< HEAD
 		Robot.nBroadcaster.println("Robot initialized");
-
-		// Robot.dashboard.putNumber("Turn P", .07);
-		// Robot.dashboard.putNumber("Turn I", .0000002);
-		// Robot.dashboard.putNumber("Turn D", .02);
-		// Robot.dashboard.putNumber("Turn tolerance", 6);
+=======
+		Robot.dashboard.putNumber("Turn P", .07);
+		Robot.dashboard.putNumber("Turn I", .0000002);
+		Robot.dashboard.putNumber("Turn D", .02);
+		Robot.dashboard.putNumber("Turn tolerance", 6);
+>>>>>>> 79b9706f85f650578c5e0ba3a59676ff2d541464
 	}
 
 	@Override
 	public void autonomous() {
 		sensors.getGyro().reset();
+<<<<<<< HEAD
+		AutonomousManager autManager = new AutonomousManager(clockRegulator);
+
+		// // Forward test
+		// autManager.add(new MoveForwardInInches(base, 36));
+
+		// // Square test
+		// autManager.add(new Turn(base, 0));
+		// autManager.add(new MoveForwardInInches(base, 36));
+		// autManager.add(new Turn(base, 270));
+		// autManager.add(new MoveForwardInInches(base, 36));
+		// autManager.add(new Turn(base, 180));
+		// autManager.add(new MoveForwardInInches(base, 36));
+		// autManager.add(new Turn(base, 90));
+		// autManager.add(new MoveForwardInInches(base, 36));
+		// autManager.add(new Turn(base, 0));
+=======
 		AutonomousManager autManager = new AutonomousManager(base, turret, intake, transport, climber, clockRegulator);
 
 		autManager.add(new Stop(base, turret, intake, transport, climber));
 		autManager.add(new ReleasePistons(releasePistons));
+>>>>>>> 79b9706f85f650578c5e0ba3a59676ff2d541464
 
 		switch (autController.getAutMode()) {
 
@@ -220,61 +239,30 @@ public class Robot extends SampleRobot {
 		turret.zeroTurret();
 		sensors.getGyro().reset();
 
-		// int colorCount = 0;
-		//
-		// boolean lastState = false;
-		//
-		// while (this.isTest() && this.isEnabled()) {
-		// // if (joystick.getButton(1)) {
-		// // releasePistons.set(DoubleSolenoid.Value.kForward);
-		// // } else {
-		// // releasePistons.set(DoubleSolenoid.Value.kOff);
-		// // }
-		//
-		// turret.setFlyWheel(.25);
-		//
-		// if (joystick.getButton(1) && !lastState) {
-		// colorCount++;
-		// }
-		//
-		// lastState = joystick.getButton(1);
-		//
-		// ledControl.setColor(colorCount);
-		//
-		// if (colorCount == 8) {
-		// colorCount = 0;
-		// }
-		//
-		// clockRegulator.sync();
-		// }
+		int colorCount = 0;
 
-		Pixycam pixy = new Pixycam(0x53);
+		boolean lastState = false;
 
-		// pixy.setLedColor(0xff0000);
-		double colorSpeed = (2 * Math.PI) / (3 * 1000);
-
-		while (isEnabled() && isTest()) {
-			if (pixy.newData()) {
-				PixyBlock[] blocks = pixy.getBlocks();
-				for (PixyBlock block : blocks) {
-					Robot.nBroadcaster.print(block.getPosRelCenter() + "\t");
-				}
-				Robot.nBroadcaster.println("");
+		while (this.isTest() && this.isEnabled()) {
+			if (joystick.getButton(1)) {
+				releasePistons.set(DoubleSolenoid.Value.kForward);
+			} else {
+				releasePistons.set(DoubleSolenoid.Value.kOff);
 			}
 
-			byte red = (byte) (Math.sin(colorSpeed * System.currentTimeMillis() + 0) * 127 + 128);
-			byte green = (byte) (Math.sin(colorSpeed * System.currentTimeMillis() + (2 * Math.PI / 3)) * 127 + 128);
-			byte blue = (byte) (Math.sin(colorSpeed * System.currentTimeMillis() + (4 * Math.PI / 3)) * 127 + 128);
+			if (joystick.getButton(1) && !lastState) {
+				colorCount++;
+			}
 
-			int color = 0;
-			color = color | (red << 16);
-			color = color | (green << 8);
-			color = color | (blue);
+			lastState = joystick.getButton(1);
 
-			// pixy.setLedColor(color);
+			ledControl.setColor(colorCount);
 
-			pixy.setLedColor(0x0000ff);
+			if (colorCount == 8) {
+				colorCount = 0;
+			}
+
+			clockRegulator.sync();
 		}
-		pixy.stop();
 	}
 }

@@ -21,18 +21,18 @@ public class PixyGearPID {
 		lastTarget = target.clone();
 		this.base = base;
 		pixyFuncFront = new PixyFunctionsFront();
-		Robot.dashboard.putDouble("Flywheel rip-ems", 0d);
-		Robot.dashboard.putDouble("Pixy P", p);
-		Robot.dashboard.putDouble("Pixy I", i);
-		Robot.dashboard.putDouble("Pixy D", d);
+		Robot.dashboard.putNumber("Flywheel rip-ems", 0d);
+		Robot.dashboard.putNumber("Pixy P", p);
+		Robot.dashboard.putNumber("Pixy I", i);
+		Robot.dashboard.putNumber("Pixy D", d);
 		
 	}
 
 	public void pixyGear(long deltaTime) {
-		p = Robot.dashboard.getDouble("Pixy P");
-		i = Robot.dashboard.getDouble("Pixy I");
-		d = Robot.dashboard.getDouble("Pixy D");
-		Robot.dashboard.putDouble("Pixy Error", pixyFuncFront.getTarget().getX());
+		p = Robot.dashboard.getNumber("Pixy P", p);
+		i = Robot.dashboard.getNumber("Pixy I", i);
+		d = Robot.dashboard.getNumber("Pixy D", d);
+		Robot.dashboard.putNumber("Pixy Error", pixyFuncFront.getTarget().getX());
 		
 		double motorSpeed;
 		target = pixyFuncFront.getTarget();

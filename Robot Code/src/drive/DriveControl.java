@@ -33,18 +33,21 @@ public class DriveControl implements LoopModule {
 
 	@Override
 	public void init() {
-		Robot.dashboard.putDouble("Pixy Error", 0);
+		Robot.dashboard.putNumber("Pixy Error", 0);
 	}
 
 	@Override
 	public void update(long delta) {
-		selectDriveMode();
-		// Robot.nBroadcaster.println(Robot.sensors.getAccelerometer().getX() +
-		// " \t"
-		// + Robot.sensors.getAccelerometer().getY() + " \t" +
-		// Robot.sensors.getAccelerometer().getZ());
+		
+		
+		// override drive mode to TANK
+		//selectDriveMode();
+		driveMode = driveMode.TANK;
+		
+		
+		
 		if (controller.getButton(8)) {
-			PixyGearAlign(delta);
+			//PixyGearAlign(delta);
 		} else {
 			switch (driveMode) {
 			case POINT:

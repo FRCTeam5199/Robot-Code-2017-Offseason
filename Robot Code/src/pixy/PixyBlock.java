@@ -13,7 +13,7 @@ public class PixyBlock {
 	 * @param data
 	 *            The raw data from the Pixycam
 	 */
-	public PixyBlock(byte[] data) {
+	public PixyBlock(short[] data) {
 		checkSum = getWord(data, 0);
 		signatureNum = getWord(data, 2);
 		pos = new Vector2I(getWord(data, 4), getWord(data, 6));
@@ -30,7 +30,7 @@ public class PixyBlock {
 	 * @return A word (in an integer) combining the byte at "s" and the next
 	 *         byte
 	 */
-	private int getWord(byte[] data, int s) {
+	private int getWord(short[] data, int s) {
 		int c = data[s];
 		int w = data[s + 1];
 		w = w << 8;
@@ -49,7 +49,7 @@ public class PixyBlock {
 		return pos;
 	}
 
-	public Vector2I getPosCenter() {
+	public Vector2I getPosRelCenter() {
 		return Vector2I.subtract(pos, Pixycam.getCenter());
 	}
 

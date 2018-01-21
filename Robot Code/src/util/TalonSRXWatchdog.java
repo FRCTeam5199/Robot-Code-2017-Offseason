@@ -2,11 +2,11 @@ package util;
 
 import org.usfirst.frc.team5199.robot.Robot;
 
-import com.ctre.CANTalon;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-public class CANTalonWatchdog implements Runnable {
+public class TalonSRXWatchdog implements Runnable {
 
-	private final CANTalon motor;
+	private final TalonSRX motor;
 	private final Thread t;
 
 	private final double maxCurrent;
@@ -18,13 +18,13 @@ public class CANTalonWatchdog implements Runnable {
 
 	private boolean isAlive;
 
-	public CANTalonWatchdog(CANTalon motor, double maxCurrent, long maxOvercurrentTime, long timeout) {
+	public TalonSRXWatchdog(TalonSRX motor, double maxCurrent, long maxOvercurrentTime, long timeout) {
 		this.motor = motor;
 		this.maxCurrent = maxCurrent;
 		this.maxOvercurrentTime = maxOvercurrentTime;
 		this.timeout = timeout;
 
-		t = new Thread(this, "CANTalon Watchdog");
+		t = new Thread(this, "TalonSRX Watchdog");
 	}
 
 	public void start() {

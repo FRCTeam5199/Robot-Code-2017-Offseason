@@ -2,15 +2,17 @@ package pixy;
 
 import java.util.ArrayList;
 
+import org.usfirst.frc.team5199.robot.Robot;
+
 import edu.wpi.first.wpilibj.I2C;
 import maths.Vector2I;
 import util.ClockRegulator;
 
 public class Pixycam implements Runnable {
-	private static final Vector2I resolution = new Vector2I(1280, 800);
+	private static final Vector2I resolution = new Vector2I(320, 200);
 	private static final Vector2I center = Vector2I.divide(resolution, 2);
 
-	private final int frequency = 50;
+	private final int frequency = 200;
 
 	private final Thread t;
 	private final ClockRegulator regulator;
@@ -33,7 +35,7 @@ public class Pixycam implements Runnable {
 	public Pixycam(int address) {
 		this.address = address;
 		i2c = new I2C(I2C.Port.kMXP, address);
-		regulator = new ClockRegulator(50);
+		regulator = new ClockRegulator(frequency);
 		blocks = new ArrayList<PixyBlock>();
 		t = new Thread(this, "PixyCam " + address);
 
@@ -54,7 +56,6 @@ public class Pixycam implements Runnable {
 				// this empty if statement might reduce cpu usage...
 			} else if (word == startWord && lastWord == startWord) {
 				// normal block frame start
-				// make sure we don't get concurrent read/write errors
 				synchronized (blocks) {
 					blocks.clear();
 					blocks.add(new PixyBlock(getBlockData()));
@@ -71,12 +72,16 @@ public class Pixycam implements Runnable {
 				getByte();
 			}
 
-			// regulator.sync();
+			lastWord = word;
+
+			regulator.sync();
 		}
 	}
 
-	public ArrayList<PixyBlock> getBlocks() {
-		return blocks;
+	public PixyBlock[] getBlocks() {
+		PixyBlock[] output = new PixyBlock[blocks.size()];
+		blocks.toArray(output);
+		return output;
 	}
 
 	public boolean newData() {
@@ -90,28 +95,43 @@ public class Pixycam implements Runnable {
 
 	public void setLedColor(int color) {
 		writeWord(0xfd00);
-		writeWord(color >> 16);
-		writeWord((color & 0x00ff00) >> 8);
-		writeWord(color & 0x0000ff);
+		writeByte((byte) (color >> 16));
+		writeByte((byte) ((color & 0x00ff00) >> 8));
+		writeByte((byte) (color & 0x0000ff));
 	}
 
 	private int getWord() {
 		int c = getByte();
 		int w = getByte();
 		w = w << 8;
+
+		// we have to return an int because java doesn't have unsigned shorts
 		return w | c;
 	}
 
-	private byte getByte() {
-		byte[] buffer = new byte[1];
-		i2c.readOnly(buffer, 1);
-		return buffer[1];
+	private short getByte() {
+		byte[] data = new byte[1];
+		i2c.readOnly(data, 1);
+		// we have to return a short because java doesn't have unsigned bytes
+		// ughs
+		return (short) (data[0] & 0xff);
 	}
 
-	private byte[] getBlockData() {
+	private short[] getBlockData() {
 		byte[] buffer = new byte[12];
 		i2c.readOnly(buffer, 12);
-		return buffer;
+
+		// have to return short[] because hava doesn't have unsigned bytes
+		short[] output = new short[12];
+		for (int i = 0; i < 12; i++) {
+			output[i] = (short) (buffer[i] & 0xff);
+		}
+		return output;
+	}
+
+	private void writeByte(byte b) {
+		byte[] data = { b };
+		i2c.writeBulk(data);
 	}
 
 	private void writeWord(int word) {

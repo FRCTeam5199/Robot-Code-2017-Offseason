@@ -66,7 +66,7 @@ public class Sensors {
 		flywheelAVG = new CircularAverageBuffer(75);
 		shooterXAVG = new CircularAverageBuffer(10);
 
-		location = new Location(accelerometer, wheelsLeft, wheelsRight);
+		location = new Location(gyro, wheelsLeft, wheelsRight);
 		location.start();
 	}
 

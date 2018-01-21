@@ -78,11 +78,11 @@ public class TurretControl implements LoopModule {
 		// turret.getBufferedFlyWheelRPM());
 		// flyWheelPID.getFromDashboard();
 
-		turretOffset = (int) Robot.dashboard.getNumber("Turret offset");
+		turretOffset = (int) Robot.dashboard.getNumber("Turret offset", turretOffset);
 
-		pTurret = Robot.dashboard.getNumber("P Turret");
-		iTurret = Robot.dashboard.getNumber("I Turret");
-		dTurret = Robot.dashboard.getNumber("D Turret");
+		pTurret = Robot.dashboard.getNumber("P Turret", pTurret);
+		iTurret = Robot.dashboard.getNumber("I Turret", iTurret);
+		dTurret = Robot.dashboard.getNumber("D Turret", dTurret);
 
 		Robot.dashboard.putNumber("Turret error", getError());
 		Robot.dashboard.putNumber("Turret integral", integralTurret);

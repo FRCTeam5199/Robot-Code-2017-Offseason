@@ -2,53 +2,54 @@ package turret;
 
 import org.usfirst.frc.team5199.robot.Robot;
 import org.usfirst.frc.team5199.robot.RobotMap;
-import com.ctre.CANTalon;
+
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Encoder;
-import sensors.CircularAverageBuffer;
-import util.CANTalonWatchdog;
+import util.TalonSRXWatchdog;
 
 public class Turret {
-	private final CANTalon turnMotor;
-	private final CANTalon flyWheelMotor;
-	private final CANTalonWatchdog turnWatchdog;
-	private final CANTalonWatchdog flyWheelWatchdog;
+	private final TalonSRX turnMotor;
+	private final TalonSRX flyWheelMotor;
+	private final TalonSRXWatchdog turnWatchdog;
+	private final TalonSRXWatchdog flyWheelWatchdog;
 	private final Encoder encoder;
-
-	// private final CircularAverageBuffer rpsBuffer = new
-	// CircularAverageBuffer(10);
 
 	private final double encoderToDegrees = 45d / 35087.5d;
 
 	private double offset = 0;
 
 	public Turret() {
-		turnMotor = new CANTalon(RobotMap.turret);
-		flyWheelMotor = new CANTalon(RobotMap.shooter);
+		turnMotor = new TalonSRX(RobotMap.turret);
+		flyWheelMotor = new TalonSRX(RobotMap.shooter);
 		encoder = Robot.sensors.getFlywheelEncoder();
 
-		turnWatchdog = new CANTalonWatchdog(turnMotor, 20, 500, 1000);
+		turnMotor.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Coast);
+		flyWheelMotor.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Coast);
+
+		turnMotor.configSelectedFeedbackSensor(com.ctre.phoenix.motorcontrol.FeedbackDevice.QuadEncoder, 0, 0);
+		turnMotor.setSensorPhase(false);
+
+		turnWatchdog = new TalonSRXWatchdog(turnMotor, 20, 500, 1000);
 		turnWatchdog.start();
 
-		flyWheelWatchdog = new CANTalonWatchdog(flyWheelMotor, 80, 250, 2500);
+		flyWheelWatchdog = new TalonSRXWatchdog(flyWheelMotor, 80, 250, 2500);
 		flyWheelWatchdog.start();
 	}
 
-	// public CANTalon getFlyWheelMotor() {
-	// return flyWheelMotor;
-	// }
-
 	public void setTurret(double n) {
+		// Robot.nBroadcaster.println("Disabled turret. Speed: " + n);
 		if (turnWatchdog.isOk()) {
-			turnMotor.set(n);
+			turnMotor.set(com.ctre.phoenix.motorcontrol.ControlMode.PercentOutput, n);
 		} else {
-			turnMotor.set(0);
+			turnMotor.set(com.ctre.phoenix.motorcontrol.ControlMode.PercentOutput, 0);
 			Robot.nBroadcaster.println("Error: Turret motor stalled");
 		}
 	}
 
 	private double getTurretPosition() {
-		return turnMotor.getPosition() - offset;
+		return turnMotor.getSelectedSensorPosition(0) - offset;
+		// return turnMotor.getPosition() - offset;
 	}
 
 	public double getTurretAngle() {
@@ -56,10 +57,11 @@ public class Turret {
 	}
 
 	public void setFlyWheel(double n) {
+		// Robot.nBroadcaster.println("Disabled flywheel. Speed: " + n);
 		if (n > 0 && flyWheelWatchdog.isOk()) {
-			flyWheelMotor.set(n);
+			flyWheelMotor.set(com.ctre.phoenix.motorcontrol.ControlMode.PercentOutput, n);
 		} else {
-			flyWheelMotor.set(0);
+			flyWheelMotor.set(com.ctre.phoenix.motorcontrol.ControlMode.PercentOutput, 0);
 		}
 	}
 
@@ -75,19 +77,12 @@ public class Turret {
 		return getFlyWheelRPS() * 60;
 	}
 
-	// public double getBufferedFlyWheelRPS() {
-	// return rpsBuffer.DataAverage(getFlyWheelRPS());
-	// }
-
-	// public double getBufferedFlyWheelRPM() {
-	// return getBufferedFlyWheelRPS() * 60;
-	// }
-
 	public Encoder getEncoder() {
 		return encoder;
 	}
 
 	public void zeroTurret() {
-		offset = turnMotor.getPosition();
+		offset = turnMotor.getSelectedSensorPosition(0);
+		// offset = turnMotor.getPosition();
 	}
 }

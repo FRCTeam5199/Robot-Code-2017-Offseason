@@ -1,4 +1,5 @@
 /pixy/
-/maths/
-/org/
-/networking/
+/sensors/
+/transport/
+/turret/
+/util/

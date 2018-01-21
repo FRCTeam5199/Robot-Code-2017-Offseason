@@ -1,9 +1,11 @@
 package sensors;
 
 import org.usfirst.frc.team5199.robot.Robot;
+import org.usfirst.frc.team5199.robot.RobotMap;
 
-import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import maths.Vector2;
 import util.ClockRegulator;
 
@@ -11,31 +13,30 @@ public class Location implements Runnable {
 	private final Thread t;
 	private final ClockRegulator regulator;
 
-	private final BuiltInAccelerometer accelerometer;
+	private final ADXRS450_Gyro gyro;
 	private final Encoder wheelsLeft;
 	private final Encoder wheelsRight;
 
 	private final double Gtofmsms;
-	private final int sampleTime = 4000;
+	private final double degToRad = Math.PI / 180d;
+	private final int sampleTime = 10000;
+
+	private double eLeftLast;
+	private double eRightLast;
+	private double gyroLast;
+	private double gyroZero;
 
 	private boolean isAlive;
-	private Vector2 acceleration;
-	private Vector2 velocity;
 	private Vector2 location;
-	private Vector2 aDrift;
 
-	public Location(BuiltInAccelerometer accelerometer, Encoder wheelsLeft, Encoder wheelsRight) {
-		regulator = new ClockRegulator(200);
+	public Location(ADXRS450_Gyro gyro, Encoder wheelsLeft, Encoder wheelsRight) {
+		regulator = new ClockRegulator(50);
 
-		this.accelerometer = accelerometer;
+		this.gyro = gyro;
 		this.wheelsLeft = wheelsLeft;
 		this.wheelsRight = wheelsRight;
 
 		location = Vector2.ZERO.clone();
-		velocity = Vector2.ZERO.clone();
-		acceleration = Vector2.ZERO.clone();
-		aDrift = Vector2.ZERO.clone();
-
 		// Gtofmsms = 0.0032174049;
 		// constant that converts G's to feet per millisecond^2
 		// Gtofmsms = 3.108095e-8;
@@ -43,21 +44,38 @@ public class Location implements Runnable {
 
 		Gtofmsms = 0.000032152231;
 
-		Robot.nBroadcaster.println("Calibrating Accelerometer");
-		long endSampleTime = System.currentTimeMillis() + sampleTime;
-		int samples = 0;
-		while (System.currentTimeMillis() < endSampleTime) {
-			samples++;
-			acceleration.setX(-accelerometer.getX() * Gtofmsms);
-			acceleration.setY(-accelerometer.getZ() * Gtofmsms);
-			aDrift = Vector2.add(aDrift, acceleration);
-		}
-		aDrift = Vector2.divide(aDrift, samples);
-
-		Robot.nBroadcaster.println("Accelerometer drifting at " + aDrift);
+		gyroZero = gyro.getAngle();
+		eLeftLast = wheelsLeft.getDistance();
+		eRightLast = wheelsRight.getDistance();
+		gyroLast = getRot();
 
 		t = new Thread(this, "location");
 
+	}
+
+	private double getRot() {
+		return degToRad * (gyro.getAngle() - gyroZero);
+	}
+
+	private double deltaLeft() {
+		double current = wheelsLeft.getDistance();
+		double output = current - eLeftLast;
+		eLeftLast = current;
+		return output;
+	}
+
+	private double deltaRight() {
+		double current = wheelsRight.getDistance();
+		double output = current - eRightLast;
+		eRightLast = current;
+		return output;
+	}
+
+	private double deltaAngle() {
+		double current = getRot();
+		double output = current - gyroLast;
+		gyroLast = current;
+		return output;
 	}
 
 	public void start() {
@@ -72,17 +90,21 @@ public class Location implements Runnable {
 	@Override
 	public void run() {
 		while (isAlive) {
-			acceleration.setX(-accelerometer.getX() * Gtofmsms);
-			acceleration.setY(-accelerometer.getZ() * Gtofmsms);
+			double avgDistance = (deltaRight() + deltaLeft()) / 2d;
+			double dAngle = deltaAngle();
+			
+			Vector2 delta;
 
-			acceleration = Vector2.subtract(acceleration, aDrift);
+			if (dAngle == 0) {
+				delta = new Vector2(0, avgDistance);
+			} else {
+				double radius = avgDistance / dAngle;
+				delta = new Vector2(radius * (1 - Math.cos(dAngle)), radius * Math.sin(dAngle));
+				delta = Vector2.rotateCW(delta, getRot());
+			}
 
-			// acceleration = Vector2.multiply(acceleration, regulator.getMsPerUpdate());
-
-			velocity = Vector2.add(Vector2.multiply(acceleration, regulator.getMsPerUpdate()), velocity);
-
-			location = Vector2.add(Vector2.multiply(velocity, regulator.getMsPerUpdate()), location);
-
+			location = Vector2.add(location, delta);
+			
 			regulator.sync();
 		}
 
@@ -92,15 +114,8 @@ public class Location implements Runnable {
 		return location.clone();
 	}
 
-	public Vector2 getVelocity() {
-		return velocity.clone();
-	}
-
-	public Vector2 getAcceleration() {
-		return acceleration.clone();
-	}
-	
 	public void reset() {
 		location = Vector2.ZERO.clone();
+		gyroZero = gyro.getAngle();
 	}
 }

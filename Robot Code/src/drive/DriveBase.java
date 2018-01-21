@@ -15,6 +15,11 @@ public class DriveBase {
 
 	public void move(double r, double l) {
 		// right is reversed
+
+		// half speed
+		l *= .5;
+		r *= .5;
+
 		left.set(l);
 		right.set(-r);
 	}
